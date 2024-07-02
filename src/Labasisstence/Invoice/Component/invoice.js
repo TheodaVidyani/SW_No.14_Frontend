@@ -17,7 +17,7 @@ import healthLabLogo from "../../LabasisstenceComponent/Labasisstenceimg/Health 
 const Invoice = ({ id }) => {
   const [record, setRecord] = useState(null);
   const [testDB, setTestsDB] = useState(null);
-  const [total, srtTotal] = useState("0");
+
 
   useEffect(() => {
     async function getTestData() {
