@@ -43,6 +43,7 @@ import PPendViewAppointment from './Patient/Patient_Component/PPendViewAppointme
 import Invoicepreview from './Patient/Patient_Component/Invoicepreview';
 import Reportpreview from './Patient/Patient_Component/Reportpreview';
 import PReportUI from './Patient/Patient_Component/PReportUI';
+import Paymentpreview from './Patient/Patient_Component/Paymentpreview';
 
 
 function App() {
@@ -113,6 +114,7 @@ function App() {
   <Route path="/Invoicepreview/:id" element={<Invoicepreview />} />
   <Route path="/Reportpreview/:id" element={<Reportpreview/>}/>
   <Route path="/PReportUI/:id" element={<PReportUI/>}/>
+  <Route path="/Paymentpreview/:id" element={<Paymentpreview/>}/>
     </Routes>
   </BrowserRouter>
     </div>
