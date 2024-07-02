@@ -22,8 +22,6 @@ const ReportUI = () => {
   const [testsDB, setTestsDB] = useState([]);
   // appointment data (patiant)
   const record = location.state.record;
-  const PID =record.pid;
-  const appointmentID = record.id;
 // patient registerd tests
   const tests = record.selectTests;
 
@@ -58,23 +56,6 @@ const tableData = tests.map((test) => ({
   unit: testsDB.find((dbTest) => dbTest.id === test.testId)?.unit || "no data",
 }));
 
-
-
-
-
-
-
-  const data = [
-    { id: 1, col1: "Data 1", col2: "Data 2", col3: "Data 3", col4: "Data 4" },
-    { id: 2, col1: "Data 5", col2: "Data 6", col3: "Data 7", col4: "Data 8" },
-    {
-      id: 3,
-      col1: "Data 9",
-      col2: "Data 10",
-      col3: "Data 11",
-      col4: "Data 12",
-    },
-  ];
 
   return (
     <Container
