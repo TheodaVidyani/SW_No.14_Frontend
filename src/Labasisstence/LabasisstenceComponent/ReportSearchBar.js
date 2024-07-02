@@ -42,7 +42,6 @@ const ReportSearchBar = ({ onSearch }) => {
           width: '400px',
           color: '#000000',
           backgroundColor: 'white',
-          backgroundColor: 'rgba(26, 0, 0, 0.0)',
           marginBottom: '20px', // Add margin bottom to create space between search bar and button
         }}
         label="Enter Report ID"
