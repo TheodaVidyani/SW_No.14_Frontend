@@ -4,7 +4,6 @@ import Autocomplete from '@mui/material/Autocomplete';
 import SearchIcon from '@mui/icons-material/Search';
 import { Card, CardContent, Typography, Button } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import { color } from '@mui/system';
 
 export default function Appointmentsearch({ rows }) {
   const [searchValue, setSearchValue] = useState('');
@@ -22,6 +21,7 @@ export default function Appointmentsearch({ rows }) {
   };
 
   const handleCloseCard = () => {
+    console.log("search value is " + searchValue);
     setShowCard(false);
     setShowOverlay(false);
     setSelectedAppointment(null);
