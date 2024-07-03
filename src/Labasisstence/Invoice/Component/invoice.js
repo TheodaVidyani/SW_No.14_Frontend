@@ -255,6 +255,7 @@ const Invoice = ({ id }) => {
     dueDate: record.dueDate || "2024-07-24",
     companyAddress: record.companyAddress || "1234 Main St, City, State, ZIP lab address",
     customerName: record.pname || "John Doe",
+    total: invoiceTotalAmount,
     customerAddress: record.customerAddress || "5678 Second St, City, State, ZIP costumer address",
     items: inVoiceData || [
       { id: 1, description: "Item 1", quantity: 2, price: 50 },
@@ -278,8 +279,8 @@ const Invoice = ({ id }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          invoiceDetails:invoiceDetails,
-          total:invoiceTotalAmount
+          data:invoiceDetails,
+          type: 'invoice',
         }),
       });
       if (!response.ok) {

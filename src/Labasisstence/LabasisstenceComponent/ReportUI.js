@@ -43,18 +43,54 @@ useEffect(() => {async function getTestData() {
   },[]);
 
 
-
+  const tableData = tests.map((test) => ({
+    testId: test.testId,
+    result: test.result || "no data",
+    testName: test.testName,
+    min: testsDB.find((dbTest) => dbTest.id === test.testId)?.min || "no data",
+    max: testsDB.find((dbTest) => dbTest.id === test.testId)?.max || "no data",
+    unit: testsDB.find((dbTest) => dbTest.id === test.testId)?.unit || "no data",
+  }))
 
   // Test resul page object 
 
   // Corrected version
-const tableData = tests.map((test) => ({
-  testId: test.testId,
-  testName: test.testName,
-  min: testsDB.find((dbTest) => dbTest.id === test.testId)?.min || "no data",
-  max: testsDB.find((dbTest) => dbTest.id === test.testId)?.max || "no data",
-  unit: testsDB.find((dbTest) => dbTest.id === test.testId)?.unit || "no data",
-}));
+const reportDetails = {
+patientName: record.pname,
+PatientAge: 26,
+PatientSex: "Mail",
+PatientID: record._id,
+RegisteredOn: record.regdate.split("T")[0],
+CollectedOn: "02.31pm 02 December",
+ReportedOn: "02.31 December 2022",
+LabTechnician: "Medical Lab Technetion",
+Doctor: "Dr.Rajitha Bandara",
+tableData: tableData,
+};
+
+
+const sendEmail = async () => {
+  try {
+    const response = await fetch('http://localhost:3100/api/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        data:reportDetails,
+        type: 'report',
+      }),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to send email');
+    }
+    alert('Email sent successfully');
+  } catch (error) {
+    alert(error.message);
+  }
+};
+
+
 
 
   return (
@@ -194,6 +230,11 @@ const tableData = tests.map((test) => ({
           Print
         </Button>
       </Grid>
+      <Grid item xs={6} align="right">
+            <Button variant="contained" color="secondary" onClick={sendEmail}>
+              Send Email
+            </Button>
+          </Grid>
     </Container>
   );
 };
