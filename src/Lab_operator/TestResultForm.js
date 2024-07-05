@@ -1,13 +1,26 @@
-import { Button, Grid, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Snackbar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import {
+    Button,
+    Grid,
+    Typography,
+    TextField,
+    Snackbar,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+} from "@mui/material";
 
 const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) => {
     const [id, setId] = useState('');
-    const [uid, setUid] = useState('');
-    const [nm, setNm] = useState('');
-    const [testtype, setTesttype] = useState('');
-    const [tr, setTr] = useState('');
+    const [pid, setPid] = useState('');
+    const [pname, setPname] = useState('');
+    const [testNames, setTestNames] = useState([]);
+    const [selectedTestName, setSelectedTestName] = useState('');
+    const [testresults, setTestresults] = useState('');
+    const [appointmentIds, setAppointmentIds] = useState([]);
+    const [testid, setTestid] = useState('');
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [errors, setErrors] = useState({});
@@ -21,20 +34,71 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
     useEffect(() => {
         if (data?.id && data.id !== 0) {
             setId(data.id.toString());
-            setNm(data.nm);
-            setUid(data.uid);
-            setTesttype(data.testtype);
-            setTr(data.tr);
+            setPname(data.pname);
+            setPid(data.pid);
+            setTestresults(data.testresults);
+            setTestid(data.testid);
         }
     }, [data]);
-    
+
+    useEffect(() => {
+        fetchAppointmentIds();
+    }, []);
+
+    const fetchAppointmentIds = () => {
+        axios.get('http://localhost:3100/api/appointmentIds')
+            .then(response => {
+                setAppointmentIds(response.data.appointmentIds);
+            })
+            .catch(error => {
+                console.error('Error fetching appointment IDs:', error);
+            });
+    };
+
+    useEffect(() => {
+        if (id) {
+            fetchPatientDetails(id);
+        }
+    }, [id]);
+
+    const fetchPatientDetails = (appointmentId) => {
+        axios.get(`http://localhost:3100/api/appoinments/${appointmentId}`)
+            .then(response => {
+                const { pid, pname, selectTests } = response.data.response;
+
+                // Extract all test names and their IDs from selectTests array
+                const tests = selectTests.map(test => ({ name: test.testName, id: test._id }));
+                
+                // Set pname, pid, and testNames in state
+                setPid(pid);
+                setPname(pname);
+                setTestNames(tests);
+                
+                if (tests.length > 0) {
+                    setSelectedTestName(tests[0].name);
+                    setTestid(tests[0].id); // Set the test ID for the first test
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching appointment details:', error);
+            });
+    };
+
+    useEffect(() => {
+        // Set the test ID based on the selected test name
+        const selectedTest = testNames.find(test => test.name === selectedTestName);
+        if (selectedTest) {
+            setTestid(selectedTest.id);
+        }
+    }, [selectedTestName, testNames]);
+
     const validateForm = () => {
         let tempErrors = {};
-        tempErrors.id = id ? '' : 'ID is required.';
-        tempErrors.uid = uid ? '' : 'ID is required.';
-        tempErrors.nm = nm ? '' : 'Name is required.';
-        tempErrors.testtype = testtype ? '' : 'Test is required.';
-        tempErrors.tr = tr ? '' : 'Test result is required.';
+        tempErrors.id = id ? '' : 'Appointment ID is required.';
+        tempErrors.pid = pid ? '' : 'Patient ID is required.';
+        tempErrors.pname = pname ? '' : 'Name is required.';
+        tempErrors.testName = selectedTestName ? '' : 'Test type is required.';
+        tempErrors.testresults = testresults ? '' : 'Test result is required.';
         setErrors(tempErrors);
         return Object.values(tempErrors).every(x => x === "");
     };
@@ -43,10 +107,11 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
         if (validateForm()) {
             actionFunc({
                 id,
-                uid,
-                nm,
-                testtype,
-                tr,
+                pid,
+                pname,
+                testName: selectedTestName,
+                testresults,
+                testid // Include the test ID in the submission
             });
             handleSnackbarOpen(successMessage);
             resetForm();
@@ -55,31 +120,81 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
 
     const resetForm = () => {
         setId('');
-        setUid('');
-        setNm('');
-        setTesttype('');
-        setTr('');
+        setPid('');
+        setPname('');
+        setTestNames([]);
+        setSelectedTestName('');
+        setTestresults('');
+        setTestid(''); // Reset the test ID
         setErrors({});
     };
+
     const handleSnackbarOpen = (message) => {
         setSnackbarMessage(message);
         setSnackbarOpen(true);
     };
+
     return (
-         <Grid container spacing={2} sx={{ backgroundColor: '#f0f0f0', padding: '30px' }}>
-            
+        <Grid container spacing={2} sx={{ backgroundColor: '#f0f0f0', padding: '30px' }}>
             <Grid item xs={12}>
                 <Typography variant="h4" sx={{ color: '#333333', marginTop: '100px' }}>
-                   Enter Test Results
+                    Enter Test Results
                 </Typography>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+                <FormControl fullWidth error={!!errors.id}>
+                    <InputLabel id="appointment-id-label">Appointment ID</InputLabel>
+                    <Select
+                        labelId="appointment-id-label"
+                        value={id}
+                        onChange={(e) => {
+                            setId(e.target.value);
+                        }}
+                    >
+                        {appointmentIds.map((appointmentId) => (
+                            <MenuItem key={appointmentId} value={appointmentId}>
+                                {appointmentId}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    {errors.id && (
+                        <Typography variant="caption" color="error">
+                            {errors.id}
+                        </Typography>
+                    )}
+                </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <FormControl fullWidth error={!!errors.testName}>
+                    <InputLabel id="test-name-label">Test Name</InputLabel>
+                    <Select
+                        labelId="test-name-label"
+                        value={selectedTestName}
+                        onChange={(e) => setSelectedTestName(e.target.value)}
+                    >
+                        {testNames.map((test) => (
+                            <MenuItem key={test.id} value={test.name}>
+                                {test.name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    {errors.testName && (
+                        <Typography variant="caption" color="error">
+                            {errors.testName}
+                        </Typography>
+                    )}
+                </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
                 <TextField
                     fullWidth
                     label="Patient ID"
                     variant="outlined"
-                    value={uid}
-                    onChange={(e) => setUid(e.target.value)}
+                    value={pid}
+                    onChange={(e) => setPid(e.target.value)}
+                    error={!!errors.pid}
+                    helperText={errors.pid}
                 />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -87,30 +202,20 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
                     fullWidth
                     label="Name"
                     variant="outlined"
-                    value={nm}
-                    onChange={(e) => setNm(e.target.value)}
-                    error={!!errors.nm}
-                    helperText={errors.nm}
+                    value={pname}
+                    onChange={(e) => setPname(e.target.value)}
+                    error={!!errors.pname}
+                    helperText={errors.pname}
                 />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
                 <TextField
                     fullWidth
-                    label="Appointment ID"
+                    label="Test Id"
                     variant="outlined"
-                    value={id}
-                    onChange={(e) => setId(e.target.value)}
-                />
-            </Grid>
-            <Grid item xs={12}sm={6}>
-                <TextField
-                    fullWidth
-                    label="Test"
-                    variant="outlined"
-                    value={testtype}
-                    onChange={(e) => setTesttype(e.target.value)}
-                    error={!!errors.testtype}
-                    helperText={errors.testtype}
+                    value={testid}
+                    onChange={(e) => setTestid(e.target.value)}
+                    disabled
                 />
             </Grid>
             <Grid item xs={12}>
@@ -118,10 +223,10 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
                     fullWidth
                     label="Test Result"
                     variant="outlined"
-                    value={tr}
-                    onChange={(e) => setTr(e.target.value)}
-                    error={!!errors.tr}
-                    helperText={errors.tr}
+                    value={testresults}
+                    onChange={(e) => setTestresults(e.target.value)}
+                    error={!!errors.testresults}
+                    helperText={errors.testresults}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -133,7 +238,7 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
                     {isEdit ? 'Update' : 'Add'}
                 </Button>
             </Grid>
-            
+
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={6000}

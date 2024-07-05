@@ -29,6 +29,7 @@ import AViewTest from './Admin/AViewTest';
 import PViewAppointment from './Patient/Patient_Component/PViewAppointment';
 import Reportview from './Labasisstence/LabasisstencePages/Reportview';
 import ReportUI from './Labasisstence/LabasisstenceComponent/ReportUI';
+
 import TestResult from './Lab_operator/TestResult';
 
 import Users from './Lab_operator/Users';
@@ -43,7 +44,8 @@ import PPendViewAppointment from './Patient/Patient_Component/PPendViewAppointme
 import Invoicepreview from './Patient/Patient_Component/Invoicepreview';
 import Reportpreview from './Patient/Patient_Component/Reportpreview';
 import PReportUI from './Patient/Patient_Component/PReportUI';
-
+import ReportView from './Dapproval/ReportView';
+import Report from './Dapproval/Report';
 
 function App() {
   return (
@@ -65,7 +67,6 @@ function App() {
       
       
       <Route path='/PViewTest/:id' element={<PViewTest/>}/>
-
       <Route path='/Selecttest' element={<Selecttest/>}/>
       <Route path='/Dhome' element={<Dhome/>}/>
       <Route path='/Dapproval' element={<Dapproval/>}/>
@@ -113,6 +114,8 @@ function App() {
   <Route path="/Invoicepreview/:id" element={<Invoicepreview />} />
   <Route path="/Reportpreview/:id" element={<Reportpreview/>}/>
   <Route path="/PReportUI/:id" element={<PReportUI/>}/>
+  <Route path="/ReportView/:id" element={<ReportView/>}/>
+  <Route path="/Report/:id" element={<Report/>}/>
     </Routes>
   </BrowserRouter>
     </div>
