@@ -147,7 +147,13 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
 
     const handleAfterSubmit = () => {
         // Perform additional action after handleSubmit
-        console.log('appointment update to complete');
+        axios.post('http://localhost:3100/api/updateappointment', { id: id, state: 'complete' })
+            .then(response => {
+                console.log('Appointment '+ `${id}` +' updated with result entering successfully');
+            })
+            .catch(error => {
+                console.error('Error updating appointment:', error);
+            });
     };
 
     return (
