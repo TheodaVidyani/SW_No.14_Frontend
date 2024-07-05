@@ -46,6 +46,8 @@ import Reportpreview from './Patient/Patient_Component/Reportpreview';
 import PReportUI from './Patient/Patient_Component/PReportUI';
 import ReportView from './Dapproval/ReportView';
 import Report from './Dapproval/Report';
+import Paymentpreview from './Patient/Patient_Component/Paymentpreview';
+
 
 function App() {
   return (
@@ -116,6 +118,7 @@ function App() {
   <Route path="/PReportUI/:id" element={<PReportUI/>}/>
   <Route path="/ReportView/:id" element={<ReportView/>}/>
   <Route path="/Report/:id" element={<Report/>}/>
+  <Route path="/Paymentpreview/:id" element={<Paymentpreview/>}/>
     </Routes>
   </BrowserRouter>
     </div>

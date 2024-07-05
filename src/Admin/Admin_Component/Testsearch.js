@@ -24,6 +24,7 @@ export default function Testsearch({ rows }) {
   };
 
   const handleCloseCard = () => {
+    console.log("search value is " + searchValue);
     setShowCard(false);
     setShowOverlay(false);
     setSelectedTest(null);
