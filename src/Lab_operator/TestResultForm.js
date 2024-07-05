@@ -21,6 +21,7 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
     const [testresults, setTestresults] = useState('');
     const [appointmentIds, setAppointmentIds] = useState([]);
     const [testid, setTestid] = useState('');
+    const [submittedTestIds, setSubmittedTestIds] = useState([]); // State to store submitted test IDs
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [errors, setErrors] = useState({});
@@ -105,6 +106,12 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
 
     const handleSubmit = (actionFunc, successMessage) => {
         if (validateForm()) {
+            // Check if the test ID has already been submitted
+            if (submittedTestIds.includes(testid)) {
+                handleSnackbarOpen('Test result for this test ID has already been submitted.');
+                return;
+            }
+
             actionFunc({
                 id,
                 pid,
@@ -113,6 +120,10 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
                 testresults,
                 testid // Include the test ID in the submission
             });
+            
+            // Update submitted test IDs state
+            setSubmittedTestIds([...submittedTestIds, testid]);
+            
             handleSnackbarOpen(successMessage);
             resetForm();
         }
