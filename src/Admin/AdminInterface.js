@@ -9,20 +9,21 @@ import AdminCards from './Admin_Component/Admin_cards'
 
 function AdminInterface() {
   const handleNavigate = useNavigate(); //Making an instance of useNavigate
-axios.defaults.withCredentials = true;
+// Ensure axios sends cookies with cross-origin requests
+  axios.defaults.withCredentials = true;
   useEffect(() => {
     axios.get('http://localhost:3100/api/AdminInterface')
       .then(res => {
         if (res.data === "success") {
           console.log("Successed"); // Or any other function or state update
         } else {
+          console.log("User not authenticated as admin");
           handleNavigate('/');
         }
       })
       .catch(err => console.log(err));
+      console.error("Error checking admin authentication:");
   }, [handleNavigate]);
-
-
 
   return (
     <div className="AdminInterface">
