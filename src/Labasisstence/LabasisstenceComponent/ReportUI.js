@@ -22,33 +22,9 @@ const ReportUI = () => {
   const [testsDB, setTestsDB] = useState([]);
   // appointment data (patiant)
   const record = location.state.record;
-  const PID =record.pid;
-  const appointmentID = record.id;
 // patient registerd tests
   const tests = record.selectTests;
 
-  
-
-
-
-
-
-
-  // fetch data rest result from the test result database
-
-// useEffect(() => {async function getReport() {
-// const response = await fetch(`http://localhost:3100/labreport/testResults:${record.id}`);
-// if (!response.ok) {
-//   const message = `An error occurred: ${response.statusText}`;
-//   window.alert(message);
-//   return;
-// }
-// const records = await response.json();
-// var record = records.report;
-// }
-// getReport();
-// return;
-// },[]);
 
 // fetch data from Test database
 
@@ -80,23 +56,6 @@ const tableData = tests.map((test) => ({
   unit: testsDB.find((dbTest) => dbTest.id === test.testId)?.unit || "no data",
 }));
 
-
-
-
-
-
-
-  const data = [
-    { id: 1, col1: "Data 1", col2: "Data 2", col3: "Data 3", col4: "Data 4" },
-    { id: 2, col1: "Data 5", col2: "Data 6", col3: "Data 7", col4: "Data 8" },
-    {
-      id: 3,
-      col1: "Data 9",
-      col2: "Data 10",
-      col3: "Data 11",
-      col4: "Data 12",
-    },
-  ];
 
   return (
     <Container
@@ -165,7 +124,7 @@ const tableData = tests.map((test) => ({
           {record.username}
         </Typography>
         <Typography variant="body1" sx={{ fontSize: "14px" }}>
-          Registered on: 02.31 pm December 2022
+          Registered on: {record.regdate.split("T")[0]}
           <br />
           Collected on: 02.31pm 02 December
           <br />

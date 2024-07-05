@@ -1,3 +1,4 @@
+// Appoinmentlist.js
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -8,21 +9,20 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import axios from 'axios';
-import { useEffect , useState} from 'react';
+import { useEffect, useState } from 'react';
 
 const columns = [
-  { id: 'id', label: 'id', minWidth: 170 },
-  { id: 'pname', label: 'patientname', minWidth: 100 },
+  { id: 'id', label: 'Appointment ID', minWidth: 170 },
+  { id: 'pname', label: 'Patientname', minWidth: 100 },
   { 
-    id: 'state', label: 'state', minWidth: 170, align: 'right',
+    id: 'state', label: 'State', minWidth: 170, align: 'right',
   }
-  
 ];
 
-export default function StickyHeadTable() {
+export default function StickyHeadTable({ setRows }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [rows, setRows] = useState([]);
+  const [rows, setLocalRows] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:3100/api/appointments')
@@ -30,7 +30,8 @@ export default function StickyHeadTable() {
         console.log('Response data:', response.data);
         const responseData = response.data && response.data.response; // Accessing the 'response' key
         if (Array.isArray(responseData)) {
-          setRows(responseData);
+          setLocalRows(responseData);
+          setRows(responseData); // Update parent component's rows state
           console.log('Data is an array. Setting rows.');
         } else {
           console.error('Data received is not an array:', responseData);
@@ -39,7 +40,7 @@ export default function StickyHeadTable() {
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-  }, []);
+  }, [setRows]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -52,15 +53,15 @@ export default function StickyHeadTable() {
 
   return (
     <Paper sx={{ width: '80%', overflow: 'hidden', margin: 'auto', textAlign: 'center' }}>
-      <TableContainer sx={{ maxHeight: 420 , minHeight:390}}>
+      <TableContainer sx={{ maxHeight: 420, minHeight: 390 }}>
         <Table stickyHeader aria-label="sticky table">
-          <TableHead >
+          <TableHead>
             <TableRow>
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth , fontWeight: 'bold',backgroundColor:'#D9D9D9'}}
+                  style={{ minWidth: column.minWidth, fontWeight: 'bold', backgroundColor: '#D9D9D9' }}
                 >
                   {column.label}
                 </TableCell>
@@ -72,7 +73,7 @@ export default function StickyHeadTable() {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
@@ -90,8 +91,8 @@ export default function StickyHeadTable() {
         </Table>
       </TableContainer>
       <TablePagination
-        style={{ backgroundColor:'#D9D9D9' }}
-        rowsPerPageOptions={[5,10, 25, 100]}
+        style={{ backgroundColor: '#D9D9D9' }}
+        rowsPerPageOptions={[5, 10, 25, 100]}
         component="div"
         count={rows.length}
         rowsPerPage={rowsPerPage}

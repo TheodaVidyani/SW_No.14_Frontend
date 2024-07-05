@@ -81,7 +81,11 @@ const TestTube = () => {
 
     const handleGeneratePDF = (tube) => {
         const doc = new jsPDF();
-
+    
+        // Add a title
+        doc.setFontSize(20);
+        doc.text('Test Tube Report', 105, 15, { align: 'center' });
+    
         // Generate the barcode using JsBarcode
         const canvas = createCanvas();
         JsBarcode(canvas, tube._id, {
@@ -89,19 +93,33 @@ const TestTube = () => {
             displayValue: true,
             fontSize: 18,
         });
-
+    
         // Convert canvas to data URL
         const barcodeDataURL = canvas.toDataURL('image/png');
-
+    
         // Add barcode to PDF
-        doc.text('Generated Barcode', 10, 10);
-        doc.addImage(barcodeDataURL, 'PNG', 10, 20, 180, 40);
-        doc.text(`Tube Type: ${tube.tube_type}`, 10, 70);
-        doc.text(`Description: ${tube.description}`, 10, 80);
-        doc.text(`Expiration Date: ${tube.expire_date}`, 10, 90);
-        doc.text(`Manufacturer: ${tube.manufacturer}`, 10, 100);
-        doc.text(`Location: ${tube.location}`, 10, 110);
-
+        doc.addImage(barcodeDataURL, 'PNG', 10, 30, 180, 40);
+    
+        // Add test tube details in a table format
+        doc.setFontSize(12);
+        doc.text(`Tube Type:`, 10, 80);
+        doc.text(`${tube.tube_type}`, 50, 80);
+        doc.text(`Description:`, 10, 90);
+        
+        // Split the description text into multiple lines to fit within the page
+        const descriptionLines = doc.splitTextToSize(tube.description, 140);
+        doc.text(descriptionLines, 50, 90);
+    
+        doc.text(`Expiration Date:`, 10, 110 + (descriptionLines.length - 1) * 10);
+        doc.text(`${tube.expire_date}`, 50, 110 + (descriptionLines.length - 1) * 10);
+        doc.text(`Manufacturer:`, 10, 120 + (descriptionLines.length - 1) * 10);
+        doc.text(`${tube.manufacturer}`, 50, 120 + (descriptionLines.length - 1) * 10);
+        doc.text(`Location:`, 10, 130 + (descriptionLines.length - 1) * 10);
+        doc.text(`${tube.location}`, 50, 130 + (descriptionLines.length - 1) * 10);
+    
+        // Draw a border around the content
+        doc.rect(5, 5, 200, 140 + (descriptionLines.length - 1) * 10);
+    
         doc.save(`${tube.tube_type}_barcode.pdf`);
     };
 

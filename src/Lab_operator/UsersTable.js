@@ -44,7 +44,7 @@ const UsersTable = ({ rows, selectedUser, deleteUser, generatePDF }) => {
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden', margin: 'auto', textAlign: 'center', marginTop: 2 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 2, padding: 4, marginTop: 4 }}>
-        <Typography variant="h5">Users</Typography>
+        <Typography variant="h5">Blood Testing Records</Typography>
       </Box>
       <TableContainer sx={{ maxHeight: 420, minHeight: 390 }}>
         <Table stickyHeader aria-label="sticky table">

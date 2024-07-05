@@ -2,57 +2,65 @@ import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import SearchIcon from '@mui/icons-material/Search';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent, Typography, Button } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import Selectrole from './Selectrole';
+import { useNavigate } from 'react-router-dom';
 
-export default function PatientSearch({ rows , selectedRole, handleChange}) {
+export default function Appointmentsearch({ rows }) {
   const [searchValue, setSearchValue] = useState('');
-  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [showCard, setShowCard] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
 
+  const navigate = useNavigate();
+
   const handleSearch = () => {
-    if (selectedPatient) {
-      console.log(selectedPatient);
+    if (selectedAppointment) {
+      console.log(selectedAppointment);
       setShowCard(true);
       setShowOverlay(true);
     }
+    console.log("appointment is " + JSON.stringify(rows));
   };
 
   const handleCloseCard = () => {
     setShowCard(false);
     setShowOverlay(false);
-    setSelectedPatient(null);
+    setSelectedAppointment(null);
+  };
+
+  const handlePreview = () => {
+    if (selectedAppointment) {
+      console.log("preview invoice");
+      navigate(`/Invoicepreview/${selectedAppointment.id}`);
+    }
   };
 
   return (
     <div style={{ position: 'relative', maxWidth: '50%', margin: '0 auto', paddingBottom: '20px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Selectrole selectedRole={selectedRole}  handleChange={handleChange}/>
         <Autocomplete
           freeSolo
           options={rows}
-          getOptionLabel={(row) => row?.firstname + ' ' + row?.lastname || ''}
+          getOptionLabel={(row) => row?.id ? 'No. ' + String(row.id) + ' - ' + 'Date: ' + row?.regdate.slice(0, 10) : ''}
           filterOptions={(options, { inputValue }) =>
             options.filter((option) =>
-              (option?.firstname + ' ' + option?.lastname)?.toLowerCase().includes(inputValue.toLowerCase())
+              String(option?.id)?.includes(inputValue) || option?.pname?.toLowerCase().includes(inputValue.toLowerCase())
             )
           }
-          onChange={(event, value) => setSelectedPatient(value)}
+          onInputChange={(event, newValue) => setSearchValue(newValue)}
+          onChange={(event, value) => setSelectedAppointment(value)}
           renderInput={(params) => (
             <TextField
               {...params}
-              label={`Search for a ${selectedRole}`}
+              label="Search for Appointments"
               variant="outlined"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
               InputProps={{
                 ...params.InputProps,
                 type: 'search',
                 sx: { borderRadius: '20px' },
               }}
-              style={{ width: '500px' }} // Adjust width as needed
+              style={{ width: '400px' }}
             />
           )}
         />
@@ -61,7 +69,7 @@ export default function PatientSearch({ rows , selectedRole, handleChange}) {
         </IconButton>
       </div>
 
-      {showCard && selectedPatient && (
+      {showCard && selectedAppointment && (
         <>
           {showOverlay && (
             <div
@@ -80,10 +88,10 @@ export default function PatientSearch({ rows , selectedRole, handleChange}) {
           <div
             style={{
               position: 'absolute',
-              top: '100%',
+              top: '160%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
-              width: '100%',
+              width: '90%',
               borderRadius: '20px',
               boxShadow: '0 8px 12px rgba(0, 0, 0, 1)',
               zIndex: 1000,
@@ -104,22 +112,30 @@ export default function PatientSearch({ rows , selectedRole, handleChange}) {
             >
               <CardContent>
                 <Typography variant="h5" component="div" sx={{ fontWeight: 'bold' }}>
-                {selectedPatient?.firstname + " " + selectedPatient?.lastname}
+                  {"Appointment No." + selectedAppointment?.id + " : " + selectedAppointment?.regdate.slice(0, 10)}
                 </Typography>
                 <Typography variant="body1">
-                  {selectedPatient && (
+                  {selectedAppointment && (
                     <ul style={{ listStyleType: 'circle', padding: 0 }}>
-                      
-                      <li><strong>Name:</strong> {selectedPatient?.firstname + " " + selectedPatient?.lastname}</li>
-                      <li><strong>National ID:</strong> {selectedPatient?.nationalID}</li>
-                      <li><strong>Email:</strong> {selectedPatient?.email}</li>
-                      <li><strong>Address:</strong> {selectedPatient?.address}</li>
-                      <li><strong>Role:</strong> {selectedPatient?.role}</li>
-                      <li><strong>Contact Number:</strong> {selectedPatient?.phonenumber}</li>
-                      <li><strong>Username:</strong> {selectedPatient?.username}</li>
-                      <li><strong>Password:</strong> {selectedPatient?.password}</li>
+                      <li><strong>Appointment ID:</strong> {selectedAppointment?.id}</li>
+                      <li><strong>Patient Name:</strong> {selectedAppointment?.pname}</li>
+                      <li><strong>Patient ID:</strong> <br />{selectedAppointment?.pid}</li>
+                      <li><strong>Blood Tests:</strong> <br />
+                        {Array.isArray(selectedAppointment.selectTests) ? 
+                          selectedAppointment.selectTests.map(test => <ul key={test.testName}>{test.testName}</ul>)
+                          : 'No tests'}
+                      </li>
+                      <li><strong>Registered Date:</strong> <br />{selectedAppointment?.regdate.slice(0, 10)}</li>
+                      <li><strong>Appointment Current State:</strong> {selectedAppointment?.state}</li>
+                      <li><strong>Appointment Billvalue:</strong>{" LKR " + selectedAppointment?.billvalue}</li>
                     </ul>
                   )}
+                </Typography>
+                <Typography>
+                  <Button onClick={handlePreview}
+                    style={{ color: '#101754', backgroundColor: '#D9D9D9', border: '1px solid #101754', borderRadius: '5px', padding: '5px 10px', maxWidth: '150px' }}>
+                    Invoice
+                  </Button>
                 </Typography>
               </CardContent>
             </Card>

@@ -71,6 +71,8 @@ const StyledButton = styled(Button)(
   color: ${grey[900]};
   position: relative;
   margin-right: 10px;
+  margin-bottom: 20px;
+  height: 40px;
 
   &:hover {
     background: ${grey[50]};
@@ -95,7 +97,7 @@ const Listbox = styled('ul')`
   padding: 6px;
   margin: 8px 0;
   min-width: 122px;
-  max-height: 40px; /* Assuming each option is around 56px tall */
+  max-height: 40px; 
   overflow-y: auto;
   border-radius: 8px;
   background: none;

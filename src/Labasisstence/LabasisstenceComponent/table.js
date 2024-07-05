@@ -1,21 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from '@mui/material';
-// import { Link } from 'react-router-dom';
-import axios from 'axios';
-// import { render } from '@testing-library/react';
-// import { RecordVoiceOver } from '@mui/icons-material';
-
 import { useNavigate } from "react-router-dom";
 
 
 
-
-
-import ReportUI from './ReportUI';
-
-
-
-// record function to render the record
 
 
 const Record = (props) => {
@@ -32,22 +20,22 @@ const navigate = useNavigate();
 
 
 
-  // Now you can access the record data in ReportUI component
+  // // Now you can access the record data in ReportUI component
   
-  const Record = (props) => {
-    return (
-      <TableRow>
-        <TableCell>{props.record._id} </TableCell>
-        <TableCell>{props.record.nationalID}</TableCell>
-        <TableCell>{props.record.fullname}</TableCell>
-        <TableCell>
-          <Button variant="contained" color="primary" onClick={() => HandleGenerate(props.record)}>
-            Generate
-          </Button>
-        </TableCell>
-      </TableRow>
-    );
-  };
+  // const Record = (props) => {
+  //   return (
+  //     <TableRow>
+  //       <TableCell>{props.record._id} </TableCell>
+  //       <TableCell>{props.record.nationalID}</TableCell>
+  //       <TableCell>{props.record.fullname}</TableCell>
+  //       <TableCell>
+  //         <Button variant="contained" color="primary" onClick={() => HandleGenerate(props.record)}>
+  //           Generate
+  //         </Button>
+  //       </TableCell>
+  //     </TableRow>
+  //   );
+  // };
 
     
   

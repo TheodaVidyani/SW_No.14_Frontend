@@ -61,6 +61,7 @@ function BasicTextFields({ handleChange, formData }) {
           padding: '30px',
           paddingLeft:'5px',
           paddingRight:'5px',
+          boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.7)', 
         }}
         noValidate
         autoComplete="off"
@@ -86,21 +87,24 @@ function BasicTextFields({ handleChange, formData }) {
               <TextField id="max" label="max" variant="outlined" value={formData.max} onChange={handleChange} />
             </Grid>
             <Grid item xs={4}>
-              <Autocomplete
-                    id="unit"
-                    options={['mg/dL', 'g/dL', 'cs/μL', 'td/μL']}
-                    freeSolo
-                    renderInput={(params) => 
-                    (
-                          <TextField
-                            {...params}
-                            label="unit"
-                            variant="outlined"
-                            value={formData.unit}
-                            onChange={handleChange}
-                          />
-                    )}
-              />
+            <Autocomplete
+              id="unit"
+              options={['mg/dL', 'g/dL', 'cs/μL', 'td/μL']}
+              freeSolo
+              value={formData.unit}
+              onChange={(event, newValue) => {
+                handleChange({ target: { id: 'unit', value: newValue } });
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="unit"
+                  variant="outlined"
+                  value={formData.unit}
+                  onChange={handleChange}
+                />
+              )}
+            />
             </Grid>
           </Grid>
           <Grid item >

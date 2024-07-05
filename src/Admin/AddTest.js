@@ -107,10 +107,12 @@ function AddTest() {
             margin: 'auto',
             marginBottom: '40px',
             marginTop: '20px',
-            width:'25%',
-            minWidth:'20vh'
+            width:'13%',
+            padding:'10px',
+            minWidth:'20vh',
+            fontWeight: 'bold',
           }}>
-          ADD
+          ADD TEST TYPE
         </Button>
       </Grid>
       <Snackbar

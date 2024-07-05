@@ -9,6 +9,7 @@ import LibraryAddSharpIcon from '@mui/icons-material/LibraryAddSharp';
 import FormatListNumberedSharpIcon from '@mui/icons-material/FormatListNumberedSharp';
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import Groups2SharpIcon from '@mui/icons-material/Groups2Sharp';
+import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
     
   },
   paper: {
+    minWidth: 250,
     backgroundColor: theme.palette.background.paper,
     paddingRight:'4%', 
     paddingLeft:'2%',
@@ -93,6 +95,9 @@ const CardSlider = ({ cards }) => {
       else if (selectedCard.title === 'USERS') {
         navigate(`/ViewPatient/:id`);
       } 
+      else if (selectedCard.title === 'USERS') {
+        navigate(`/ViewPatient/:id`);
+      } 
     }
     handleCloseModal();
   };
@@ -142,7 +147,7 @@ const CardSlider = ({ cards }) => {
         <div className={classes.paper}>
           <h2>{selectedCard && selectedCard.title}</h2>
           <p>{selectedCard && selectedCard.content}</p>
-          <IconComponent sx={{paddingBottom:'10%'}}/>
+          <IconComponent sx={{paddingBottom:'5%'}}/>
           <Button onClick={handleAction} color="primary">CLICK<FastForwardIcon/></Button>
         </div>
       </Modal>
@@ -157,6 +162,7 @@ const MyComponent = () => {
     { title: 'AVAILABLE TESTS', content: 'View currently available test types' ,icon:FormatListNumberedSharpIcon},
     { title: 'APPOINTMENTS', content: 'Patient appointments to blood tests' , icon:ListAltSharpIcon},
     { title: 'USERS', content: 'Users already registered to the system' , icon:Groups2SharpIcon},
+    { title: 'FEEDBACKS', content: 'User messages' , icon:ChatTwoToneIcon},
     
   ];
 

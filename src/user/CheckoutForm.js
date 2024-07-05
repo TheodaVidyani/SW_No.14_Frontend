@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { Button, Typography, Box, TextField, Snackbar, Alert, CircularProgress, Grid, Container } from '@mui/material';
 import axios from 'axios';
@@ -22,7 +22,7 @@ const cardElementOptions = {
   }
 };
 
-const CheckoutForm = () => {
+const CheckoutForm = ({ valueid }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [amount, setAmount] = useState('');
@@ -30,6 +30,10 @@ const CheckoutForm = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  useEffect(() => {
+    setAmount(valueid); // Set the amount using the valueid prop
+  }, [valueid]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -167,5 +171,3 @@ const CheckoutForm = () => {
 };
 
 export default CheckoutForm;
-
-//

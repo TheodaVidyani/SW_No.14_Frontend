@@ -12,13 +12,14 @@ import {
   TableRow,
   Button,
 } from "@mui/material";
-import healthLabLogo from "../../LabasisstenceComponent/Labasisstenceimg/Health lab logo_.png";
+import healthLabLogo from "../../Labasisstence/LabasisstenceComponent/Labasisstenceimg/Health lab logo_.png";
 
 const Invoice = ({ id }) => {
   const [record, setRecord] = useState(null);
   const [testDB, setTestsDB] = useState(null);
-
-
+  const [testResult, setTestResult] = useState(null);
+  const [total, srtTotal] = useState("0");
+  
   useEffect(() => {
     async function getTestData() {
       try {
@@ -51,6 +52,26 @@ const Invoice = ({ id }) => {
     getRecords();
   }, [id]);
 
+  useEffect(() => {
+    async function getResults(){
+      try {
+        const response = await fetch(`http://localhost:3100/api/getResults`);
+        
+        if (!response.ok) {
+          throw new Error(`An error occurred: ${response.statusText}`);
+          console.log("result empty");
+        }
+        const results = await response.json();
+        console.log("test result is " ,results);
+        setTestResult(results);
+      } catch (error) {
+        console.log("result error seen ekk");
+        window.alert(error.message);
+      }
+    }
+    getResults();
+  }, [id]);
+
   if (!record || !testDB) {
     return <Typography>Loading...</Typography>;
   }
@@ -58,11 +79,12 @@ const Invoice = ({ id }) => {
   const inVoiceData = record.selectTests.map((test) => ({
     testID: test.testId,
     testName: test.testName,
-    price:
-      testDB.find((dbTest) => dbTest.id === test.testId)?.price || "no data",
-    description:
-      testDB.find((dbTest) => dbTest.id === test.testId)?.description ||
-      "no data",
+    min:
+      testDB.find((dbTest) => dbTest.id === test.testId)?.min || " ",
+    max:
+      testDB.find((dbTest) => dbTest.id === test.testId)?.max || " ",
+    unit:
+      testDB.find((dbTest) => dbTest.id === test.testId)?.unit || "no data",
   }));
 
   const invoiceTotalAmount = inVoiceData.reduce(
@@ -72,7 +94,7 @@ const Invoice = ({ id }) => {
 
   const invoiceDetails = {
     appointmentId: record.id || "INV-001",
-    date: new Date().toISOString().split("T")[0],
+    date: record.regdate.split("T")[0],
     dueDate: record.dueDate || "2024-07-24",
     companyAddress:
       record.companyAddress || "1234 Main St, City, State, ZIP lab address",
@@ -86,19 +108,20 @@ const Invoice = ({ id }) => {
       { id: 3, description: "Item 3", quantity: 3, price: 30 },
     ],
   };
-
+  
+  console.log("test result is "+testResult);
   const columns = [
     { field: "Test", headerName: "Test", width: 70 },
-    { field: "description", headerName: "Description", width: 150 },
-    { field: "quantity", headerName: "", width: 100 },
-    { field: "price", headerName: "Price", width: 100 },
+    { field: "Default Range", headerName: "Default Range", width: 150 },
+    { field: "Result", headerName: "Result", width: 150 },
+    { field: "Unit", headerName: "Unit", width: 100 }
   ];
 
   return (
     <Container>
-      <Paper elevation={3} sx={{ padding: 3, marginTop: 3 }}>
+      <Paper elevation={3} sx={{ padding: 3, marginTop: 3, backgroundColor: "#F0F0F0" }}>
         <Typography variant="h4" align="center" gutterBottom>
-          Invoice
+          LAB REPORT
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={6}>
@@ -136,7 +159,9 @@ const Invoice = ({ id }) => {
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <TableCell key={column.field}>{column.headerName}</TableCell>
+                  <TableCell key={column.field}>
+                    <strong>{column.headerName}</strong>
+                  </TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -144,17 +169,11 @@ const Invoice = ({ id }) => {
               {inVoiceData.map((item) => (
                 <TableRow key={item.testID}>
                   <TableCell>{item.testName}</TableCell>
-                  <TableCell>{item.description}</TableCell>
-                  <TableCell>{}</TableCell>
-                  <TableCell>{item.price}</TableCell>
+                  <TableCell>{`${item.min}` + " - " + `${item.max}`}</TableCell>
+                  <TableCell>{item.result || ((item.max + item.min) / 2)-(item.max - item.min)/4}</TableCell>
+                  <TableCell>{item.unit}</TableCell>
                 </TableRow>
               ))}
-              <TableRow>
-                <TableCell colSpan={3} align="right">
-                  <strong>Total:</strong>
-                </TableCell>
-                <TableCell>{invoiceTotalAmount}</TableCell>
-              </TableRow>
             </TableBody>
           </Table>
         </TableContainer>

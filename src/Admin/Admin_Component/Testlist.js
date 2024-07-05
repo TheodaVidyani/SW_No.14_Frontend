@@ -1,4 +1,3 @@
-// Testlist.js
 import React, { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -8,29 +7,28 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import axios from 'axios'; // Import axios for making HTTP requests
-
+import axios from 'axios';
 
 const columns = [
-  { id: 'id', label: 'id', minWidth: 170 },
-  { id: 'name', label: 'name', minWidth: 100 },
-  { id: 'description', label: 'description', minWidth: 170, align: 'right' }
+  { id: 'id', label: 'Test Id', minWidth: 100 },
+  { id: 'name', label: 'Test Type', minWidth: 100 },
+  { id: 'description', label: 'Description', minWidth: 100 },
+  { id: 'price', label: 'Price', minWidth: 100, align: 'right' },
 ];
 
-export default function StickyHeadTable() {
+export default function Testlist({ setRows }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [rows, setRows] = useState([]);
-
+  const [rows, setLocalRows] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:3100/api/tests')
       .then(response => {
         console.log('Response data:', response.data);
-        const responseData = response.data && response.data.response; // Accessing the 'response' key
+        const responseData = response.data && response.data.response;
         if (Array.isArray(responseData)) {
+          setLocalRows(responseData);
           setRows(responseData);
-          console.log('Data is an array. Setting rows.');
         } else {
           console.error('Data received is not an array:', responseData);
         }
@@ -38,11 +36,7 @@ export default function StickyHeadTable() {
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-  }, []);
-  
-  
-   // Empty dependency array ensures useEffect runs only once on mount
-  
+  }, [setRows]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -55,7 +49,7 @@ export default function StickyHeadTable() {
 
   return (
     <Paper sx={{ width: '80%', overflow: 'hidden', margin: 'auto', textAlign: 'center' }}>
-      <TableContainer sx={{ maxHeight: 420 , minHeight:390, }}>
+      <TableContainer sx={{ maxHeight: 420, minHeight: 390 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -63,7 +57,7 @@ export default function StickyHeadTable() {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth , fontWeight: 'bold',backgroundColor:'#D9D9D9' }}
+                  style={{ minWidth: column.minWidth, fontWeight: 'bold', backgroundColor: '#D9D9D9' }}
                 >
                   {column.label}
                 </TableCell>
@@ -71,31 +65,26 @@ export default function StickyHeadTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-          {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-</TableBody>
-
+            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+              return (
+                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                  {columns.map((column) => {
+                    const value = row[column.id];
+                    return (
+                      <TableCell key={column.id} align={column.align}>
+                        {value}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
+          </TableBody>
         </Table>
       </TableContainer>
       <TablePagination
-        style={{ backgroundColor:'#D9D9D9' }}
-        rowsPerPageOptions={[5,10, 25, 100]}
+        style={{ backgroundColor: '#D9D9D9' }}
+        rowsPerPageOptions={[5, 10, 25, 100]}
         component="div"
         count={rows.length}
         rowsPerPage={rowsPerPage}

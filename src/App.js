@@ -30,6 +30,7 @@ import AViewTest from './Admin/AViewTest';
 import PViewAppointment from './Patient/Patient_Component/PViewAppointment';
 import Reportview from './Labasisstence/LabasisstencePages/Reportview';
 import ReportUI from './Labasisstence/LabasisstenceComponent/ReportUI';
+
 import TestResult from './Lab_operator/TestResult';
 
 import Users from './Lab_operator/Users';
@@ -42,6 +43,13 @@ import BarcodeScanner from './Lab_operator/BarcodeScanner';
 import AppoinmentInvoice from './Labasisstence/Invoice/Component/invoice';
 import LogoutButton from './Components/LogoutButton';
 
+import PPendViewAppointment from './Patient/Patient_Component/PPendViewAppointment';
+import Invoicepreview from './Patient/Patient_Component/Invoicepreview';
+import Reportpreview from './Patient/Patient_Component/Reportpreview';
+import PReportUI from './Patient/Patient_Component/PReportUI';
+import ReportView from './Dapproval/ReportView';
+import Report from './Dapproval/Report';
+import Paymentpreview from './Patient/Patient_Component/Paymentpreview';
 
 
 function App() {
@@ -61,11 +69,10 @@ function App() {
       <Route path='/ViewAppointment/:id' element={<ViewAppointment/>}/>
       <Route path='/PViewAppointment/:id' element={<PViewAppointment/>}/>
       <Route path='/ViewPatient/:id' element={<ViewPatient/>}/>
-      
+      <Route path='/PPendViewAppointment/:id' element={<PPendViewAppointment/>}/>
       
       
       <Route path='/PViewTest/:id' element={<PViewTest/>}/>
-
       <Route path='/Selecttest' element={<Selecttest/>}/>
       <Route path='/Dhome' element={<Dhome/>}/>
       <Route path='/Dapproval' element={<Dapproval/>}/>
@@ -110,8 +117,12 @@ function App() {
 
   {/* Invoice Route */}
   <Route path='/invoice' element = {<AppoinmentInvoice/>}/>
-  
-        
+  <Route path="/Invoicepreview/:id" element={<Invoicepreview />} />
+  <Route path="/Reportpreview/:id" element={<Reportpreview/>}/>
+  <Route path="/PReportUI/:id" element={<PReportUI/>}/>
+  <Route path="/ReportView/:id" element={<ReportView/>}/>
+  <Route path="/Report/:id" element={<Report/>}/>
+  <Route path="/Paymentpreview/:id" element={<Paymentpreview/>}/>
     </Routes>
   </BrowserRouter>
     </div>

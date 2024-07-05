@@ -1,4 +1,3 @@
-// src/Lab_operator/UserForm.js
 import React, { useEffect, useState } from "react";
 import { Button, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Snackbar, Box, Paper } from "@mui/material";
 import axios from "axios";
@@ -6,8 +5,8 @@ import axios from "axios";
 const UserForm = ({ addUser, updateUser, submitted, data, isEdit }) => {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
-  const [test, setTest] = useState('');
-  const [tests, setTests] = useState([]);
+  const [selectedAppointment, setSelectedAppointment] = useState('');
+  const [appointments, setAppointments] = useState([]);
   const [testTubes, setTestTubes] = useState([]);
   const [bloodType, setBloodType] = useState('');
   const [selectedTube, setSelectedTube] = useState('');
@@ -16,6 +15,7 @@ const UserForm = ({ addUser, updateUser, submitted, data, isEdit }) => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [errors, setErrors] = useState({});
   const [isNicValid, setIsNicValid] = useState(true);
+  const [usedAppointments, setUsedAppointments] = useState([]);
 
   useEffect(() => {
     if (!submitted) {
@@ -26,8 +26,8 @@ const UserForm = ({ addUser, updateUser, submitted, data, isEdit }) => {
   useEffect(() => {
     if (data?.id && data.id !== 0) {
       setId(data.id.toString());
-      setName(data.name);
-      setTest(data.test);
+      setName(`${data.firstname} ${data.lastname}`); // Concatenate firstname and lastname
+      setSelectedAppointment(data.test);  // Assuming this field is for selected test
       setBloodType(data.blood_type);
       setSelectedTube(data.test_tubes);
       setTestTubeId(data.test_tube_id);
@@ -36,7 +36,6 @@ const UserForm = ({ addUser, updateUser, submitted, data, isEdit }) => {
 
   useEffect(() => {
     fetchTestTubes();
-    fetchTests();
   }, []);
 
   const fetchTestTubes = async () => {
@@ -48,19 +47,23 @@ const UserForm = ({ addUser, updateUser, submitted, data, isEdit }) => {
     }
   };
 
-  const fetchTests = async () => {
+  const fetchAppointments = async (userId) => {
     try {
-      const response = await axios.get('http://localhost:3100/api/tests');
-      setTests(response.data.response || []);
+      console.log(`Fetching appointments for user ID: ${userId}`);
+      const response = await axios.get('http://localhost:3100/api/appointments');
+      console.log('Appointments response:', response.data);
+      const userAppointments = response.data.response.filter(appointment => appointment.pid === userId);
+      setAppointments(userAppointments);
+      console.log('Filtered appointments:', userAppointments);
     } catch (error) {
-      console.error('Error fetching tests:', error);
+      console.error('Error fetching appointments:', error);
     }
   };
 
   const validateForm = () => {
     let tempErrors = {};
     tempErrors.name = name ? '' : 'Name is required.';
-    tempErrors.test = test ? '' : 'Test is required.';
+    tempErrors.selectedAppointment = selectedAppointment ? '' : 'Appointment selection is required.';
     tempErrors.selectedTube = selectedTube ? '' : 'Test tube selection is required.';
     tempErrors.bloodType = bloodType ? '' : 'Blood type is required.';
     tempErrors.testTubeId = testTubeId.length >= 4 ? '' : 'Test Tube ID must be at least 4 characters long.';
@@ -73,7 +76,7 @@ const UserForm = ({ addUser, updateUser, submitted, data, isEdit }) => {
       actionFunc({
         id,
         name,
-        test,
+        test: selectedAppointment,
         test_tubes: selectedTube,
         test_tube_id: testTubeId,
         blood_type: bloodType
@@ -86,11 +89,12 @@ const UserForm = ({ addUser, updateUser, submitted, data, isEdit }) => {
   const resetForm = () => {
     setId('');
     setName('');
-    setTest('');
+    setSelectedAppointment('');
     setBloodType('');
     setSelectedTube('');
     setTestTubeId('');
     setErrors({});
+    setUsedAppointments([]);
   };
 
   const handleSnackbarOpen = (message) => {
@@ -98,20 +102,19 @@ const UserForm = ({ addUser, updateUser, submitted, data, isEdit }) => {
     setSnackbarOpen(true);
   };
 
-  const fetchPatientName = async (nic) => {
+  const fetchPatientNameAndAppointments = async (nic) => {
     try {
       console.log(`Fetching patient name for NIC: ${nic}`);
       const response = await axios.get('http://localhost:3100/users');
       console.log('Response from server:', response.data);
 
-      // Extract the nested response data
       const users = response.data.response;
-
       const user = users.find(user => user.nationalID === nic);
-      if (user && user.fullname) {
-        setName(user.fullname);
+      if (user && user.firstname && user.lastname) {
+        setName(`${user.firstname} ${user.lastname}`); // Concatenate firstname and lastname
         setIsNicValid(true);
-        console.log(`Found patient: ${user.fullname}`);
+        fetchAppointments(user._id);
+        console.log(`Found patient: ${user.firstname} ${user.lastname}`);
       } else {
         setName('');
         setIsNicValid(false);
@@ -129,8 +132,13 @@ const UserForm = ({ addUser, updateUser, submitted, data, isEdit }) => {
 
   const handleNicBlur = () => {
     if (id) {
-      fetchPatientName(id);
+      fetchPatientNameAndAppointments(id);
     }
+  };
+
+  const handleAppointmentChange = (e) => {
+    setUsedAppointments([...usedAppointments, e.target.value]);
+    setSelectedAppointment(e.target.value);
   };
 
   return (
@@ -162,18 +170,27 @@ const UserForm = ({ addUser, updateUser, submitted, data, isEdit }) => {
           }}
         />
         <FormControl fullWidth variant="outlined" sx={{ backgroundColor: '#fff', borderRadius: 1 }} disabled={!isNicValid}>
-          <InputLabel>Test</InputLabel>
+          <InputLabel>Appointment</InputLabel>
           <Select
-            value={test}
-            onChange={(e) => setTest(e.target.value)}
-            label="Test"
-            error={!!errors.test}
+            value={selectedAppointment}
+            onChange={handleAppointmentChange}
+            label="Appointment"
+            error={!!errors.selectedAppointment}
           >
-            {tests.map((test) => (
-              <MenuItem key={test._id} value={test.name}>{test.name}</MenuItem>
+            {appointments.map((appointment) => (
+              appointment.selectTests.map((test) => (
+                <MenuItem 
+                  key={test.testId} 
+                  value={test.testName} 
+                  disabled={usedAppointments.includes(test.testName)}
+                  style={{ color: usedAppointments.includes(test.testName) ? 'grey' : 'black' }}
+                >
+                  {test.testName}
+                </MenuItem>
+              ))
             ))}
           </Select>
-          <Typography variant="caption" color="error">{errors.test}</Typography>
+          <Typography variant="caption" color="error">{errors.selectedAppointment}</Typography>
         </FormControl>
         <FormControl fullWidth variant="outlined" sx={{ backgroundColor: '#fff', borderRadius: 1 }} disabled={!isNicValid}>
           <InputLabel>Test Tube</InputLabel>

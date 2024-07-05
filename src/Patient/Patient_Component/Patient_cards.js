@@ -41,7 +41,8 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
-    paddingRight:'4%', 
+    paddingRight:'4%',
+    minWidth: 230, 
     paddingLeft:'2%',
     borderRadius: theme.spacing(1.5),
     transform: 'scale(1.5)', // Increase size by 1.5
@@ -83,12 +84,12 @@ const CardSlider = ({ cards }) => {
     
     if (selectedCard) {
       if (selectedCard.title === 'PENDING') {
-        navigate(`/PViewAppointment/:id`);
+        navigate(`/PPendViewAppointment/:id`);
       } else if (selectedCard.title === 'NEW APPOINTMENT') {
         navigate(`/Selecttest`);
       } 
       else if (selectedCard.title === 'HISTORY') {
-        navigate(`/ViewAppointment/:id`);
+        navigate(`/PViewAppointment/:id`);
       } 
       else if (selectedCard.title === 'TYPES') {
         navigate(`/PViewTest/:id`);
@@ -142,7 +143,7 @@ const CardSlider = ({ cards }) => {
         <div className={classes.paper}>
           <h2>{selectedCard && selectedCard.title}</h2>
           <p>{selectedCard && selectedCard.content}</p>
-          <IconComponent sx={{paddingBottom:'10%'}}/>
+          <IconComponent sx={{paddingBottom:'5%'}}/>
           <Button onClick={handleAction} color="primary">CLICK<FastForwardIcon/></Button>
         </div>
       </Modal>

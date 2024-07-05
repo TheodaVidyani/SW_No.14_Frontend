@@ -13,9 +13,7 @@ const ViewAllReportsButton = () => {
         backgroundColor: 'white', // Set background color to white
         color: 'white', // Set text color to black
         padding: '10px 20px',
-       position:'center',
-    
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Add padding to the button
+        position:'center',
       }}
     >
       View All Reports
