@@ -1,12 +1,12 @@
-// src/Admin/Admin_component/UserContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 // Create contexts
-const UserContext = createContext(null); // This context holds the user data
-const UserUpdateContext = createContext(null); // This context provides the setUser function to update the user data
+const UserContext = createContext(null);
+const UserUpdateContext = createContext(null);
+const UserLogoutContext = createContext(null);
 
-// Custom hook to use the UserContext
+// Custom hooks
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
@@ -15,7 +15,6 @@ export const useUser = () => {
   return context;
 };
 
-// Custom hook to use the UserUpdateContext
 export const useSetUser = () => {
   const context = useContext(UserUpdateContext);
   if (!context) {
@@ -24,18 +23,25 @@ export const useSetUser = () => {
   return context;
 };
 
-// UserProvider component to wrap around the parts of my app that need access to the user data
+export const useLogout = () => {
+  const context = useContext(UserLogoutContext);
+  if (!context) {
+    throw new Error('useLogout must be used within a UserProvider');
+  }
+  return context;
+};
+
+// UserProvider component
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    // Fetch user data from my backend
     console.log('UserProvider: Fetching current user data');
     axios.get('http://localhost:3100/api/router_login/getCurrentUser', { withCredentials: true })
       .then(response => {
         console.log('User data fetched:', response.data);
-        setUser(response.data);
+        setUser(response.data || null); // Set user data or null if no user is found
       })
       .catch(error => {
         console.error('UserProvider: Error fetching current user:', error);
@@ -46,12 +52,24 @@ export const UserProvider = ({ children }) => {
       });
   }, []);
 
+  const logout = () => {
+    axios.post('http://localhost:3100/api/router_login/logout', {}, { withCredentials: true })
+      .then(() => {
+        setUser(null);
+      })
+      .catch(error => {
+        console.error('UserProvider: Error logging out:', error);
+      });
+  };
+
   console.log('UserProvider: Rendering provider with user:', user);
 
   return (
     <UserContext.Provider value={{ user, isReady }}>
       <UserUpdateContext.Provider value={setUser}>
-        {children}
+        <UserLogoutContext.Provider value={logout}>
+          {children}
+        </UserLogoutContext.Provider>
       </UserUpdateContext.Provider>
     </UserContext.Provider>
   );

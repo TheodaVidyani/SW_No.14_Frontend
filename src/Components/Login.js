@@ -6,11 +6,11 @@ import photo1 from "../images/HealthLabLogo.jpg";
 import photo2 from "../images/BloodDraw.png";
 import axios from 'axios';
 import { useSetUser } from '../Admin/Admin_Component/UserContext';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode'; 
 
 function Login() {
   const navigate = useNavigate();
-  const setUserContext  = useSetUser(); // Use the setUser function from UserContext. Using the useSetUser hook to obtain the setUser function from your context. This function is responsible for updating the user state in the context.
+  const setUserContext = useSetUser(); // Correct usage of useSetUser
   const [data, setData] = useState({
     username: '',
     password: ''
@@ -27,16 +27,17 @@ function Login() {
     setError(''); // Clear error state before making a new request
     const { username, password } = data;
 
-    //Receive the response from the backend
+    // Receive the response from the backend
     try {
       const response = await axios.post('http://localhost:3100/api/router_login/login', { username, password });
       console.log('Login response:', response.data);
-      const userData = response.data; //making an Object called userData
+      const userData = response.data; // Making an Object called userData
       console.log('User data:', userData); // After parsing/having response data, adding this console log to check if it is having all information
 
       if (userData.message !== 'Success') {
         console.log('Login: Error from backend:', userData.error);
         toast.error(userData.error);
+        setError(userData.error); // Set specific error message from backend
       } else {
         setData({ username: '', password: '' }); // Clear input fields
 
@@ -92,7 +93,7 @@ function Login() {
           padding: "40px",
           backgroundColor: "#D3E9FE",
           width: "90%",
-          maxWidth: "800px",
+          maxWidth: "1000px",
           boxShadow: "1px 5px 3px -3px rgba(0,0,0,0.44)",
           display: "flex",
           flexDirection: "column",
@@ -124,6 +125,20 @@ function Login() {
                 }}
               >
                 Welcome!
+              </Typography>
+
+              <Typography
+                variant="body1"
+                style={{
+                  marginBottom: "40px",
+                  fontFamily: "Inter",
+                  fontWeight: "500",
+                  fontSize: "12px",
+                  lineHeight: "24px",
+                  color: "#9C1C1C",
+                }}
+              >
+                <Link to="/Signin" style={{ color: '#9C1C1C' }}>Doesn't have an account yet?</Link>
               </Typography>
 
               <TextField
@@ -170,7 +185,7 @@ function Login() {
                   color: "#9C1C1C",
                 }}
               >
-                <Link to="/forget-password" style={{ color: '#9C1C1C' }}>Forgot Password?</Link>
+                <Link to="/forgetpassword" style={{ color: '#9C1C1C' }}>Forgot Password?</Link>
               </Typography>
 
               <Button type="submit" sx={{ variant: 'contained', color: '#FFFFFF', background: '#101754', width: '100%', height: '50px', marginBottom: '20px' }}>

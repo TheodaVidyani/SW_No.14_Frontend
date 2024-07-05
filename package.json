@@ -47,7 +47,7 @@
     "react-lazyload": "^3.2.1",
     "react-material-ui-carousel": "^3.4.2",
     "react-phone-number-input": "^3.3.9",
-    "react-router-dom": "^6.23.1",
+    "react-router-dom": "^6.24.0",
     "react-scripts": "^5.0.1",
     "react-scroll": "^1.9.0",
     "react-slick": "^0.30.1",

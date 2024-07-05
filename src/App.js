@@ -40,6 +40,7 @@ import PaymentGateway from './user/PaymentGateway';
 import UserForm from './Lab_operator/UserForm';
 import BarcodeScanner from './Lab_operator/BarcodeScanner';
 import AppoinmentInvoice from './Labasisstence/Invoice/Component/invoice';
+import LogoutButton from './Components/LogoutButton';
 
 
 
@@ -93,7 +94,7 @@ function App() {
       <Route path='/user/payment' element={<PaymentGateway />} />
       <Route path='/lab-operator/user-form' element={<UserForm />} />
       <Route path='/scan' element={<BarcodeScanner />} />
-
+      <Route path='/LogoutButton' element={<LogoutButton />} />
 
       <Route path='/' element={<HomePage />} /> 
       {/* default loading path - Homepage*/}
