@@ -3,25 +3,24 @@ import { Grid, Typography, TextField, Button, Select, FormControl, InputLabel, M
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import photo from '../images/HealthLabLogo.jpg';
+import { toast, Toaster } from 'react-hot-toast';
 
 const Signin = () => {
   const [data, setData] = useState({
-    firstname:'',
-    lastname:'',
-    email:'',
-    address:'',
-    nationalID:'',
-    phonenumber:'',
-    role:'',
-    username:'',
-    password:''
-  });  
+    firstname: '',
+    lastname: '',
+    email: '',
+    address: '',
+    nationalID: '',
+    phonenumber: '',
+    role: '',
+    username: '',
+    password: ''
+  });
 
-  const [confirmPassword, setConfirmPassword] = useState(''); // State variable for confirm password
-
-  const [error, setError] = useState({ field: '', message: '' }); // Initialize error as an object //state variable
-
-  const navigate = useNavigate(); //To navigate after Signin
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState({ field: '', message: '' });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -31,55 +30,113 @@ const Signin = () => {
     setConfirmPassword(e.target.value);
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePhoneNumber = (phone) => {
+    const phoneRegex = /^[0-9]{10}$/;
+    return phoneRegex.test(phone);
+  };
+
+  const validateNationalID = (id) => {
+    const idRegex1 = /^[0-9]{9}V$/i;
+    const idRegex2 = /^[0-9]{12}$/;
+    return idRegex1.test(id) || idRegex2.test(id);
+  };
+
+
+  //Minimum Length: Ensure the password is at least 8 characters long.
+  //Special Characters: Require at least one special character.
+  //Uppercase Letters: Require at least one uppercase letter.
+  //Numbers: Require at least one digit.
+
+  const validatePassword = (password) => {
+    // Password must be at least 8 characters long and contain at least one special character, uppercase letter, and digit
+    const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*[A-Z])(?=.*[0-9]).{8,}$/;
+    return passwordRegex.test(password);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-      // Password confirmation check
-      if (data.password !== confirmPassword) {
-        setError({ field: 'confirmPassword', message: 'Confirm Password does not match' });
+    // Check if any field is empty
+    for (let key in data) {
+      if (data[key] === '') {
+        setError({ field: key, message: 'This field is required' });
         return;
       }
+    }
+
+    if (data.password !== confirmPassword) {
+      setError({ field: 'confirmPassword', message: 'Confirm Password does not match' });
+      return;
+    }
+
+    if (!validateEmail(data.email)) {
+      setError({ field: 'email', message: 'Invalid email format' });
+      return;
+    }
+
+    if (!validatePhoneNumber(data.phonenumber)) {
+      setError({ field: 'phonenumber', message: 'Phone number must contain exactly 10 digits' });
+      return;
+    }
+
+    if (!validateNationalID(data.nationalID)) {
+      setError({ field: 'nationalID', message: 'Invalid national ID format' });
+      return;
+    }
+
+    if (!validatePassword(data.password)) {
+      setError({ field: 'password', message: 'Password must be at least 8 characters long and contain at least one special character, uppercase letter, and digit' });
+      return;
+    }
 
     try {
       const response = await axios.post('http://localhost:3100/api/router_login/createuser', data);
       console.log('Server response:', response);
 
-      if(response.data.error === false){
-        //console.log('Setting error:', `User with this ${response.data.message} already exists.`);
-        //setError(`User with this ${response.data.message} already exists.`);
-        console.log('Error field:', response.data.field);
-        console.log('Error message:', response.data.message);
+      if (response.data.error === false) {
         setError({ field: response.data.field, message: response.data.message });
       } else {
-        // Reset the error state if no error
-          setError({ field: '', message: '' });
-          setData({
-            firstname:'',
-            lastname:'',
-            email:'',
-            address:'',
-            nationalID:'',
-            phonenumber:'',
-            role:'',
-            username:'',
-            password:''
-          });
+        setError({ field: '', message: '' });
+        setData({
+          firstname: '',
+          lastname: '',
+          email: '',
+          address: '',
+          nationalID: '',
+          phonenumber: '',
+          role: '',
+          username: '',
+          password: ''
+        });
+
+        const successMessage = data.role === 'PATIENT' ? 'User Registered Successfully' : 'Registration Pending';
+        console.log('Displaying toast message:', successMessage);
+        toast.success(successMessage, {
+          duration: 4000, // Toast duration set to 4 seconds
+        });
+
+        setTimeout(() => {
           navigate('/HomePage');
+        }, 4000); // Navigate to HomePage after 4 seconds
       }
     } catch (error) {
       console.error('Error registering user:', error);
       if (error.response && error.response.status === 409) {
-        console.log('Error field:', error.response.data.field);
-        console.log('Error message:', error.response.data.message);
         setError({ field: error.response.data.field, message: error.response.data.message });
       } else {
         setError({ field: '', message: 'Error registering user: ' + error.message });
       }
     }
   };
-  console.log('Error state:', error);
+
   return (
     <Grid container justifyContent="center">
+      <Toaster />
       <form
         onSubmit={handleSubmit}
         style={{
@@ -111,6 +168,8 @@ const Signin = () => {
               value={data.firstname}
               onChange={handleChange}
               style={{ marginBottom: "20px" }}
+              error={error.field === 'firstname'}
+              helperText={error.field === 'firstname' ? error.message : ''}
             />
           </Grid>
           <Grid item xs={6}>
@@ -122,6 +181,8 @@ const Signin = () => {
               value={data.lastname}
               onChange={handleChange}
               style={{ marginBottom: "20px" }}
+              error={error.field === 'lastname'}
+              helperText={error.field === 'lastname' ? error.message : ''}
             />
           </Grid>
           <Grid item xs={6}>
@@ -133,10 +194,10 @@ const Signin = () => {
               value={data.email}
               onChange={handleChange}
               style={{ marginBottom: "20px" }}
+              error={error.field === 'email'}
+              helperText={error.field === 'email' ? error.message : ''}
             />
-
           </Grid>
-
           <Grid item xs={6}>
             <TextField
               fullWidth
@@ -146,6 +207,8 @@ const Signin = () => {
               value={data.address}
               onChange={handleChange}
               style={{ marginBottom: "20px" }}
+              error={error.field === 'address'}
+              helperText={error.field === 'address' ? error.message : ''}
             />
           </Grid>
           <Grid item xs={6}>
@@ -157,8 +220,10 @@ const Signin = () => {
               value={data.nationalID}
               onChange={handleChange}
               style={{ marginBottom: "20px" }}
+              error={error.field === 'nationalID'}
+              helperText={error.field === 'nationalID' ? error.message : ''}
             />
-            </Grid>
+          </Grid>
           <Grid item xs={6}>
             <TextField
               fullWidth
@@ -168,6 +233,8 @@ const Signin = () => {
               value={data.phonenumber}
               onChange={handleChange}
               style={{ marginBottom: "20px" }}
+              error={error.field === 'phonenumber'}
+              helperText={error.field === 'phonenumber' ? error.message : ''}
             />
           </Grid>
           <Grid item xs={6}>
@@ -180,13 +247,17 @@ const Signin = () => {
                 value={data.role}
                 onChange={handleChange}
                 label="Role"
+                error={error.field === 'role'}
               >
                 <MenuItem value="PATIENT">Patient</MenuItem>
                 <MenuItem value="DOCTOR">Doctor</MenuItem>
                 <MenuItem value="ADMIN">Admin</MenuItem>
-                <MenuItem value="LABOPERATOR">LabOperator</MenuItem>
-                <MenuItem value="LABASSISTANT">LabAssistant</MenuItem>
+                <MenuItem value="LABOPERATOR">Lab Operator</MenuItem>
+                <MenuItem value="LABASSISTANT">Lab Assistant</MenuItem>
               </Select>
+              {error.field === 'role' && (
+                <Typography variant="body2" color="error">{error.message}</Typography>
+              )}
             </FormControl>
           </Grid>
           <Grid item xs={6}>
@@ -198,8 +269,10 @@ const Signin = () => {
               value={data.username}
               onChange={handleChange}
               style={{ marginBottom: "20px" }}
+              error={error.field === 'username'}
+              helperText={error.field === 'username' ? error.message : ''}
             />
-            </Grid>
+          </Grid>
           <Grid item xs={6}>
             <TextField
               fullWidth
@@ -210,17 +283,21 @@ const Signin = () => {
               value={data.password}
               onChange={handleChange}
               style={{ marginBottom: "20px" }}
+              error={error.field === 'password'}
+              helperText={error.field === 'password' ? error.message : ''}
             />
           </Grid>
           <Grid item xs={6}>
             <TextField
-            fullWidth
-            label="Confirm Password"
-            variant="outlined"
-            type="password"
-            value={confirmPassword}
-            onChange={handleConfirmPasswordChange} //Added value and onChange props for the "Confirm Password" field:
-            style={{ marginBottom: "20px" }}
+              fullWidth
+              label="Confirm Password"
+              variant="outlined"
+              type="password"
+              value={confirmPassword}
+              onChange={handleConfirmPasswordChange}
+              style={{ marginBottom: "20px" }}
+              error={error.field === 'confirmPassword'}
+              helperText={error.field === 'confirmPassword' ? error.message : ''}
             />
           </Grid>
 
@@ -236,7 +313,7 @@ const Signin = () => {
           Already have an account? <Link to="/Login">Login</Link>
         </Typography>
 
-        <Button 
+        <Button
           type='submit'
           sx={{ variant: 'contained', color: '#FFFFFF', background: '#101754', width: '100%', height: '50px' }}
         >
@@ -248,5 +325,3 @@ const Signin = () => {
 };
 
 export default Signin;
-
-// 2307261097

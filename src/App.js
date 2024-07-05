@@ -10,6 +10,7 @@ import Contact from './Contact/Contact';
 import Selecttest from './Patient/Patient_Component/Selecttest';
 import AddTest from './Admin/AddTest';
 import ForgotPassword from './Components/ForgotPassword';
+import ChangePassword from './Components/ChangePassword';
 import ViewPatient from './Admin/ViewPatients';
 import ViewAppointment from './Admin/ViewAppoinments';
 import AdminInterface from './Admin/AdminInterface';
@@ -40,6 +41,8 @@ import PaymentGateway from './user/PaymentGateway';
 import UserForm from './Lab_operator/UserForm';
 import BarcodeScanner from './Lab_operator/BarcodeScanner';
 import AppoinmentInvoice from './Labasisstence/Invoice/Component/invoice';
+import LogoutButton from './Components/LogoutButton';
+
 import PPendViewAppointment from './Patient/Patient_Component/PPendViewAppointment';
 import Invoicepreview from './Patient/Patient_Component/Invoicepreview';
 import Reportpreview from './Patient/Patient_Component/Reportpreview';
@@ -51,6 +54,7 @@ import Paymentpreview from './Patient/Patient_Component/Paymentpreview';
 
 function App() {
   return (
+    <UserProvider>
     <div>
     <BrowserRouter>
     <Routes>
@@ -76,7 +80,7 @@ function App() {
       <Route path='/Head' element={<Head/>}/>
       <Route path='/Login' element={<Login/>}/>
       <Route path="/forgetpassword" element={<ForgotPassword />} />
-
+      <Route path="/change-password" element={<ChangePassword />} />
       <Route path='/Signin' element={<Signin/>}/>
       <Route path='/HomePage/*' element={<HomePage/>}/>
       <Route path='/Patient/:id' element={<Patient/>}/> 
@@ -97,7 +101,7 @@ function App() {
       <Route path='/user/payment' element={<PaymentGateway />} />
       <Route path='/lab-operator/user-form' element={<UserForm />} />
       <Route path='/scan' element={<BarcodeScanner />} />
-
+      <Route path='/LogoutButton' element={<LogoutButton />} />
 
       <Route path='/' element={<HomePage />} /> 
       {/* default loading path - Homepage*/}
@@ -122,6 +126,7 @@ function App() {
     </Routes>
   </BrowserRouter>
     </div>
+    </UserProvider>
     );
 
 }
