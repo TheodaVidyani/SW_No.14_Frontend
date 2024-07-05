@@ -145,6 +145,11 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
         setSnackbarOpen(true);
     };
 
+    const handleAfterSubmit = () => {
+        // Perform additional action after handleSubmit
+        console.log('appointment update to complete');
+    };
+
     return (
         <Grid container spacing={2} sx={{ backgroundColor: '#f0f0f0', padding: '30px' }}>
             <Grid item xs={12}>
@@ -244,7 +249,10 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => handleSubmit(isEdit ? updateResults : testresult, isEdit ? 'Test result updated successfully' : 'Test result added successfully')}
+                    onClick={() => {
+                                    handleSubmit(isEdit ? updateResults : testresult, isEdit ? 'Test result updated successfully' : 'Test result added successfully');
+                                    handleAfterSubmit();
+                                    }}
                 >
                     {isEdit ? 'Update' : 'Add'}
                 </Button>
