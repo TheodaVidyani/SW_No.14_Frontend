@@ -148,7 +148,7 @@ const LabOperatorCards = () => {
     { title: 'Add Test Tubes', content: 'View current appointments' , icon:WysiwygTwoToneIcon},
     { title: 'Add Blood Testings', content: 'Add new blood tests appoinments' ,icon:AddToPhotosTwoToneIcon},
     { title: 'Add Test Results', content: 'Add new test results' ,icon:AddToPhotosTwoToneIcon},
-    { title: 'Veiw Reports', content: 'Veiw tset reports' ,icon:AddToPhotosTwoToneIcon},
+    { title: 'View Reports', content: 'View test reports' ,icon:WysiwygTwoToneIcon},
   ];
 
   return <CardSlider cards={cards} />;

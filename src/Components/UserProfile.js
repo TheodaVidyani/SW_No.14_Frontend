@@ -35,13 +35,20 @@ const Profile = () => {
         credentials: 'include', // Ensure cookies are sent with the request. (In frontend, when making API requests with Axios or Fetch, include credentials: 'include' to ensure cookies are sent.)
       });
 
+      console.log('Response:', response);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`); // Throw error if HTTP request fails.
       }
 
       console.log('User data fetched successfully.'); // Log when user data is fetched successfully.
+     
       const data = await response.json(); // Parse JSON response.
       console.log('Fetched user data:', data); // Log the fetched user data.
+      
+      if (!data || !data.username) {
+        throw new Error('Invalid user data received');
+      }
+
       setUserData(data); // Assuming `data` is the user object itself, // Set the fetched user data to state.
     } catch (error) {
       console.error('Error fetching user data:', error); // Log any errors that occur during fetch.
@@ -62,21 +69,23 @@ const Profile = () => {
     setOpen(false); // Close the edit profile dialog.
   };
 
-  const handleProfileUpdate = async (updatedData) => {
-    console.log('Updating profile with:', updatedData); // Log the updated data when profile update is triggered.
-    setUserData(updatedData); // Update user data with the new data.
-    handleClose(); // Close the edit profile dialog.
-    setSnackbarMessage('Profile updated successfully.'); // Set success message for snackbar.
-    setSnackbarSeverity('success'); // Set snackbar severity to success.
-    setSnackbarOpen(true); // Open the snackbar.
-  };
+  //below functions no use - cuz we implemented userProfileUpdate.js
 
-  const handleProfileUpdateError = (errorMessage) => {
-    console.error('Profile update error:', errorMessage); // Log the profile update error.
-    setSnackbarMessage(errorMessage); // Set error message for snackbar.
-    setSnackbarSeverity('error'); // Set snackbar severity to error.
-    setSnackbarOpen(true); // Open the snackbar.
-  };
+  // const handleProfileUpdate = async (updatedData) => {
+  //   console.log('Updating profile with:', updatedData); // Log the updated data when profile update is triggered.
+  //   setUserData(updatedData); // Update user data with the new data.
+  //   handleClose(); // Close the edit profile dialog.
+  //   setSnackbarMessage('Profile updated successfully.'); // Set success message for snackbar.
+  //   setSnackbarSeverity('success'); // Set snackbar severity to success.
+  //   setSnackbarOpen(true); // Open the snackbar.
+  // };
+
+  // const handleProfileUpdateError = (errorMessage) => {
+  //   console.error('Profile update error:', errorMessage); // Log the profile update error.
+  //   setSnackbarMessage(errorMessage); // Set error message for snackbar.
+  //   setSnackbarSeverity('error'); // Set snackbar severity to error.
+  //   setSnackbarOpen(true); // Open the snackbar.
+  // };
 
   const handleSnackbarClose = () => {
     console.log('Closing snackbar...'); // Log when the snackbar closes.
@@ -153,64 +162,20 @@ const Profile = () => {
             >
               <Typography variant="h4" gutterBottom style={{ marginBottom: '20px', fontSize: '30px', color: '#0085FF', fontWeight: 'bold' }}>User Profile</Typography>
               
-              <Grid container alignItems="center" style={{ marginBottom: '20px', paddingTop: '10px' }}>
-                <Grid item xs={4}>
-                  <Typography variant="subtitle1">First Name:</Typography>
-                </Grid>
-                <Grid item xs={8}>
-                  <Typography variant="subtitle1" style={{ textAlign: 'left', paddingLeft: '70px' }}>{userData.firstname}</Typography>
-                </Grid>
-              </Grid>
-              <Divider style={{ marginBottom: '10px' }} />
-              
-              <Grid container alignItems="center" style={{ marginBottom: '20px', paddingTop: '10px' }}>
-                <Grid item xs={4}>
-                  <Typography variant="subtitle1">Last Name:</Typography>
-                </Grid>
-                <Grid item xs={8}>
-                  <Typography variant="subtitle1" style={{ textAlign: 'left', paddingLeft: '70px' }}>{userData.lastname}</Typography>
-                </Grid>
-              </Grid>
-              <Divider style={{ marginBottom: '10px' }} />
-              
-              <Grid container alignItems="center" style={{ marginBottom: '20px', paddingTop: '10px' }}>
-                <Grid item xs={4}>
-                  <Typography variant="subtitle1">Email:</Typography>
-                </Grid>
-                <Grid item xs={8}>
-                  <Typography variant="subtitle1" style={{ textAlign: 'left', paddingLeft: '70px' }}>{userData.email}</Typography>
-                </Grid>
-              </Grid>
-              <Divider style={{ marginBottom: '10px' }} />
-              
-              <Grid container alignItems="center" style={{ marginBottom: '20px', paddingTop: '10px' }}>
-                <Grid item xs={4}>
-                  <Typography variant="subtitle1">Address:</Typography>
-                </Grid>
-                <Grid item xs={8}>
-                  <Typography variant="subtitle1" style={{ textAlign: 'left', paddingLeft: '70px' }}>{userData.address}</Typography>
-                </Grid>
-              </Grid>
-              <Divider style={{ marginBottom: '10px' }} />
-              
-              <Grid container alignItems="center" style={{ marginBottom: '20px', paddingTop: '10px' }}>
-                <Grid item xs={4}>
-                  <Typography variant="subtitle1">National ID:</Typography>
-                </Grid>
-                <Grid item xs={8}>
-                  <Typography variant="subtitle1" style={{ textAlign: 'left', paddingLeft: '70px' }}>{userData.nationalID}</Typography>
-                </Grid>
-              </Grid>
-              <Divider style={{ marginBottom: '10px' }} />
-              
-              <Grid container alignItems="center" style={{ marginBottom: '20px', paddingTop: '10px' }}>
-                <Grid item xs={4}>
-                  <Typography variant="subtitle1">Phone Number:</Typography>
-                </Grid>
-                <Grid item xs={8}>
-                  <Typography variant="subtitle1" style={{ textAlign: 'left', paddingLeft: '70px' }}>{userData.phonenumber}</Typography>
-                </Grid>
-              </Grid>
+              {['firstname', 'lastname', 'email', 'address', 'nationalID', 'phonenumber'].map((field, idx) => (
+                <React.Fragment key={field}>
+                  <Grid container alignItems="center" style={{ marginBottom: '20px', paddingTop: '10px' }}>
+                    <Grid item xs={4}>
+                      <Typography variant="subtitle1">{field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:</Typography>
+                    </Grid>
+                    <Grid item xs={8}>
+                      <Typography variant="subtitle1" style={{ textAlign: 'left', paddingLeft: '70px' }}>{userData[field]}</Typography>
+                    </Grid>
+                  </Grid>
+                  {idx < 5 && <Divider style={{ marginBottom: '10px' }} />}
+                </React.Fragment>
+              ))}
+
             </Paper>
           </Grid>
         </Grid>
@@ -226,6 +191,7 @@ const Profile = () => {
           <UserProfileUpdate userData={userData} onClose={handleClose} />
         </DialogContent>
       </Dialog>
+      
         <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}

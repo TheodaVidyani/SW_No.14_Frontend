@@ -5,7 +5,7 @@ import Axios from 'axios';
 import Patienthead from '../Components/Patienthead';
 import Footer from '../Components/Footer'; 
 import TestResultForm from './TestResultForm'; 
-import SearchUserForm from './SearchUserForm';  // Import SearchUserForm
+import SearchUserForm from './SearchUserForm';  
 import TestresulltTable from './TestresultTable';
 
 const TestResult = () => {
@@ -33,11 +33,12 @@ const TestResult = () => {
 
     const testresult = (data) => { // Changed function name to testresult
         const payload = {
-            uid:data.uid,
+            pid:data.pid,
             id: data.id,
-            nm: data.nm,
-            testtype: data.testtype,
-            tr: data.tr,
+            pname: data.pname,
+            testName: data.testName,
+            testresults: data.testresults,
+            testid:data.testid,
         };
     
         console.log('Payload:', payload); // Log payload data
@@ -57,11 +58,11 @@ const TestResult = () => {
         setSubmitted(true);
 
         const payload = {
-            uid:data.uid,
+            pid:data.pid,
             id: data.id,
-            nm: data.nm,
-            testtype: data.testtype,
-            tr: data.tr,
+            pname: data.pname,
+            testName: data.testName,
+            testresults: data.testresults,
         };
 
         Axios.post('http://localhost:3100/api/updateResults', payload)
@@ -87,9 +88,7 @@ const TestResult = () => {
     const handleSearch = (searchTerm) => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase();
         const filtered = testResult.filter(result =>
-            String(result.id).toLowerCase().includes(lowerCaseSearchTerm) ||
-            String(result.nm).toLowerCase().includes(lowerCaseSearchTerm) ||
-            String(result.testtype).toLowerCase().includes(lowerCaseSearchTerm)
+            String(result.id).toLowerCase().includes(lowerCaseSearchTerm)
         );
         setFilteredResult(filtered);
     };

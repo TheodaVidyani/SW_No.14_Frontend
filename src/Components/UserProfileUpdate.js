@@ -1,3 +1,4 @@
+//UserProfileUpdate.js
 import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Grid, Avatar, Typography, TextField, Button, Paper, Modal, Slider } from '@mui/material';
 import { styled } from '@mui/system';
@@ -59,9 +60,21 @@ const ButtonStyled = styled(Button)(({ theme }) => ({
   },
 }));
 
+//Notification Component
+const Notification = styled(Paper)(({ theme }) => ({
+  position: 'fixed',
+  bottom: theme.spacing(2),
+  right: theme.spacing(2),
+  padding: theme.spacing(2),
+  backgroundColor: '#808080',
+  color: '#FFFFFF',
+  zIndex: 10000,
+  display: 'none', // Initially hide the notification
+}));
+
 const UserProfileUpdate = ({ userData, onClose }) => {
   const [user, setUser] = useState({
-    _id: '',
+    id: '',
     firstname: '',
     lastname: '',
     email: '',
@@ -77,6 +90,7 @@ const UserProfileUpdate = ({ userData, onClose }) => {
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [croppingImage, setCroppingImage] = useState(false);
+  const [showNotification, setShowNotification] = useState(false); // State for showing the notification. State variable to manage the display of the notification.
 
   useEffect(() => {
     if (userData) {
@@ -87,13 +101,13 @@ const UserProfileUpdate = ({ userData, onClose }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUser({
-      ...user,
+    setUser(prevUser => ({
+      ...prevUser,
       [name]: value,
-    });
-    console.log('Updated user data:', { ...user, [name]: value });
+    }));
   };
 
+  //user.profilePic is set to the selected File object, and user.profilePicUrl to the URL for preview purposes.
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -144,72 +158,58 @@ const UserProfileUpdate = ({ userData, onClose }) => {
   useEffect(() => {
     console.log('Profile Pic URL changed:', user.profilePicUrl);
   }, [user.profilePicUrl]);
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Submitting user data:', user);
-  
-    // Extracting userId from user object
-    const { id, _id } = user;
-    const userId = id || _id;
-    //console.log('Extracted userId:', userId);
 
-    // Checking if userId is valid
-    if (!userId) {
-      console.error('User ID is missing or invalid:', user);
-      return;
+    const formData = new FormData();
+
+    if (user.profilePic) {
+      formData.append('profilePic', user.profilePic);
     }
-  
-    try {
-      // Creating a FormData object to send data via multipart/form-data
-      const formData = new FormData();
-      
-      // Appending profilePic to formData
-      if (user.profilePic) {
-        formData.append('profilePic', user.profilePic);
-      } else {
-        console.error('Profile picture is missing');
+
+    Object.keys(user).forEach((key) => {
+      if (key !== 'profilePic' && key !== 'profilePicUrl') {
+        formData.append(key, user[key]);
       }
-      
-      // Appending other user fields to formData
-      Object.keys(user).forEach((key) => {
-        if (key !== 'profilePic' && key !== 'profilePicUrl') {
-          formData.append(key, user[key]);
-        }
-      });
-  
-      // Append additional property (e.g., userId)
-      formData.append('userId', userId);
-      console.log('FormData content:', Array.from(formData.entries()));
-  
-      // Sending POST request to update user profile
-      const response = await fetch('http://localhost:3100/api/router_login/updateuser', {
-        //const response = await fetch('http://localhost:3100/api/updateuser', {
+    });
+
+    console.log('FormData content:', Array.from(formData.entries()));
+
+    // Add your API endpoint and headers here
+    const apiUrl = 'http://localhost:3100/api/router_login/updateuser';
+
+    try {
+      const response = await fetch(apiUrl, {
         method: 'POST',
         body: formData,
+        credentials: 'include',
       });
-  
-      // Checking if the request was successful
+
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Failed to update profile:', errorText);
         throw new Error('Failed to update profile');
       }
-  
-      // Parsing JSON response from the server
+
       const responseData = await response.json();
       console.log('Profile updated successfully:', responseData);
-      
-      // Closing the dialog or performing other actions after successful update
-      onClose();
 
+            // Show notification on successful update
+            setShowNotification(true);
+
+                  // Hide notification after 2 seconds
+      setTimeout(() => {
+        setShowNotification(false);
+      }, 2000); //Timer setting
+
+      onClose();
     } catch (error) {
-      // Handling any errors that occur during the fetch or parsing
       console.error('Error updating profile:', error);
     }
   };
-  
-  
+
   return (
     <Container component={Root}>
       <Grid container spacing={3}>
@@ -267,6 +267,12 @@ const UserProfileUpdate = ({ userData, onClose }) => {
           </div>
         </div>
       </Modal>
+
+            {/* Notification for changes updated */}
+            <Notification style={{ display: showNotification ? 'block' : 'none' }}>
+        Changes Updated
+      </Notification>
+
     </Container>
   );
 };

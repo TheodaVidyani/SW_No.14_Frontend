@@ -83,7 +83,7 @@ const FixedContainer = () => {
     try {
       const response = await axios.post('http://localhost:3100/api/approve', {
         reportId: rid,
-        doctorName: jwtDecode(localStorage.getItem("myToken")).username,
+        doctorName: jwtDecode(localStorage.getItem("myToken")).name,
         recommendation: msg,
         patientId: pid,
       });
@@ -102,11 +102,33 @@ const FixedContainer = () => {
       }
     }
   };
+  const handleRecheck = async () => {
+    try {
+      const response = await axios.post('http://localhost:3100/api/recheck', {
+        reportId: rid,
+        doctorName: jwtDecode(localStorage.getItem("myToken")).name,
+        recommendation: msg,
+        patientId: pid,
+      });
 
+      
+      
+      setAlertMessage('Recheck request sent successfully!');
+    } catch (error) {
+      
+      if (error.response) {
+        setAlertMessage(`Error: ${error.response.data.message || 'Failed to send  request'}`);
+      } else if (error.request) {
+        setAlertMessage('Error: No response from the server');
+      } else {
+        setAlertMessage(`Error: ${error.message}`);
+      }
+    }
+  };
   return (
     <React.Fragment>
       <CssBaseline />
-      <Box sx={{ width: '80%', margin: 'auto', backgroundColor: '#D9D9D9', padding: '20px', borderRadius: '8px' }}>
+      <Box sx={{ width: '78%', margin: 'auto', backgroundColor: '#D9D9D9', padding: '20px', borderRadius: '8px' }}>
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
             <Grid item xs={2}>
@@ -134,16 +156,17 @@ const FixedContainer = () => {
                 id="outlined-required"
                 label="Patient Id"
                 required
-                disabled // Make it read-only
+                disabled 
               />
             </Grid>
             <Grid item xs={2}>
               <TextField
-                value={jwtDecode(localStorage.getItem("myToken")).username}
+                value={jwtDecode(localStorage.getItem("myToken")).name}
                 onChange={(e) => setNm(e.target.value)}
                 id="outlined"
                 label="Doctor name"
                 required
+                disabled 
               />
             </Grid>
             <Grid item xs={4} >
@@ -151,7 +174,7 @@ const FixedContainer = () => {
                 variant="contained"
                 style={{ color: '#FFFFFF', background: '#101754', width: '200px', height: '50px' }}
                 type="button"
-                onClick={submit} // Ensure the submit function is called on button click
+                onClick={handleRecheck} // Ensure the submit function is called on button click
               >
                 Recommend to recheck
               </Button>
@@ -160,7 +183,7 @@ const FixedContainer = () => {
         </Box>
       </Box>
       <br />
-      <Box sx={{ width: '80%', margin: 'auto', backgroundColor: '#D9D9D9', padding: '20px', borderRadius: '8px', height: '50vh' }}>
+      <Box sx={{ width: '78%', margin: 'auto', backgroundColor: '#D9D9D9', padding: '20px', borderRadius: '8px', height: '50vh' }}>
         <h1>Recommendations</h1>
         <hr />
         <br />

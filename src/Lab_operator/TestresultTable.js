@@ -9,9 +9,9 @@ const TestresulltTable = ({ rows, selectedResult, deleteResults }) => {
         console.log(`Editing appointment with ID ${id}`);
     };
 
-    const handleDeleteUser = (uid) => {
+    const handleDeleteUser = (pid) => {
         // Implement delete user functionality here
-        console.log(`Deleting user with ID ${uid}`);
+        console.log(`Deleting user with ID ${pid}`);
     }; 
 
     return (
@@ -30,10 +30,10 @@ const TestresulltTable = ({ rows, selectedResult, deleteResults }) => {
                 <TableBody>
                     {
                         rows.length > 0 ? rows.map(row => (
-                            <TableRow key={row.userid}>
-                                <TableCell>{row.userid}</TableCell>
-                                <TableCell>{row.name}</TableCell>
-                                <TableCell>{row.appointmentid}</TableCell>
+                            <TableRow key={row.pid}>
+                                <TableCell>{row.pid}</TableCell>
+                                <TableCell>{row.pname}</TableCell>
+                                <TableCell>{row.id}</TableCell>
                                 <TableCell>{row.testtype}</TableCell>
                                 <TableCell>{row.testresults}</TableCell>
                                
@@ -43,9 +43,9 @@ const TestresulltTable = ({ rows, selectedResult, deleteResults }) => {
                                         onClick={() => 
                                             selectedResult(
                                                 {
-                                                  userid: row.userid, 
-                                                    name: row.name,
-                                                    appointmentid: row.appointmentid,
+                                                  pid: row.pid, 
+                                                    name: row.pname,
+                                                    id: row.id,
                                                     testtype: row.testtype,
                                                     testresults: row.testresults,
                                                     
