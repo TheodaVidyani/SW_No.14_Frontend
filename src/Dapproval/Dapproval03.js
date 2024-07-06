@@ -146,17 +146,18 @@ const FixedContainer = () => {
                 id="outlined-required"
                 label="Patient Id"
                 required
-                disabled 
+                 
               />
             </Grid>
             <Grid item xs={2}>
               <TextField
                 value={jwtDecode(localStorage.getItem("myToken")).name}
                 onChange={(e) => setNm(e.target.value)}
+                style={{width:'200px'}}
                 id="outlined"
                 label="Doctor name"
                 required
-                disabled 
+                 disabled
               />
             </Grid>
             <Grid item xs={4} >
