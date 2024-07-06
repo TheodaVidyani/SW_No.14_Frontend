@@ -46,12 +46,6 @@ const Signin = () => {
     return idRegex1.test(id) || idRegex2.test(id);
   };
 
-
-  //Minimum Length: Ensure the password is at least 8 characters long.
-  //Special Characters: Require at least one special character.
-  //Uppercase Letters: Require at least one uppercase letter.
-  //Numbers: Require at least one digit.
-
   const validatePassword = (password) => {
     // Password must be at least 8 characters long and contain at least one special character, uppercase letter, and digit
     const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*[A-Z])(?=.*[0-9]).{8,}$/;
@@ -98,7 +92,7 @@ const Signin = () => {
       const response = await axios.post('http://localhost:3100/api/router_login/createuser', data);
       console.log('Server response:', response);
 
-      if (response.data.error === false) {
+      if (!response.data.success) {
         setError({ field: response.data.field, message: response.data.message });
       } else {
         setError({ field: '', message: '' });
@@ -126,7 +120,7 @@ const Signin = () => {
       }
     } catch (error) {
       console.error('Error registering user:', error);
-      if (error.response && error.response.status === 409) { //duplicate username of NationalID
+      if (error.response && error.response.status === 409) { // Duplicate username or NationalID
         setError({ field: error.response.data.field, message: error.response.data.message });
       } else {
         setError({ field: '', message: 'Error registering user: ' + error.message });

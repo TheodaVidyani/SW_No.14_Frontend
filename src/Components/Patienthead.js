@@ -1,11 +1,12 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { AppBar, Tab, Tabs, Typography, Toolbar, useMediaQuery, useTheme, IconButton, Drawer, List, ListItem, ListItemText, Menu, MenuItem, Box } from '@mui/material/';
 import LocalHospitalTwoToneIcon from '@mui/icons-material/LocalHospitalTwoTone';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import LogoutButton from './LogoutButton';
-import Login from './Login';
+// import LogoutButton from './LogoutButton';
+// import Login from './Login';
 
 export default function Patienthead() {
   const { id: userId } = useParams(); // Use useParams to get userId from URL
@@ -33,8 +34,15 @@ export default function Patienthead() {
     navigate(`/UserProfile/${userId}`);
   };
 
-  const handleLogoutClick = () => {
+  const handleLogoutClick = async () => {
     handleMenuClose();
+
+    try {
+      await axios.post('http://localhost:3100/api/router_login/logout'); // Call backend logout route
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+
     // Remove user data from localStorage
     localStorage.removeItem('user');
     // Clear cookies if any
