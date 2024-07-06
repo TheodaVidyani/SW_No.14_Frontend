@@ -4,6 +4,8 @@ import LocalHospitalTwoToneIcon from '@mui/icons-material/LocalHospitalTwoTone';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import LogoutButton from './LogoutButton';
+import Login from './Login';
 
 export default function Patienthead() {
   const { id: userId } = useParams(); // Use useParams to get userId from URL
@@ -33,9 +35,14 @@ export default function Patienthead() {
 
   const handleLogoutClick = () => {
     handleMenuClose();
-    // Clear user data and navigate to login
+    // Remove user data from localStorage
     localStorage.removeItem('user');
+    // Clear cookies if any
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; //Added document.cookie clearing for the token.
+    // Navigate to login page
     navigate('/login');
+    // Log to console
+    console.log('User logout successfully');
   };
 
   useEffect(() => {
@@ -73,6 +80,8 @@ export default function Patienthead() {
     </div>
   );
 
+  const currentPath = window.location.pathname;
+  
   return (
     <>
       <AppBar position="fixed" style={{ background: "#D9D9D9", transition: 'all 0.3s ease-in-out' }}>

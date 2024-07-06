@@ -1,16 +1,16 @@
-//Login.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { Grid, Typography, TextField, Button } from "@mui/material";
 import photo1 from "../images/HealthLabLogo.jpg";
-import photo2 from "../images/BloodDraw.webp";
+import photo2 from "../images/BloodDraw.png";
 import axios from 'axios';
-import { jwtDecode } from "jwt-decode";
-
+import { useSetUser } from '../Admin/Admin_Component/UserContext';
+import {jwtDecode} from 'jwt-decode'; 
 
 function Login() {
   const navigate = useNavigate();
+  const setUserContext = useSetUser(); // Correct usage of useSetUser
   const [data, setData] = useState({
     username: '',
     password: ''
@@ -23,56 +23,58 @@ function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log('Login: Form submitted with data:', data);
     setError(''); // Clear error state before making a new request
     const { username, password } = data;
 
-    //Receive the response from the backend
+    // Receive the response from the backend
     try {
-      
       const response = await axios.post('http://localhost:3100/api/router_login/login', { username, password });
       console.log('Login response:', response.data);
-      const userData = response.data; //making an Object called userData
+      const userData = response.data; // Making an Object called userData
       console.log('User data:', userData); // After parsing/having response data, adding this console log to check if it is having all information
-      // console.log('User data type:', typeof userData); //Checking whether the userData is an object.
-      if (userData.message!=="Success") {
-        
+
+      if (userData.message !== 'Success') {
+        console.log('Login: Error from backend:', userData.error);
         toast.error(userData.error);
+        setError(userData.error); // Set specific error message from backend
       } else {
-        console.log("enter");
-        localStorage.setItem("myToken", response.data.data);
-        const userId = jwtDecode(localStorage.getItem("myToken")).id;
-        console.log("user id is="+userId);
         setData({ username: '', password: '' }); // Clear input fields
-        const { user } = userData; // destructuring  to extract the user property from the userData object. - userData is an object that contains a user property.
-        setUser(user); // Set user data in context
-        const role = jwtDecode(localStorage.getItem("myToken")).role; // Extract role from response data
-        
-        console.log('User role:', role);
+
+        // Decode the JWT token to get the user information
+        const decodedToken = jwtDecode(userData.data);
+        const user = {
+          id: decodedToken.id,
+          role: decodedToken.role,
+          username: decodedToken.username,
+        };
+
+        setUser(user); // Set user data in local state. Declared in line 19
+        setUserContext(user); // Set user data in context. Declared in line 13
+        const role = user.role; // Extract role from response data
+        const userId = user.id; // Extract user ID from response data
+        console.log('Login: User role:', role);
+
         // Redirect based on role
         switch (role) {
           case 'PATIENT':
-            //console.log('Redirecting to Patient page');
             navigate(`/Patient/${userId}`);
+            console.log('Navigation done');
             break;
           case 'ADMIN':
-            //console.log('Redirecting to Admin page');
+            console.log('Redirecting to Admin page');
             navigate(`/AdminInterface/${userId}`);
             break;
           case 'DOCTOR':
-            //console.log('Redirecting to Doctor page');
             navigate(`/Doctor/${userId}`);
             break;
           case 'LABASSISTANT':
-            //console.log('Redirecting to LabAssistant page');
             navigate(`/LabAssistant/${userId}`);
             break;
           case 'LABOPERATOR':
-              //console.log('Redirecting to Lab Operator page');
-              navigate(`/LabOperator/${userId}`);
+            navigate(`/LabOperator/${userId}`);
             break;
           default:
-            // Handle unrecognized roles or default redirection
-            //console.log('Redirecting to Home page');
             navigate('/HomePage');
         }
       }
@@ -83,24 +85,23 @@ function Login() {
   };
 
   return (
-    <Grid container justifyContent="center">
+    <Grid container justifyContent="center" alignItems="center" style={{ height: '100vh', padding: '20px' }}>
       <form
         onSubmit={handleSubmit}
         style={{
           borderRadius: "15px",
-          padding: "20px",
+          padding: "40px",
           backgroundColor: "#D3E9FE",
           width: "90%",
-          maxWidth: "800px",
-          marginTop: "10%",
+          maxWidth: "1000px",
           boxShadow: "1px 5px 3px -3px rgba(0,0,0,0.44)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
         }}
       >
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={6} style={{ textAlign: 'center' }}>
+        <Grid container spacing={4} justifyContent="center" alignItems="center">
+          <Grid item xs={12} md={6} style={{ textAlign: 'center', marginBottom: '20px' }}>
             <img
               src={photo2}
               style={{ width: "100%", maxWidth: "450px", marginTop: "15px" }}
@@ -108,23 +109,36 @@ function Login() {
             />
           </Grid>
 
-          <Grid item xs={12} md={6} style={{ paddingLeft: "20px", textAlign: 'center' }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: 'center' }}>
+          <Grid item xs={12} md={6} style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: 'center', height: '100%', justifyContent: 'space-between' }}>
               <img
                 src={photo1}
-                style={{ width: "100%", maxWidth: "300px", marginTop: "10px" }}
+                style={{ width: "100%", maxWidth: "300px", marginTop: "10px", marginBottom: "20px" }}
                 alt="HealthLab Logo"
               />
               <Typography
-                variant="h5"
+                variant="h4"
                 style={{
-                  marginBottom: "7%",
-                  marginTop: "3%",
+                  marginBottom: "20px",
                   color: "#0085FF",
                   fontWeight: "bold",
                 }}
               >
-                Login
+                Welcome!
+              </Typography>
+
+              <Typography
+                variant="body1"
+                style={{
+                  marginBottom: "40px",
+                  fontFamily: "Inter",
+                  fontWeight: "500",
+                  fontSize: "12px",
+                  lineHeight: "24px",
+                  color: "#9C1C1C",
+                }}
+              >
+                <Link to="/Signin" style={{ color: '#9C1C1C' }}>Doesn't have an account yet?</Link>
               </Typography>
 
               <TextField
@@ -134,7 +148,7 @@ function Login() {
                 name="username"
                 value={data.username}
                 onChange={(e) => setData({ ...data, username: e.target.value })}
-                style={{ marginBottom: "25px" }}
+                style={{ marginBottom: "20px" }}
               />
 
               <TextField
@@ -145,7 +159,7 @@ function Login() {
                 type="password"
                 value={data.password}
                 onChange={(e) => setData({ ...data, password: e.target.value })}
-                style={{ marginBottom: "25px" }}
+                style={{ marginBottom: "20px" }}
               />
 
               {error && (
@@ -171,10 +185,10 @@ function Login() {
                   color: "#9C1C1C",
                 }}
               >
-                <Link to="/forget-password" style={{ color: '#9C1C1C' }}>Forgot Password?</Link>
+                <Link to="/forgetpassword" style={{ color: '#9C1C1C' }}>Forgot Password?</Link>
               </Typography>
 
-              <Button type="submit" sx={{ variant: 'contained', color: '#FFFFFF', background: '#101754', width: '100%', height: '50px'  }}>
+              <Button type="submit" sx={{ variant: 'contained', color: '#FFFFFF', background: '#101754', width: '100%', height: '50px', marginBottom: '20px' }}>
                 Login
               </Button>
 
@@ -197,5 +211,4 @@ function Login() {
     </Grid>
   );
 }
-
 export default Login;
