@@ -31,17 +31,20 @@ export default function StickyHeadTable({ setRows }) {
       .then(response => {
         const responseData = response.data && response.data.response; // Accessing the 'response' key
         if (Array.isArray(responseData)) {
-          const filteredData = responseData.filter(item => (
-            item.state === 'register_only' && item.pid === jwtDecode(localStorage.getItem("myToken")).id
-          )).map(item => ({
-            ...item,
-            regdate: item.regdate.slice(0, 10), // Slice the first 10 characters of regdate
-            selectTests: Array.isArray(item.selectTests)
-              ? item.selectTests.map(test => test.testName.slice(0, 15)).join(', ') // Join test names with a comma
-              : 'No tests', // Handle the case where selectTests is not an array
-          }));
-          setLocalRows(filteredData);
-          setRows(filteredData); // Update parent component's rows state
+          console.log('Data received:', responseData);
+          const modifiedData = responseData
+            .filter(item => (item.state === 'register_only' || 'paid') && item.pid === jwtDecode(localStorage.getItem("myToken")).id)
+            .map(item => ({
+              ...item,
+              regdate: item.regdate.slice(0, 10), // Slice the first 10 characters of regdate
+              selectTests: Array.isArray(item.selectTests)
+          ? item.selectTests.map(test => test.testName.slice(0, 15)).join(', ') // Join test names with a comma
+          : 'No tests', // Handle the case where selectTests is not an array
+            }));
+          console.log('Modified data:', modifiedData);
+          console.log('id is ', jwtDecode(localStorage.getItem("myToken")).id);
+          setLocalRows(modifiedData);
+          setRows(modifiedData); // Update parent component's rows state
         } else {
           console.error('Data received is not an array:', responseData);
         }
