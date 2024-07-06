@@ -145,6 +145,17 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
         setSnackbarOpen(true);
     };
 
+    const handleAfterSubmit = () => {
+        // Perform additional action after handleSubmit
+        axios.post('http://localhost:3100/api/updateappointment', { id: id, state: 'result_add' })
+            .then(response => {
+                console.log('Appointment '+ `${id}` +' updated with result entering successfully');
+            })
+            .catch(error => {
+                console.error('Error updating appointment:', error);
+            });
+    };
+
     return (
         <Grid container spacing={2} sx={{ backgroundColor: '#f0f0f0', padding: '30px' }}>
             <Grid item xs={12}>
@@ -244,7 +255,10 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => handleSubmit(isEdit ? updateResults : testresult, isEdit ? 'Test result updated successfully' : 'Test result added successfully')}
+                    onClick={() => {
+                                    handleSubmit(isEdit ? updateResults : testresult, isEdit ? 'Test result updated successfully' : 'Test result added successfully');
+                                    handleAfterSubmit();
+                                    }}
                 >
                     {isEdit ? 'Update' : 'Add'}
                 </Button>
