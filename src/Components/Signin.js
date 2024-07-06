@@ -126,7 +126,7 @@ const Signin = () => {
       }
     } catch (error) {
       console.error('Error registering user:', error);
-      if (error.response && error.response.status === 409) {
+      if (error.response && error.response.status === 409) { //duplicate username of NationalID
         setError({ field: error.response.data.field, message: error.response.data.message });
       } else {
         setError({ field: '', message: 'Error registering user: ' + error.message });
