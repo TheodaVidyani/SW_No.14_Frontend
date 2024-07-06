@@ -44,6 +44,7 @@ import Invoicepreview from './Patient/Patient_Component/Invoicepreview';
 import Reportpreview from './Patient/Patient_Component/Reportpreview';
 import PReportUI from './Patient/Patient_Component/PReportUI';
 import Paymentpreview from './Patient/Patient_Component/Paymentpreview';
+import Invoice  from './Labasisstence/Invoice/Component/invoice';
 
 
 function App() {
@@ -115,6 +116,7 @@ function App() {
   <Route path="/Reportpreview/:id" element={<Reportpreview/>}/>
   <Route path="/PReportUI/:id" element={<PReportUI/>}/>
   <Route path="/Paymentpreview/:id" element={<Paymentpreview/>}/>
+  <Route path="/Invoice" element={<Invoice/>}/>
     </Routes>
   </BrowserRouter>
     </div>

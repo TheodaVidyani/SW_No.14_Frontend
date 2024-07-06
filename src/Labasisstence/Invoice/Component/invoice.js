@@ -14,11 +14,34 @@ import {
   TableRow,
   Button,
 } from "@mui/material";
+import { useLocation } from "react-router-dom";
 import healthLabLogo from "../../LabasisstenceComponent/Labasisstenceimg/Health lab logo_.png";
 
-const Invoice = ({ id }) => {
+const Invoice = ( ) => {
+
+  const location = useLocation();
+  const apointmentDara = location.state.record;
+  const id = apointmentDara.id;
+  
+
   const [record, setRecord] = useState(null);
   const [testDB, setTestsDB] = useState(null);
+  const [userData, setUserData] = useState([]);
+
+  
+
+  useEffect(() => {
+    async function getUserDataByID() {
+      const response = await fetch(`http://localhost:3100/api/getuser/${apointmentDara.pid}`);
+      if (!response.ok) {
+        window.alert(`An error occurred in user data section : ${response.statusText}`);
+        return;
+      }
+      const user = await response.json();
+      setUserData(user.user);
+    }
+    getUserDataByID();
+  }, [id]);
 
   useEffect(() => {
     async function getTestData() {
@@ -40,7 +63,7 @@ const Invoice = ({ id }) => {
     async function getRecords() {
       try {
         const response = await fetch(
-          `http://localhost:3100/api/appoinments/3`
+          `http://localhost:3100/api/appoinments/${id}`
         );
         if (!response.ok) {
           throw new Error(`An error occurred: ${response.statusText}`);
@@ -75,6 +98,7 @@ const Invoice = ({ id }) => {
 
   const invoiceDetails = {
     appointmentId: record.id || "INV-001",
+    patientEmail: userData.email,
     date: new Date().toISOString().split("T")[0],
     dueDate: record.dueDate || "2024-07-24",
     companyAddress:
@@ -181,7 +205,7 @@ const Invoice = ({ id }) => {
                 <TableRow key={item.testID}>
                   <TableCell>{item.testName}</TableCell>
                   <TableCell>{item.description}</TableCell>
-                  <TableCell>1</TableCell>
+                  {/* <TableCell>1</TableCell> */}
                   <TableCell>{item.price}</TableCell>
                 </TableRow>
               ))}
@@ -197,7 +221,7 @@ const Invoice = ({ id }) => {
         <Grid container spacing={2} marginTop={3}>
           <Grid item xs={6} className="no-print">
             <Button
-              variant="contained"
+              variant="outlined"
               color="primary"
               fullWidth
               onClick={() => window.print()}
@@ -207,7 +231,7 @@ const Invoice = ({ id }) => {
           </Grid>
           <Grid item xs={6} align="right" className="no-print">
             <Button
-              variant="contained"
+              variant="outlined"
               color="secondary"
               fullWidth
               onClick={sendEmail}

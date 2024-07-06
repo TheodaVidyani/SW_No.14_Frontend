@@ -1,4 +1,4 @@
-import Serch from './LabasisstencePages/Serch';
+import Reportview from "./LabasisstencePages/Reportview";
 
 const LabasisstenceIF = () => {
   
@@ -6,7 +6,7 @@ const LabasisstenceIF = () => {
   
 
   return (
-    <Serch/>
+    <Reportview/>
   )
 }
 
