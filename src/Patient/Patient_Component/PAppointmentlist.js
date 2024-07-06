@@ -34,8 +34,8 @@ export default function StickyHeadTable() {
         const responseData = response.data && response.data.response; // Accessing the 'response' key
         if (Array.isArray(responseData)) {
           const filteredData = responseData.filter(item => (
-            item.state === 'register_only' && item.pid === jwtDecode(localStorage.getItem("myToken")).id
-          )).map(item => ({
+            item.state === 'result_add' && item.pid === jwtDecode(localStorage.getItem("myToken")).id)
+          ).map(item => ({
             ...item,
             regdate: item.regdate.slice(0, 10), // Slice the first 10 characters of regdate
             selectTests: Array.isArray(item.selectTests)
