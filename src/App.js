@@ -1,5 +1,6 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+// import React, { useState } from 'react';
 import Head from './Components/Head';
 import HomePage from './Components/HomePage';
 import Signin from "./Components/Signin";
@@ -52,6 +53,9 @@ import Report from './Dapproval/Report';
 import Paymentpreview from './Patient/Patient_Component/Paymentpreview';
 import Invoice  from './Labasisstence/Invoice/Component/invoice';
 
+// const App = () => {
+//   const [userId, setUserId] = useState(''); // Initialize with actual user data
+//   const [username, setUsername] = useState(''); // Initialize with actual user data
 
 function App() {
   return (
@@ -81,7 +85,7 @@ function App() {
       <Route path='/Head' element={<Head/>}/>
       <Route path='/Login' element={<Login/>}/>
       <Route path="/forgetpassword" element={<ForgotPassword />} />
-      <Route path="/change-password" element={<ChangePassword />} />
+      <Route path="/changePassword" element={<ChangePassword/>} />
       <Route path='/Signin' element={<Signin/>}/>
       <Route path='/HomePage/*' element={<HomePage/>}/>
       <Route path='/Patient/:id' element={<Patient/>}/> 
@@ -132,7 +136,6 @@ function App() {
     );
 
 }
-
 
 export default App;
 //

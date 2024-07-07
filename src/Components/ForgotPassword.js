@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [code, setCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -33,13 +34,14 @@ const ForgotPassword = () => {
       return;
     }
 
-    console.log('Resetting password with:', { email, code, newPassword });
+    console.log('Resetting password with:', { username, code, newPassword });
     try {
-      const response = await axios.post('http://localhost:3100/api/router_login/verify-code-and-reset-password', { email, code, newPassword });
+      const response = await axios.post('http://localhost:3100/api/router_login/verify-code-and-reset-password', { username, code, newPassword });
       console.log('Response from resetting password:', response.data);
       toast.success(response.data.message);
       setStep(1);
       setEmail('');
+      setUsername('');
       setCode('');
       setNewPassword('');
       setConfirmNewPassword('');
@@ -104,6 +106,17 @@ const ForgotPassword = () => {
               onChange={(e) => {
                 console.log('Email input changed:', e.target.value);
                 setEmail(e.target.value);
+              }}
+              style={{ marginBottom: "20px" }}
+            />
+            <TextField
+              fullWidth
+              label="Username"
+              variant="outlined"
+              value={username}
+              onChange={(e) => {
+                console.log('Username input changed:', e.target.value);
+                setUsername(e.target.value);
               }}
               style={{ marginBottom: "60px" }}
             />

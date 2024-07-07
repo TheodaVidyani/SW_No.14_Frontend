@@ -134,7 +134,7 @@ const Profile = () => {
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button component={Link} to="/change-password" variant="contained" 
+                    <Button component={Link} to="/changePassword" variant="contained" 
                     style={{ 
                       color: '#0085FF', 
                       //  blue text color
