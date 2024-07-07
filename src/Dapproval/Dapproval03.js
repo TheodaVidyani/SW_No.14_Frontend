@@ -20,7 +20,7 @@ const FixedContainer = () => {
   const query = useQuery();
   const [msg, setMsg] = useState('');
   const [rid, setRid] = useState(query.get('reportId') || '');
-  const [nm, setNm] = useState('');
+  const [nm, setNm] = useState([jwtDecode(localStorage.getItem("myToken")).username]);
   const [pid, setPid] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
   const [selectedDate, setSelectedDate] = useState(query.get('date') ? dayjs(query.get('date')) : null);
@@ -54,7 +54,7 @@ const FixedContainer = () => {
         date: selectedDate,
         id: rid,
         recommendation: msg,
-        docname: nm,
+        docname: jwtDecode(localStorage.getItem("myToken")).name,
         patientId: pid,
       });
 
@@ -152,7 +152,6 @@ const FixedContainer = () => {
             <Grid item xs={2}>
               <TextField
                 value={jwtDecode(localStorage.getItem("myToken")).name}
-                onChange={(e) => setNm(e.target.value)}
                 style={{width:'200px'}}
                 id="outlined"
                 label="Doctor name"
