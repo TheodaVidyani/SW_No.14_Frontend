@@ -34,7 +34,7 @@ const Invoice = ( ) => {
     async function getUserDataByID() {
       const response = await fetch(`http://localhost:3100/api/getuser/${apointmentDara.pid}`);
       if (!response.ok) {
-        window.alert(`An error occurred in user data section : ${response.statusText}`);
+        window.alert(`An error occurred in user data section : ${response.statusText} userID ${apointmentDara.pid}`);
         return;
       }
       const user = await response.json();
