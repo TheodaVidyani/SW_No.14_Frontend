@@ -50,6 +50,7 @@ import PReportUI from './Patient/Patient_Component/PReportUI';
 import ReportView from './Dapproval/ReportView';
 import Report from './Dapproval/Report';
 import Paymentpreview from './Patient/Patient_Component/Paymentpreview';
+import Invoice  from './Labasisstence/Invoice/Component/invoice';
 
 
 function App() {
@@ -123,6 +124,7 @@ function App() {
   <Route path="/ReportView/:id" element={<ReportView/>}/>
   <Route path="/Report/:id" element={<Report/>}/>
   <Route path="/Paymentpreview/:id" element={<Paymentpreview/>}/>
+  <Route path="/Invoice" element={<Invoice/>}/>
     </Routes>
   </BrowserRouter>
     </div>

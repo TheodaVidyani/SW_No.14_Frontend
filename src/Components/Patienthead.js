@@ -6,7 +6,6 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import LogoutButton from './LogoutButton';
 import Login from './Login';
-import HomePage from './HomePage'; 
 
 export default function Patienthead() {
   const { id: userId } = useParams(); // Use useParams to get userId from URL
@@ -72,39 +71,56 @@ export default function Patienthead() {
           <ListItemText primary="Contact us" />
         </ListItem>
         <ListItem button component={Link} to={`/UserProfile/${userId}`}>
-          <ListItemText primary="Profile" />
+        <ListItemText primary="Profile" />
         </ListItem>
         <ListItem button onClick={handleLogoutClick}>
-          <ListItemText primary="Logout" />
+        <ListItemText primary="Logout" />
         </ListItem>
       </List>
     </div>
   );
 
   const currentPath = window.location.pathname;
-
+  
   return (
     <>
       <AppBar position="fixed" style={{ background: "#D9D9D9", transition: 'all 0.3s ease-in-out' }}>
-        <IconButton
+      <IconButton
           edge="start"
           color="inherit"
           aria-label="menu"
-          style={{ marginRight: 2, display: isMobile ? 'block' : 'none' }}
+          style={{ mr: 2, display: { md: 'none' } }}
           onClick={handleDrawerToggle}
         >
-          {isMobile && <MenuIcon />}
+          {isMobile && (
+          <MenuIcon />
+          )}
         </IconButton>
-
         {!scrolled ? (
-          <Toolbar style={{ justifyContent: 'center' }}>
-            <Box display="flex" alignItems="center" style={{ marginTop: '15px' }}>
-              <LocalHospitalTwoToneIcon fontSize="large" style={{ marginRight: '10px', color: '#101754', fontSize: '48px' }} />
-              <Typography variant="h6" style={{ fontFamily: 'Helvetica', fontSize: '35px', color: '#101754' }}>
-                HealthLab
-              </Typography>
-            </Box>
-          </Toolbar>
+          <>
+            
+            <Toolbar style={{ justifyContent: 'center' , }}>
+              <Box display="flex" alignItems="center" style={{ marginTop: '15px' }}>
+                <LocalHospitalTwoToneIcon fontSize="large" style={{ marginRight: '10px', color: '#101754', fontSize: '48px' }} />
+                <Typography variant="h6" style={{ fontFamily: 'Helvetica', fontSize: '35px', color: '#101754' }}>
+                  HealthLab
+                </Typography>
+              </Box>
+            </Toolbar>
+          {!isMobile && (
+            <Toolbar style={{ justifyContent: 'center' }}>
+              
+                <Tabs>
+                  <Tab label="Home" component={Link} to="/" style={{ fontSize: '18px', color: '#5A5959', margin: '0 12px' }} />
+                  <Tab label="Services" component={Link} to="/services" style={{ fontSize: '18px', color: '#5A5959', margin: '0 12px' }} />
+                  <Tab label="About us" component={Link} to="/about" style={{ fontSize: '18px', color: '#5A5959', margin: '0 12px' }} />
+                  <Tab label="Contact us" component={Link} to="/contact" style={{ fontSize: '18px', color: '#5A5959', margin: '0 12px' }} />
+                </Tabs>
+              
+            </Toolbar>
+          )}
+
+          </>
         ) : (
           <Toolbar style={{ justifyContent: 'space-between' }}>
             <Box display="flex" alignItems="center">
@@ -115,28 +131,26 @@ export default function Patienthead() {
             </Box>
             {!isMobile && (
               <Tabs style={{ marginLeft: 'auto', marginRight: '10%' }}>
-                <Tab label="Home" component={Link} to="/" style={{ fontSize: '17px', color: '#5A5959', margin: '0 12px' }} />
+                <Tab label="Home" component={Link} to="/" style={{ fontSize: '17px', color: '#5A5959', margin: '0 12px' }}/>
                 <Tab label="Services" component={Link} to="/services" style={{ fontSize: '17px', color: '#5A5959', margin: '0 12px' }} />
-                <Tab label="About us" component={Link} to="/about" style={{ fontSize: '17px', color: '#5A5959', margin: '0 12px' }} />
-                <Tab label="Contact us" component={Link} to="/contact" style={{ fontSize: '17px', color: '#5A5959', margin: '0 12px' }} />
+                <Tab label="About us" component={Link} to="/about" style={{ fontSize: '17px', color: '#5A5959', margin: '0 12px' }}/>
+                <Tab label="Contact us" component={Link} to="/contact" style={{ fontSize: '17px', color: '#5A5959', margin: '0 12px' }}/>
               </Tabs>
             )}
-            <AccountCircleIcon
-              style={{ color: '#101754', fontSize: 42, cursor: 'pointer' }}
-              onClick={handleMenuOpen}
+            <AccountCircleIcon 
+              style={{ color: '#101754', fontSize: 42, cursor: 'pointer' }} 
+              onClick={handleMenuOpen} 
             />
           </Toolbar>
         )}
-
         <Drawer
           anchor="left"
           open={drawerOpen}
           onClose={handleDrawerToggle}
-          style={{ display: isMobile ? 'block' : 'none' }}
+          style={{ display: { md: 'none' } }}
         >
           {drawer}
         </Drawer>
-
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
@@ -145,11 +159,6 @@ export default function Patienthead() {
           <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
           <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
         </Menu>
-
-        {/* Conditional rendering based on URL path */}
-        {currentPath === '/login' && <Login />}
-        {currentPath === '/homepage' && <HomePage />}
-        
       </AppBar>
       <Toolbar /> {/* This is an empty Toolbar component to push down the content */}
     </>

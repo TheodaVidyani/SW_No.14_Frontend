@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from "react";
 import {
   Container,
@@ -12,12 +14,34 @@ import {
   TableRow,
   Button,
 } from "@mui/material";
+import { useLocation } from "react-router-dom";
 import healthLabLogo from "../../LabasisstenceComponent/Labasisstenceimg/Health lab logo_.png";
 
-const Invoice = ({ id }) => {
+const Invoice = ( ) => {
+
+  const location = useLocation();
+  const apointmentDara = location.state.record;
+  const id = apointmentDara.id;
+  
+
   const [record, setRecord] = useState(null);
   const [testDB, setTestsDB] = useState(null);
+  const [userData, setUserData] = useState([]);
 
+  
+
+  useEffect(() => {
+    async function getUserDataByID() {
+      const response = await fetch(`http://localhost:3100/api/getuser/${apointmentDara.pid}`);
+      if (!response.ok) {
+        window.alert(`An error occurred in user data section : ${response.statusText} userID ${apointmentDara.pid}`);
+        return;
+      }
+      const user = await response.json();
+      setUserData(user.user);
+    }
+    getUserDataByID();
+  }, [id]);
 
   useEffect(() => {
     async function getTestData() {
@@ -38,7 +62,9 @@ const Invoice = ({ id }) => {
   useEffect(() => {
     async function getRecords() {
       try {
-        const response = await fetch(`http://localhost:3100/api/appoinments/${id}`);
+        const response = await fetch(
+          `http://localhost:3100/api/appoinments/${id}`
+        );
         if (!response.ok) {
           throw new Error(`An error occurred: ${response.statusText}`);
         }
@@ -72,14 +98,16 @@ const Invoice = ({ id }) => {
 
   const invoiceDetails = {
     appointmentId: record.id || "INV-001",
+    patientEmail: userData.email,
     date: new Date().toISOString().split("T")[0],
     dueDate: record.dueDate || "2024-07-24",
     companyAddress:
       record.companyAddress || "1234 Main St, City, State, ZIP lab address",
     customerName: record.pname || "John Doe",
+    total: invoiceTotalAmount,
     customerAddress:
       record.customerAddress ||
-      "5678 Second St, City, State, ZIP costumer address",
+      "5678 Second St, City, State, ZIP customer address",
     items: inVoiceData || [
       { id: 1, description: "Item 1", quantity: 2, price: 50 },
       { id: 2, description: "Item 2", quantity: 1, price: 100 },
@@ -88,28 +116,60 @@ const Invoice = ({ id }) => {
   };
 
   const columns = [
-    { field: "Test", headerName: "Test", width: 70 },
-    { field: "description", headerName: "Description", width: 150 },
-    { field: "quantity", headerName: "", width: 100 },
-    { field: "price", headerName: "Price", width: 100 },
+    { field: "Test", headerName: "Test", width: 120 },
+    { field: "description", headerName: "Description", width: 300 },
+    { field: "quantity", headerName: "Quantity", width: 100 },
+    { field: "price", headerName: "Price ($)", width: 100 },
   ];
+
+  const sendEmail = async () => {
+    try {
+      const response = await fetch("http://localhost:3100/api/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: invoiceDetails,
+          type: "invoice",
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to send email");
+      }
+      alert("Email sent successfully");
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   return (
     <Container>
+      <style>
+        {`
+          @media print {
+            .no-print {
+              display: none !important;
+            }
+          }
+        `}
+      </style>
       <Paper elevation={3} sx={{ padding: 3, marginTop: 3 }}>
         <Typography variant="h4" align="center" gutterBottom>
           Invoice
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            <Paper sx={{ width: "30%" }}>
+            <Paper sx={{ width: "80%", padding: 2 }}>
               <img
                 src={healthLabLogo}
                 alt="logo"
                 style={{ width: "100%", height: "auto" }}
               />
             </Paper>
-            <Typography>{invoiceDetails.companyAddress}</Typography>
+            <Typography sx={{ marginTop: 2 }}>
+              <strong>Company Address:</strong> {invoiceDetails.companyAddress}
+            </Typography>
           </Grid>
           <Grid item xs={6} align="right">
             <Typography variant="h6">{invoiceDetails.customerName}</Typography>
@@ -145,7 +205,7 @@ const Invoice = ({ id }) => {
                 <TableRow key={item.testID}>
                   <TableCell>{item.testName}</TableCell>
                   <TableCell>{item.description}</TableCell>
-                  <TableCell>{}</TableCell>
+                  {/* <TableCell>1</TableCell> */}
                   <TableCell>{item.price}</TableCell>
                 </TableRow>
               ))}
@@ -159,20 +219,24 @@ const Invoice = ({ id }) => {
           </Table>
         </TableContainer>
         <Grid container spacing={2} marginTop={3}>
-          <Grid
-            item
-            sx={{
-              display: "grid",
-              gridArea: "printButton",
-              placeSelf: "center",
-            }}
-          >
+          <Grid item xs={6} className="no-print">
             <Button
-              variant="contained"
+              variant="outlined"
               color="primary"
+              fullWidth
               onClick={() => window.print()}
             >
               Print
+            </Button>
+          </Grid>
+          <Grid item xs={6} align="right" className="no-print">
+            <Button
+              variant="outlined"
+              color="secondary"
+              fullWidth
+              onClick={sendEmail}
+            >
+              Send Email
             </Button>
           </Grid>
         </Grid>
