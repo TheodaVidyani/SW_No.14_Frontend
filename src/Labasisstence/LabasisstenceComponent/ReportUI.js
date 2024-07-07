@@ -152,7 +152,7 @@ const ReportUI = () => {
         body: JSON.stringify({
           updatedData: selectedTest,
         }),
-      });
+      });  
       if (!response.ok) {
         throw new Error('Failed to update data');
       }

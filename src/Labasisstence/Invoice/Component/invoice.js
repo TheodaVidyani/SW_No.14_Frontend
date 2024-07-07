@@ -106,7 +106,7 @@ const Invoice = ( ) => {
     customerName: record.pname || "John Doe",
     total: invoiceTotalAmount,
     customerAddress:
-      record.customerAddress ||
+    userData.address ||
       "5678 Second St, City, State, ZIP customer address",
     items: inVoiceData || [
       { id: 1, description: "Item 1", quantity: 2, price: 50 },
