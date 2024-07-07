@@ -143,7 +143,23 @@ const ReportUI = () => {
     );
     setResults(updatedResults);
     setOpen(false);
-    setSelectedTest(null);
+    try {
+      const response = await fetch('http://localhost:3100/api/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          updatedData: selectedTest,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update data');
+      }
+      alert('Data updated successfully');
+    } catch (error) {
+      alert(error.message);
+    }   setSelectedTest(null);
   };
 
   return (
