@@ -39,6 +39,10 @@ function Login() {
         toast.error(userData.error);
         setError(userData.error); // Set specific error message from backend
       } else {
+        if(localStorage.getItem('myToken') !== null){
+          localStorage.removeItem('myToken');
+          localStorage.setItem('myToken', userData.data);
+        }
         setData({ username: '', password: '' }); // Clear input fields
 
         // Decode the JWT token to get the user information
@@ -48,12 +52,14 @@ function Login() {
           role: decodedToken.role,
           username: decodedToken.username,
         };
+         // Store token in local storage
 
         setUser(user); // Set user data in local state. Declared in line 19
         setUserContext(user); // Set user data in context. Declared in line 13
         const role = user.role; // Extract role from response data
         const userId = user.id; // Extract user ID from response data
         console.log('Login: User role:', role);
+        console.log('Login: User role:', userId);
 
         // Redirect based on role
         switch (role) {

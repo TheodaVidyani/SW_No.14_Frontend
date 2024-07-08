@@ -33,7 +33,7 @@ export default function StickyHeadTable({ setRows }) {
         if (Array.isArray(responseData)) {
           console.log('Data received:', responseData);
           const modifiedData = responseData
-            .filter(item => (item.state === 'register_only' || 'paid') && item.pid === jwtDecode(localStorage.getItem("myToken")).id)
+            .filter(item => item.state === 'register_only' && item.pid === jwtDecode(localStorage.getItem("myToken")).id)
             .map(item => ({
               ...item,
               regdate: item.regdate.slice(0, 10), // Slice the first 10 characters of regdate
