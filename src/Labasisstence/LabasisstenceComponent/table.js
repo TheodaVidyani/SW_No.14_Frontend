@@ -9,7 +9,15 @@ const Record = (props) => {
 
   
   const HandleGenerate = (record) => {
-    navigate('/ReportUI', { state: { record } });
+    if (record.state === "result_add") {
+      navigate('/ReportUI', { state: { record } });
+      return;
+    }
+    else{
+      window.alert("Report is not ready yet");
+      
+    }
+  
   };
 
   const HandleInvoice = (record) => {
@@ -33,8 +41,7 @@ const Record = (props) => {
       <TableCell>{props.record.pid}</TableCell>
       <TableCell style={{ color: ResultStatus === "Result Updated" ? "green" : "red" }}>{ResultStatus}</TableCell>
       <TableCell>
-      <Button variant="outlined" color="primary" onClick={() => HandleGenerate(props.record)}>
-        Report
+      <Button style={{ color: ResultStatus === "Result Updated" ? "green" : "red", opacity: ResultStatus === "Result Updated" ? 1 : 0.4 }} variant="outlined" color="primary" onClick={() => HandleGenerate(props.record)}>        Report
       </Button>
       </TableCell>
       <TableCell>
