@@ -1,6 +1,7 @@
 
 
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   Typography,
   Paper,
@@ -30,6 +31,7 @@ const ReportUI = () => {
   const [open, setOpen] = useState(false);
   const [selectedTest, setSelectedTest] = useState(null);
   const [editedResult, setEditedResult] = useState("");
+  const [updateStatus, setUpdateStatus] = useState("");
 
   const record = location.state.record;
   const tests = record.selectTests;
@@ -71,7 +73,7 @@ const ReportUI = () => {
       setResults(resultsData.result);
     }
     getResult();
-  }, [record.pid]);
+  }, [record.pid,updateStatus]);
 
   const birthYear = userData && userData.nationalID ? parseInt(userData.nationalID.substring(0, 4)) : null;
   const currentYear = new Date().getFullYear();
@@ -89,6 +91,7 @@ const ReportUI = () => {
       unit: matchedTestDB ? matchedTestDB.unit : "no data",
     };
   });
+
 
   const reportDetails = {
     patientName: record.pname,
@@ -129,6 +132,7 @@ const ReportUI = () => {
     setSelectedTest(test);
     setEditedResult(test.result);
     setOpen(true);
+   
   };
 
   const handleClose = () => {
@@ -136,32 +140,32 @@ const ReportUI = () => {
     setSelectedTest(null);
   };
 
-  const handleSave = async () => {
-    // Save the edited result here (e.g., send a request to your backend API)
-    const updatedResults = results.map((result) =>
-      result.testid === selectedTest.testId ? { ...result, testresults: editedResult } : result
-    );
-    setResults(updatedResults);
-    setOpen(false);
-    try {
-      const response = await fetch('http://localhost:3100/api/update', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          updatedData: selectedTest,
-        }),
-      });  
-      if (!response.ok) {
-        throw new Error('Failed to update data');
-      }
-      alert('Data updated successfully');
-    } catch (error) {
-      alert(error.message);
-    }   setSelectedTest(null);
-  };
 
+  const handleSave = async () => {
+    
+    try{
+     
+        const response = await axios.put('http://localhost:3100/api/updatdata', {
+          updatedData: selectedTest,
+        });
+        alert('Data updated successfully');
+        setUpdateStatus(response.data);
+        setOpen(false);
+    }
+    catch (error) {
+      alert(error.message);
+    }
+
+  }
+
+  
+  useEffect(() => {
+    setSelectedTest(prevState=>({...prevState, result: editedResult}));
+  },[editedResult]);
+   
+  useEffect(() => {
+    console.log(selectedTest);
+  },[selectedTest]);
   return (
     <Container
       sx={{
@@ -328,4 +332,5 @@ const ReportUI = () => {
 };
 
 export default ReportUI;
+
 
