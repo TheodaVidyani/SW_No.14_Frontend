@@ -107,7 +107,6 @@ const Invoice = ({ id }) => {
   }
 
   const inVoiceData = record.selectTests.map((test) => {
-    console.log("patient number " + jwtDecode(localStorage.getItem("myToken")).phonenumber);
     const dbTest = testDB.find((dbTest) => dbTest.id === test.testId) || {};
     const result = testResults.find(
       (res) => res.testtype === test.testName && res.pid === record.pid
@@ -128,7 +127,7 @@ const Invoice = ({ id }) => {
   const invoiceDetails = {
     appointmentId: record.id || "INV-001",
     date: record.regdate.split("T")[0],
-    dueDate: record.dueDate || "2024-07-24",
+    dueDate: new Date(new Date(record.regdate).setMonth(new Date(record.regdate).getMonth() + 3)).toISOString().split("T")[0],
     companyAddress: record.companyAddress || "1234 Main St, City, State, ZIP lab address",
     customerName: record.pname || "John Doe",
     customerAddress: userDetails?.address || "5678 Second St, City, State, ZIP costumer address",
@@ -171,19 +170,20 @@ const Invoice = ({ id }) => {
               <strong>Appointment ID:</strong> {invoiceDetails.appointmentId}
             </Typography>
             <Typography>
-              <strong>Date:</strong> {invoiceDetails.date}
+              <strong>Registered Date:</strong> {invoiceDetails.date}
             </Typography>
+            <Typography>
+              <strong>Due Date:</strong> {invoiceDetails.dueDate}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} align="right">
             <Typography>
               <strong>Number:</strong> {invoiceDetails.phonenumber}
             </Typography>
             <Typography>
               <strong>Email:</strong> {invoiceDetails.email}
             </Typography>
-          </Grid>
-          <Grid item xs={6} align="right">
-            <Typography>
-              <strong>Due Date:</strong> {invoiceDetails.dueDate}
-            </Typography>
+            
           </Grid>
         </Grid>
         <TableContainer component={Paper} sx={{ marginTop: 3 }}>

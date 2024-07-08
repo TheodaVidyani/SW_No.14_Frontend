@@ -116,7 +116,7 @@ const Invoice = ({ id }) => {
     patientid: record.pid || "P-001",
     appointmentId: record.id || "INV-001",
     date: (new Date(record.regdate || new Date())).toISOString().split("T")[0],
-    dueDate: record.dueDate || "2024-07-24",
+    dueDate: new Date(new Date(record.regdate).setMonth(new Date(record.regdate).getMonth() + 12)).toISOString().split("T")[0],
     companyAddress:
       record.companyAddress || "1234 Main St, City, State, ZIP lab address",
     customerName: record.pname || "John Doe",
@@ -141,7 +141,7 @@ const Invoice = ({ id }) => {
 
   return (
     <Container>
-      <Paper elevation={3} sx={{ padding: 3, marginTop: 3 }}>
+      <Paper elevation={3} sx={{ padding: 3, marginTop: 3 ,backgroundColor: "#F0F0F0"}}>
         <Typography variant="h4" align="center" gutterBottom>
           Invoice
         </Typography>
@@ -170,12 +170,14 @@ const Invoice = ({ id }) => {
               <strong>Date:</strong> {invoiceDetails.date}
             </Typography>
             <Typography>
-              <strong>Phone:</strong> {invoiceDetails.phonenumber}
+              <strong>Invoice Cancel Date:</strong> {invoiceDetails.dueDate}
             </Typography>
+            
           </Grid>
           <Grid item xs={6} align="right">
+                      
             <Typography>
-              <strong>Due Date:</strong> {invoiceDetails.dueDate}
+              <strong>Phone:</strong> {invoiceDetails.phonenumber}
             </Typography>
             <Typography>
               <strong>Email:</strong> {invoiceDetails.email}
