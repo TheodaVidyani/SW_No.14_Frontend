@@ -32,7 +32,7 @@ export default function Appointmentsearch({ rows }) {
   const handlePreview = () => {
     if (selectedAppointment) {
       console.log("preview invoice");
-      navigate(`/Invoicepreview/${selectedAppointment.id}`);
+      navigate(`/Reportpreview/${selectedAppointment.id}`);
     }
   };
 
