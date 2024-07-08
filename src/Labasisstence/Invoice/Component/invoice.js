@@ -13,6 +13,7 @@ import {
   TableHead,
   TableRow,
   Button,
+  Alert,
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import healthLabLogo from "../../LabasisstenceComponent/Labasisstenceimg/Health lab logo_.png";
@@ -27,6 +28,7 @@ const Invoice = ( ) => {
   const [record, setRecord] = useState(null);
   const [testDB, setTestsDB] = useState(null);
   const [userData, setUserData] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
 
   
 
@@ -118,7 +120,7 @@ const Invoice = ( ) => {
   const columns = [
     { field: "Test", headerName: "Test", width: 120 },
     { field: "description", headerName: "Description", width: 300 },
-    { field: "quantity", headerName: "Quantity", width: 100 },
+    // { field: "quantity", headerName: "Quantity", width: 100 },
     { field: "price", headerName: "Price ($)", width: 100 },
   ];
 
@@ -137,13 +139,18 @@ const Invoice = ( ) => {
       if (!response.ok) {
         throw new Error("Failed to send email");
       }
-      alert("Email sent successfully");
+      // alert("Email sent successfully");
+      setShowAlert(true); 
+      setTimeout(() => {
+        setShowAlert(false); // Close alert after 3 seconds
+      }, 3000); 
     } catch (error) {
       alert(error.message);
     }
   };
 
   return (
+    
     <Container>
       <style>
         {`
@@ -210,7 +217,7 @@ const Invoice = ( ) => {
                 </TableRow>
               ))}
               <TableRow>
-                <TableCell colSpan={3} align="right">
+                <TableCell colSpan={2} align="right">
                   <strong>Total:</strong>
                 </TableCell>
                 <TableCell>{invoiceTotalAmount}</TableCell>
@@ -241,6 +248,30 @@ const Invoice = ( ) => {
           </Grid>
         </Grid>
       </Paper>
+
+      {showAlert && (
+         <Alert
+         sx={{
+           position: "absolute",
+          margin: "30px",
+          width: "300px",
+          height:"50px",
+           top: 0,
+           left: "10%",
+           transform: "translateX(-50%)",
+           zIndex: 9999,
+        backgroundColor: "#91DDCF",
+        opacity: 0.8
+         }}
+         severity="warning"
+
+         
+         onClose={() => setShowAlert(false)}
+         
+       >
+          Email sent successfully
+       </Alert>
+      )}
     </Container>
   );
 };

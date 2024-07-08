@@ -1,54 +1,111 @@
 
-import React, { useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, TextField, Grid, Paper } from '@mui/material';
+import React, { useEffect, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Button,
+  TextField,
+  Grid,
+  Paper,
+  Alert,  // Import Alert component
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const Record = (props) => {
   const navigate = useNavigate();
-  const navigateInvoice=useNavigate();
+  const navigateInvoice = useNavigate();
+  const [showAlert, setShowAlert] = useState(false);  // State for alert visibility
 
-  
   const HandleGenerate = (record) => {
-    if (record.state === "result_add") {
-      navigate('/ReportUI', { state: { record } });
-      return;
-    }
-    else{
-      window.alert("Report is not ready yet");
+    if (record.state === "result_add" || record.state === "Doctor_approved") {
+      navigate("/ReportUI", { state: { record } });
+    } else {
+      setShowAlert(true); 
       
+      setTimeout(() => {
+        setShowAlert(false); // Close alert after 3 seconds
+      }, 3000); // Show alert if results are not ready
     }
-  
   };
 
   const HandleInvoice = (record) => {
-    navigateInvoice('/Invoice', { state: { record } });
+    navigateInvoice("/Invoice", { state: { record } });
   };
-
 
   const [ResultStatus, setResultStatus] = useState("Pending");
 
   useEffect(() => {
-    if (props.record.state === "result_add") {
-      setResultStatus("Result Updated");}
-      else{
-        setResultStatus("Pending");
-      }},[props.record.state]);
+    if (
+      props.record.state === "result_add" ||
+      props.record.state === "Doctor_approved"
+    ) {
+      setResultStatus("Result Updated");
+    } else {
+      setResultStatus("Pending");
+    }
+  }, [props.record.state]);
 
   return (
     <TableRow>
       <TableCell>{props.record.id}</TableCell>
       <TableCell>{props.record.pname}</TableCell>
       <TableCell>{props.record.pid}</TableCell>
-      <TableCell style={{ color: ResultStatus === "Result Updated" ? "green" : "red" }}>{ResultStatus}</TableCell>
-      <TableCell>
-      <Button style={{ color: ResultStatus === "Result Updated" ? "green" : "red", opacity: ResultStatus === "Result Updated" ? 1 : 0.4 }} variant="outlined" color="primary" onClick={() => HandleGenerate(props.record)}>        Report
-      </Button>
+      <TableCell
+        style={{ color: ResultStatus === "Result Updated" ? "green" : "red" }}
+      >
+        {ResultStatus}
       </TableCell>
       <TableCell>
-      <Button variant="outlined" color="primary" onClick={() => HandleInvoice(props.record)}>
-        Invoice
-      </Button>
+        <Button
+          style={{
+            color: ResultStatus === "Result Updated" ? "green" : "red",
+            opacity: ResultStatus === "Result Updated" ? 1 : 0.4,
+          }}
+          variant="outlined"
+          color="primary"
+          onClick={() => HandleGenerate(props.record)}
+        >
+          {" "}
+          Report
+        </Button>
       </TableCell>
+      <TableCell>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => HandleInvoice(props.record)}
+        >
+          Invoice
+        </Button>
+      </TableCell>
+      {/* Alert component to show when results are not available */}
+      {showAlert && (
+         <Alert
+         sx={{
+           position: "absolute",
+          margin: "30px",
+          width: "300px",
+          height:"50px",
+           top: 0,
+           left: "10%",
+           transform: "translateX(-50%)",
+           zIndex: 9999,
+        backgroundColor: "#91DDCF",
+        opacity: 0.8
+         }}
+         severity="warning"
+
+         
+         onClose={() => setShowAlert(false)}
+         
+       >
+         Report is not ready yet
+       </Alert>
+      )}
     </TableRow>
   );
 };
@@ -73,9 +130,10 @@ export default function RecordeList() {
   }, []);
 
   const RenderRecordList = () => {
-    const filteredRecords = records.filter(record =>
-      record.pname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      record.id.toString().includes(searchQuery)
+    const filteredRecords = records.filter(
+      (record) =>
+        record.pname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        record.id.toString().includes(searchQuery)
     );
 
     return filteredRecords.map((record) => (
@@ -84,7 +142,7 @@ export default function RecordeList() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: "20px" }}>
       <Grid container spacing={2} justifyContent="center">
         <Grid item xs={12} sm={8} md={6}>
           <TextField
@@ -94,7 +152,7 @@ export default function RecordeList() {
             size="medium"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ marginBottom: '20px' , marginTop: '100px'}}
+            style={{ marginBottom: "20px", marginTop: "100px" }}
           />
         </Grid>
       </Grid>
@@ -113,9 +171,7 @@ export default function RecordeList() {
                     <TableCell>Invoice</TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
-                  {RenderRecordList()}
-                </TableBody>
+                <TableBody>{RenderRecordList()}</TableBody>
               </Table>
             </TableContainer>
           </Paper>
@@ -124,5 +180,4 @@ export default function RecordeList() {
     </div>
   );
 }
-
 
