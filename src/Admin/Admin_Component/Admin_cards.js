@@ -95,8 +95,8 @@ const CardSlider = ({ cards }) => {
       else if (selectedCard.title === 'USERS') {
         navigate(`/ViewPatient/:id`);
       } 
-      else if (selectedCard.title === 'USERS') {
-        navigate(`/ViewPatient/:id`);
+      else if (selectedCard.title === 'FEEDBACKS') {
+        navigate(`/FeedbacksUI`);
       } 
     }
     handleCloseModal();
