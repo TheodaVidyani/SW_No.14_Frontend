@@ -82,7 +82,6 @@ const Invoice = () => {
   }
 
   const inVoiceData = record.selectTests.map((test) => {
-    console.log("patient number " + jwtDecode(localStorage.getItem("myToken")).phonenumber);
     const dbTest = testDB.find((dbTest) => dbTest.id === test.testId) || {};
     const result = testResults.find(
       (res) => res.testtype === test.testName && res.pid === record.pid

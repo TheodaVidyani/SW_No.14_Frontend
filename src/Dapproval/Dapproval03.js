@@ -54,7 +54,7 @@ const FixedContainer = () => {
         date: selectedDate,
         id: rid,
         recommendation: msg,
-        docname: jwtDecode(localStorage.getItem("myToken")).name,
+        docname: jwtDecode(localStorage.getItem("myToken")).username,
         patientId: pid,
       });
 
@@ -75,18 +75,26 @@ const FixedContainer = () => {
       }
     }
   };
-
+  const handleAfterSubmit = () => {
+    // Perform additional action after handleSubmit
+    axios.post('http://localhost:3100/api/updateappointment', { id: rid, state: 'Doctor_approved' })
+        .then(response => {
+            console.log('Appointment '+ `${rid}` +' updated with result entering successfully');
+        })
+        .catch(error => {
+            console.error('Error updating appointment:', error);
+        });
+};
   const handleApprove = async () => {
     try {
       const response = await axios.post('http://localhost:3100/api/approve', {
         reportId: rid,
-        doctorName: jwtDecode(localStorage.getItem("myToken")).name,
+        doctorName: jwtDecode(localStorage.getItem("myToken")).username,
         recommendation: msg,
         patientId: pid,
       });
-
-      console.log('Approval Response:', response);
-      
+  
+      console.log('Approval Response:', response.data); // Log the response data for debugging
       setAlertMessage('Approval request sent successfully!');
     } catch (error) {
       console.error('Error approving report:', error);
@@ -98,6 +106,8 @@ const FixedContainer = () => {
         setAlertMessage(`Error: ${error.message}`);
       }
     }
+    console.log("id"+jwtDecode(localStorage.getItem("myToken")).username)  ;
+
   };
   const handleRecheck = async () => {
     try {
@@ -151,7 +161,8 @@ const FixedContainer = () => {
             </Grid>
             <Grid item xs={2}>
               <TextField
-                value={jwtDecode(localStorage.getItem("myToken")).name}
+                value={jwtDecode(localStorage.getItem("myToken")).username}
+              
                 style={{width:'200px'}}
                 id="outlined"
                 label="Doctor name"
@@ -195,8 +206,10 @@ const FixedContainer = () => {
               type="submit"
               variant="contained"
               style={{ color: 'primary', width: '100px', height: '50px' }}
-              onClick={handleApprove}
-            >
+              onClick={() => {
+                handleApprove();
+                handleAfterSubmit();
+                }}            >
               Approve
             </Button>
           </form>

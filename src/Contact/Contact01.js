@@ -16,7 +16,8 @@ export default function Contact01() {
         name: data.name,
         email: data.email,
         contact_No: data.phone_number,
-        message: data.message,
+        feedback: data.message,
+        date: data.date,
       });
 
       console.log('Response:', response);
@@ -38,8 +39,11 @@ export default function Contact01() {
           <EmailField /><br />
           <h4>Phone number</h4>
           <PhoneNumberField /><br />
-          <h4>Message</h4>
-          <MessageField /><br /><br /><br />
+          <h4>Date</h4>
+          <DateField /><br />
+          <h4>Feedback</h4>
+          <MessageField /><br />
+          <br /><br />
           <Button type="submit" sx={{ variant: 'contained', color: '#FFFFFF', background: '#101754', width: '300px', height: '50px' }}>
             Submit
           </Button>
@@ -104,12 +108,31 @@ const PhoneNumberField = () => {
   );
 };
 
+const DateField = () => {
+  const { register, formState: { errors } } = useFormContext();
+  return (
+    <TextField
+      sx={{ width: '75%' }}
+      label="Date"
+      type="date"
+      name="date"
+      InputLabelProps={{ shrink: true }}
+      required
+      error={!!errors.date}
+      helperText={errors.date?.message}
+      {...register("date", {
+        required: "Date is required",
+      })}
+    />
+  );
+};
+
 const MessageField = () => {
   const { register, formState: { errors } } = useFormContext();
   return (
     <TextField
       sx={{ width: '75%' }}
-      label="Message"
+      label="Feedback"
       name="message"
       required
       error={!!errors.message}
