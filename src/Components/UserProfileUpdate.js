@@ -1,5 +1,5 @@
 // UserProfileUpdate.js
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Grid, Avatar, Typography, TextField, Button, Paper, Modal, Slider } from '@mui/material';
 import { styled } from '@mui/system';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
@@ -72,9 +72,9 @@ const Notification = styled(Paper)(({ theme }) => ({
   display: 'none', // Initially hide the notification
 }));
 
-const UserProfileUpdate = ({ userData, onClose }) => {
+const UserProfileUpdate = ({ userData, onUpdateProfilePic }) => {
   const [user, setUser] = useState({
-    id: '',
+    _id: '',
     firstname: '',
     lastname: '',
     email: '',
@@ -86,16 +86,19 @@ const UserProfileUpdate = ({ userData, onClose }) => {
     profilePicUrl: '',
   });
 
+  const [key, setKey] = useState(0); // Add a key state
+
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [croppingImage, setCroppingImage] = useState(false);
-  const [showNotification, setShowNotification] = useState(false); // State for showing the notification. State variable to manage the display of the notification.
+  const [showNotification, setShowNotification] = useState(false); // State for showing the notification
 
   useEffect(() => {
     if (userData) {
+      console.log('userData:', userData);
       setUser({ ...userData, profilePicUrl: userData.profilePic });
-      console.log('User data set:', userData);
+      console.log('User data set:', user);
     }
   }, [userData]);
 
@@ -107,7 +110,31 @@ const UserProfileUpdate = ({ userData, onClose }) => {
     }));
   };
 
-  // Convert file to base64
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const fileUrl = URL.createObjectURL(file);
+      console.log('Selected profile picture URL:', fileUrl); // Log selected file URL
+      setUser({
+        ...user,
+        profilePic: file,
+        profilePicUrl: fileUrl,
+      });
+      setCroppingImage(true); // Example: setting cropping image state
+      console.log('User after file selection:', user); // Log user state after setting profilePic and profilePicUrl
+    }
+  };
+  
+
+  const handleAvatarClick = () => {
+    document.getElementById('avatarInput').click();
+  };
+
+  const onCropComplete = (croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+    console.log('Crop complete:', croppedArea, croppedAreaPixels);
+  };
+
   const toBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -117,113 +144,109 @@ const UserProfileUpdate = ({ userData, onClose }) => {
     });
   };
 
-  // user.profilePic is set to the selected File object, and user.profilePicUrl to the URL for preview purposes.
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const fileUrl = URL.createObjectURL(file);
-      console.log('Selected profile picture URL:', fileUrl);
-      setUser({
-        ...user,
-        profilePic: file,
-        profilePicUrl: fileUrl,
-      });
-      setCroppingImage(true);
-      console.log('Selected profile picture:', file);
-    }
-  };
-
-  const handleAvatarClick = () => {
-    document.getElementById('avatarInput').click();
-  };
-
-  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-    console.log('Crop complete:', croppedArea, croppedAreaPixels);
-  }, []);
-
-  const handleSaveCroppedImage = useCallback(async () => {
+  
+  const handleSaveCroppedImage = async () => {
     try {
       console.log('Cropping image with URL:', user.profilePicUrl);
       const croppedImage = await getCroppedImg(user.profilePicUrl, croppedAreaPixels);
       console.log('Cropped Image Blob:', croppedImage);
-
-      const file = new File([croppedImage], 'profile.jpg', { type: 'image/jpeg' });
-      console.log('Cropped Image File:', file);
-
-      const newProfilePicUrl = URL.createObjectURL(file);
-      console.log('New Profile Pic URL:', newProfilePicUrl, user);
-
+  
+      // Convert cropped image to base64
+      const base64Image = await toBase64(croppedImage);
+  
       setUser((prevUser) => ({
         ...prevUser,
-        profilePic: file,
-        profilePicUrl: newProfilePicUrl,
+        profilePic: base64Image,
+        // Optionally update profilePicUrl if you have a server URL for the image
       }));
+      // Close cropping modal if it was open
       setCroppingImage(false);
-    } catch (e) {
-      console.error('Error cropping image:', e);
-    }
-  }, [croppedAreaPixels, user.profilePicUrl]);
+      
+          // Hide the notification after 3 seconds
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 3000);
 
-  useEffect(() => {
-    console.log('Profile Pic URL changed:', user.profilePicUrl);
-  }, [user.profilePicUrl]);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    // Convert profile picture to base64
-    const base64ProfilePic = user.profilePic ? await toBase64(user.profilePic) : '';
-
-    // Assuming `user` is your user object containing _id and other fields
-    const { _id, firstname, lastname, email, address, nationalID, phonenumber, username } = user;
-
-    // Create a payload with base64 image
-    const payload = {
-      _id,
-      firstname,
-      lastname,
-      email,
-      address,
-      nationalID,
-      phonenumber,
-      username,
-      profilePic: base64ProfilePic,
-    };
-
-    try {
-      console.log('Before fetch:', payload);
-
-      const response = await fetch('http://localhost:3100/api/router_login/updateuser', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      console.log('Fetch response:', response);
-
-      const data = await response.json();
-      console.log('Update response:', data);
-
-      if (!response.ok) {
-        throw new Error(`Failed to update profile: ${data.message}`);
-      }
-
-      // Handle success
-      console.log('Profile updated successfully:', data.message);
-      setShowNotification(true); // Show the notification
-
-      // Hide the notification after 3 seconds
-      setTimeout(() => {
-        setShowNotification(false);
-      }, 3000);
     } catch (error) {
-      console.error('Error updating profile:', error);
-      // Handle error (e.g., show error message to user)
+      console.error('Error cropping image:', error);
     }
   };
+  
+
+const handleSubmit = async (event) => {
+  event.preventDefault();
+
+  console.log('User before submit:', user); // Debugging log
+
+  // Prepare payload with base64 profile picture
+  const payload = {
+    _id: user._id,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    email: user.email,
+    address: user.address,
+    phonenumber: user.phonenumber,
+    nationalID: user.nationalID,
+    username: user.username,
+    profilePic: user.profilePic,
+    profilePicUrl: user.profilePicUrl,
+  };
+
+  if (user.profilePic) {
+    // Include base64 profile picture in payload
+    payload.profilePic = user.profilePic;
+  } else if (user.profilePicUrl) {
+    // Include profile picture URL in payload
+    payload.profilePicUrl = user.profilePicUrl;
+  }
+
+  try {
+    console.log('Before fetch:', payload);
+
+    const response = await fetch('http://localhost:3100/api/router_login/updateuser', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    console.log('Fetch response:', response);
+
+    const data = await response.json();
+    console.log('Update response:', data);
+
+    if (!response.ok) {
+      throw new Error(`Failed to update profile: ${data.message}`);
+    }
+
+    // Handle success
+    console.log('Profile updated successfully:', data.message);
+
+    // Update user data with response data to reflect changes in real-time
+    setUser((prevUser) => ({
+      ...prevUser,
+      ...data.updatedUser,
+      profilePicUrl: data.updatedUser.profilePicUrl, // Update profilePicUrl to new URL from the server if defined
+    }));
+
+    console.log('User state after update:', user);
+
+    setKey((prevKey) => prevKey + 1); // Update key to force re-render
+
+    setShowNotification(true); // Show the notification
+
+    // Hide the notification after 3 seconds
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 3000);
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    // Handle error (e.g., show error message to user)
+  }
+};
+
+  
 
   return (
     <Container component={Root}>

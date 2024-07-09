@@ -21,7 +21,7 @@ export default function Head() {
         <ListItem button component={Link} to="/">
           <ListItemText primary="Home" />
         </ListItem>
-        <ListItem button component={Link} to="/services">
+        <ListItem button component={Link} to="./HomePage/ser">
           <ListItemText primary="Services" />
         </ListItem>
         <ListItem button component={Link} to="/about">
