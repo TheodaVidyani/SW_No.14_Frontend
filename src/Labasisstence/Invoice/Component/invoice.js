@@ -263,7 +263,7 @@ const Invoice = ( ) => {
         backgroundColor: "#91DDCF",
         opacity: 0.8
          }}
-         severity="warning"
+         severity="success"
 
          
          onClose={() => setShowAlert(false)}
