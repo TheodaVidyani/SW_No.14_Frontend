@@ -52,6 +52,7 @@ import ReportView from './Dapproval/ReportView';
 import Report from './Dapproval/Report';
 import Paymentpreview from './Patient/Patient_Component/Paymentpreview';
 import Invoice  from './Labasisstence/Invoice/Component/invoice';
+import Pinvoice from './Patient/Patient_Component/Pinvoice';
 
 
 function App() {
@@ -127,6 +128,7 @@ function App() {
   <Route path="/Report/:id" element={<Report/>}/>
   <Route path="/Paymentpreview/:id" element={<Paymentpreview/>}/>
   <Route path="/Invoice" element={<Invoice/>}/>
+  <Route path="/Pinvoice" element={<Pinvoice/>}/>
     </Routes>
   </BrowserRouter>
     </div>

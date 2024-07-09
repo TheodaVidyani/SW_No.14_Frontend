@@ -34,7 +34,7 @@ const Invoice = ( ) => {
     async function getUserDataByID() {
       const response = await fetch(`http://localhost:3100/api/getuser/${apointmentDara.pid}`);
       if (!response.ok) {
-        window.alert(`An error occurred in user data section : ${response.statusText}`);
+        window.alert(`An error occurred in user data section : ${response.statusText} userID ${apointmentDara.pid}`);
         return;
       }
       const user = await response.json();
@@ -106,7 +106,7 @@ const Invoice = ( ) => {
     customerName: record.pname || "John Doe",
     total: invoiceTotalAmount,
     customerAddress:
-      record.customerAddress ||
+    userData.address ||
       "5678 Second St, City, State, ZIP customer address",
     items: inVoiceData || [
       { id: 1, description: "Item 1", quantity: 2, price: 50 },
