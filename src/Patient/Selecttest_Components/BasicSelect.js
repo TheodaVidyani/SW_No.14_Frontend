@@ -223,9 +223,9 @@ export default function BasicSelect() {
         <DialogContent>
           <Typography variant="body1">Please choose your payment method:</Typography>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => handleModalClose('payNow')} sx={{ color: '#101754' }}>Pay Now</Button>
-          <Button onClick={() => handleModalClose('payLater')} sx={{ color: '#101754' }}>Pay Later</Button>
+        <DialogActions >
+          <Button onClick={() => handleModalClose('payNow')} sx={{ color: '#101754' ,width: '100%'}}>Pay Now</Button>
+          <Button onClick={() => handleModalClose('payLater')} sx={{ color: '#101754',width: '100%' }}>Pay Later</Button>
         </DialogActions>
       </Dialog>
 
