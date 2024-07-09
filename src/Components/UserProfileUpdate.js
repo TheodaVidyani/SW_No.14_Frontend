@@ -1,4 +1,4 @@
-//UserProfileUpdate.js
+// UserProfileUpdate.js
 import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Grid, Avatar, Typography, TextField, Button, Paper, Modal, Slider } from '@mui/material';
 import { styled } from '@mui/system';
@@ -60,7 +60,7 @@ const ButtonStyled = styled(Button)(({ theme }) => ({
   },
 }));
 
-//Notification Component
+// Notification Component
 const Notification = styled(Paper)(({ theme }) => ({
   position: 'fixed',
   bottom: theme.spacing(2),
@@ -101,13 +101,23 @@ const UserProfileUpdate = ({ userData, onClose }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUser(prevUser => ({
+    setUser((prevUser) => ({
       ...prevUser,
       [name]: value,
     }));
   };
 
-  //user.profilePic is set to the selected File object, and user.profilePicUrl to the URL for preview purposes.
+  // Convert file to base64
+  const toBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  // user.profilePic is set to the selected File object, and user.profilePicUrl to the URL for preview purposes.
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -159,54 +169,59 @@ const UserProfileUpdate = ({ userData, onClose }) => {
     console.log('Profile Pic URL changed:', user.profilePicUrl);
   }, [user.profilePicUrl]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log('Submitting user data:', user);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-    const formData = new FormData();
+    // Convert profile picture to base64
+    const base64ProfilePic = user.profilePic ? await toBase64(user.profilePic) : '';
 
-    if (user.profilePic) {
-      formData.append('profilePic', user.profilePic);
-    }
+    // Assuming `user` is your user object containing _id and other fields
+    const { _id, firstname, lastname, email, address, nationalID, phonenumber, username } = user;
 
-    Object.keys(user).forEach((key) => {
-      if (key !== 'profilePic' && key !== 'profilePicUrl') {
-        formData.append(key, user[key]);
-      }
-    });
-
-    console.log('FormData content:', Array.from(formData.entries()));
-
-    // Add your API endpoint and headers here
-    const apiUrl = 'http://localhost:3100/api/router_login/updateuser';
+    // Create a payload with base64 image
+    const payload = {
+      _id,
+      firstname,
+      lastname,
+      email,
+      address,
+      nationalID,
+      phonenumber,
+      username,
+      profilePic: base64ProfilePic,
+    };
 
     try {
-      const response = await fetch(apiUrl, {
+      console.log('Before fetch:', payload);
+
+      const response = await fetch('http://localhost:3100/api/router_login/updateuser', {
         method: 'POST',
-        body: formData,
-        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
       });
 
+      console.log('Fetch response:', response);
+
+      const data = await response.json();
+      console.log('Update response:', data);
+
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Failed to update profile:', errorText);
-        throw new Error('Failed to update profile');
+        throw new Error(`Failed to update profile: ${data.message}`);
       }
 
-      const responseData = await response.json();
-      console.log('Profile updated successfully:', responseData);
+      // Handle success
+      console.log('Profile updated successfully:', data.message);
+      setShowNotification(true); // Show the notification
 
-            // Show notification on successful update
-            setShowNotification(true);
-
-                  // Hide notification after 2 seconds
+      // Hide the notification after 3 seconds
       setTimeout(() => {
         setShowNotification(false);
-      }, 2000); //Timer setting
-
-      onClose();
+      }, 3000);
     } catch (error) {
       console.error('Error updating profile:', error);
+      // Handle error (e.g., show error message to user)
     }
   };
 
@@ -268,8 +283,8 @@ const UserProfileUpdate = ({ userData, onClose }) => {
         </div>
       </Modal>
 
-            {/* Notification for changes updated */}
-            <Notification style={{ display: showNotification ? 'block' : 'none' }}>
+      {/* Notification for changes updated */}
+      <Notification style={{ display: showNotification ? 'block' : 'none' }}>
         Changes Updated
       </Notification>
 
