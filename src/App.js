@@ -30,6 +30,7 @@ import AViewTest from './Admin/AViewTest';
 import PViewAppointment from './Patient/Patient_Component/PViewAppointment';
 import Reportview from './Labasisstence/LabasisstencePages/Reportview';
 import ReportUI from './Labasisstence/LabasisstenceComponent/ReportUI';
+import Viewreport from './Lab_operator/labOperator_component/Viewreport';
 
 import TestResult from './Lab_operator/TestResult';
 
@@ -72,7 +73,8 @@ function App() {
       <Route path='/PViewAppointment/:id' element={<PViewAppointment/>}/>
       <Route path='/ViewPatient/:id' element={<ViewPatient/>}/>
       <Route path='/PPendViewAppointment/:id' element={<PPendViewAppointment/>}/>
-      
+      <Route path='/Viewreport' element={<Viewreport/>}/>
+
       
       <Route path='/PViewTest/:id' element={<PViewTest/>}/>
       <Route path='/Selecttest' element={<Selecttest/>}/>
