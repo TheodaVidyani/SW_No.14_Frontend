@@ -107,9 +107,9 @@ const CardSlider = ({ cards }) => {
 
   return (
     <div className={classes.root}>
-      <Grid container justify="center">
-        <Grid item xs={1}>
-          <Button onClick={handlePrev} disabled={position === 0}><ArrowBackIosIcon/></Button>
+      <Grid container justify="center"  style={{alignItems: 'center' ,marginLeft:'1%'}}>
+        <Grid item xs={1} >
+          <Button onClick={handlePrev} disabled={position === 0} style={{color:'#ffffff',backgroundColor:'#1087A5', borderRadius: '50%', visibility: position === 0 ? 'hidden' : 'visible'}}><ArrowBackIosIcon/></Button>
         </Grid>
         <Grid item xs={10}>
           <div className={classes.cardContainer}>
@@ -136,7 +136,7 @@ const CardSlider = ({ cards }) => {
           </div>
         </Grid>
         <Grid item xs={1}>
-          <Button onClick={handleNext} disabled={position === cards.length - 2}><ArrowForwardIosIcon/></Button>
+          <Button onClick={handleNext} disabled={position === cards.length - 2} style={{color:'#ffffff',backgroundColor:'#1087A5', borderRadius: '50%', visibility: position === cards.length - 2 ? 'hidden' : 'visible'}}><ArrowForwardIosIcon/></Button>
         </Grid>
       </Grid>
       <Modal

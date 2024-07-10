@@ -13,7 +13,6 @@ import {
   Button,
 } from "@mui/material";
 import healthLabLogo from "../../Labasisstence/LabasisstenceComponent/Labasisstenceimg/Health lab logo_.png";
-import {jwtDecode} from "jwt-decode";
 
 const Invoice = ({ id }) => {
   const [record, setRecord] = useState(null);

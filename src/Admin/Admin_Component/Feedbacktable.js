@@ -22,7 +22,7 @@ const FeedbacksUI = () => {
         <div className='Class'>
             <Grid container spacing={3} direction="column" sx={{ paddingTop: '5%' , marginTop: '1%' }}>
                 {feedbacks.map((feedback, index) => (
-                    <Grid item xs={12} key={index} sx={{ marginTop: '0%', marginBottom: '0%', marginLeft: '10%', marginRight: '10%' }}>
+                    <Grid item xs={12} key={index} sx={{ marginTop: '0%', marginBottom: '0%', marginLeft: '17%', marginRight: '17%' }}>
                         <Card className="feedback-card" sx={{ minHeight: 80, backgroundColor: '#E9E9E9', boxShadow: '5px 5px 5px rgba(0, 0, 0, 0.5)', }}>
                             <CardContent>
                                 <Grid container justifyContent="space-between" alignItems="center">
@@ -54,7 +54,7 @@ const FeedbacksUI = () => {
                                     <Grid item>
                                         <Button 
                                             variant="contained"
-                                            sx={{ marginTop: 2, backgroundColor: '#101754', width: '10%' }} 
+                                            sx={{ marginTop: 1, backgroundColor: '#101754', width: '20%' }} 
                                             onClick={() => handleExpandClick(index)}
                                         >
                                             {expanded[index] ? 'Hide' : 'View'}
