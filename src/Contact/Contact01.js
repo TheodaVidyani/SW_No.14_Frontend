@@ -11,12 +11,13 @@ export default function Contact01() {
   const [alertMessage, setAlertMessage] = useState('');
 
   const onSubmit = async (data) => {
+    console.log('Submitting data:', data);
     try {
       const response = await axios.post('http://localhost:3100/api/contact', {
         name: data.name,
         email: data.email,
-        contact_No: data.phone_number,
-        feedback: data.message,
+        phone_number: data.phone_number,
+        feedback: data.feedback,
         date: data.date,
       });
 
@@ -65,6 +66,7 @@ const NameField = () => {
       error={!!errors.name}
       helperText={errors.name?.message}
       {...register("name", {
+        required: "Name is required",
         minLength: { value: 3, message: "Name must be at least 3 characters long" },
         maxLength: { value: 20, message: "Name must be no more than 20 characters long" },
       })}
@@ -84,6 +86,7 @@ const EmailField = () => {
       error={!!errors.email}
       helperText={errors.email?.message}
       {...register("email", {
+        required: "Email is required",
         pattern: { value: emailRegex, message: "Email must be a valid email address" },
       })}
     />
@@ -101,6 +104,7 @@ const PhoneNumberField = () => {
       error={!!errors.phone_number}
       helperText={errors.phone_number?.message}
       {...register("phone_number", {
+        required: "Phone number is required",
         minLength: { value: 10, message: "Phone number must be at least 10 digits long" },
         maxLength: { value: 15, message: "Phone number must be no more than 15 digits long" },
       })}
@@ -133,13 +137,14 @@ const MessageField = () => {
     <TextField
       sx={{ width: '75%' }}
       label="Feedback"
-      name="message"
+      name="feedback"
       required
-      error={!!errors.message}
-      helperText={errors.message?.message}
+      error={!!errors.feedback}
+      helperText={errors.feedback?.message}
       multiline
       rows={6}
-      {...register("message", {
+      {...register("feedback", {
+        required: "Feedback is required",
         maxLength: { value: 500, message: "Message must be no more than 500 characters long" },
       })}
     />
