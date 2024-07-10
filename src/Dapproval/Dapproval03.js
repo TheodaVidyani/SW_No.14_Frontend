@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
-import Box from '@mui/material/Box';
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import { jwtDecode } from 'jwt-decode';
-
-
+import {
+  Container,
+  Paper,
+  Grid,
+  Box,
+  Button,
+} from "@mui/material";
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
@@ -21,7 +20,7 @@ const FixedContainer = () => {
   const query = useQuery();
   const [msg, setMsg] = useState('');
   const [rid, setRid] = useState(query.get('reportId') || '');
-  const [nm, setNm] = useState('');
+  const [nm, setNm] = useState([jwtDecode(localStorage.getItem("myToken")).username]);
   const [pid, setPid] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
   const [selectedDate, setSelectedDate] = useState(query.get('date') ? dayjs(query.get('date')) : null);
@@ -42,9 +41,7 @@ const FixedContainer = () => {
     }
   };
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
+  
 
   const submit = async (e) => {
     e.preventDefault();
@@ -57,7 +54,7 @@ const FixedContainer = () => {
         date: selectedDate,
         id: rid,
         recommendation: msg,
-        docname: nm,
+        docname: jwtDecode(localStorage.getItem("myToken")).name,
         patientId: pid,
       });
 
@@ -78,7 +75,16 @@ const FixedContainer = () => {
       }
     }
   };
-
+  const handleAfterSubmit = () => {
+    // Perform additional action after handleSubmit
+    axios.post('http://localhost:3100/api/updateappointment', { id: rid, state: 'Doctor_approved' })
+        .then(response => {
+            console.log('Appointment '+ `${rid}` +' updated with result entering successfully');
+        })
+        .catch(error => {
+            console.error('Error updating appointment:', error);
+        });
+};
   const handleApprove = async () => {
     try {
       const response = await axios.post('http://localhost:3100/api/approve', {
@@ -87,9 +93,8 @@ const FixedContainer = () => {
         recommendation: msg,
         patientId: pid,
       });
-
-      console.log('Approval Response:', response);
-      
+  
+      console.log('Approval Response:', response.data); // Log the response data for debugging
       setAlertMessage('Approval request sent successfully!');
     } catch (error) {
       console.error('Error approving report:', error);
@@ -101,6 +106,8 @@ const FixedContainer = () => {
         setAlertMessage(`Error: ${error.message}`);
       }
     }
+    console.log("id"+jwtDecode(localStorage.getItem("myToken")).name)  ;
+
   };
   const handleRecheck = async () => {
     try {
@@ -128,18 +135,11 @@ const FixedContainer = () => {
   return (
     <React.Fragment>
       <CssBaseline />
-      <Box sx={{ width: '78%', margin: 'auto', backgroundColor: '#D9D9D9', padding: '20px', borderRadius: '8px' }}>
-        <Box sx={{ flexGrow: 1 }}>
+      <Container>
+      <Paper elevation={3} sx={{ padding: 3, marginTop: 3, backgroundColor: "#F0F0F0" }}>   
+             <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
-            <Grid item xs={2}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  value={selectedDate}
-                  onChange={handleDateChange}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-            </Grid>
+            
             <Grid item xs={2}>
               <TextField
                 value={rid}
@@ -156,34 +156,38 @@ const FixedContainer = () => {
                 id="outlined-required"
                 label="Patient Id"
                 required
-                disabled 
+                 
               />
             </Grid>
             <Grid item xs={2}>
               <TextField
                 value={jwtDecode(localStorage.getItem("myToken")).name}
-                onChange={(e) => setNm(e.target.value)}
+              
+                style={{width:'200px'}}
                 id="outlined"
                 label="Doctor name"
                 required
-                disabled 
+                 disabled
               />
             </Grid>
             <Grid item xs={4} >
               <Button
                 variant="contained"
-                style={{ color: '#FFFFFF', background: '#101754', width: '200px', height: '50px' }}
+                style={{ color: 'primary', width: '200px', height: '50px',  marginLeft:'300px' }}
                 type="button"
-                onClick={handleRecheck} // Ensure the submit function is called on button click
+                onClick={handleRecheck} 
+              
               >
                 Recommend to recheck
               </Button>
             </Grid>
           </Grid>
         </Box>
-      </Box>
+      </Paper>
+      </Container>
       <br />
-      <Box sx={{ width: '78%', margin: 'auto', backgroundColor: '#D9D9D9', padding: '20px', borderRadius: '8px', height: '50vh' }}>
+      <Container>
+      <Paper elevation={3} sx={{ padding: 3, marginTop: 3, backgroundColor: "#F0F0F0" }}>   
         <h1>Recommendations</h1>
         <hr />
         <br />
@@ -194,23 +198,26 @@ const FixedContainer = () => {
               value={msg}
               onChange={(e) => setMsg(e.target.value)}
               placeholder="Need to..."
-              cols="150"
+              cols="120"
               rows="10"
             ></textarea>
             <br />
             <Button
               type="submit"
               variant="contained"
-              style={{ color: '#FFFFFF', background: '#101754', width: '100px', height: '50px' }}
-              onClick={handleApprove}
-            >
+              style={{ color: 'primary', width: '100px', height: '50px' }}
+              onClick={() => {
+                handleApprove();
+                handleAfterSubmit();
+                }}            >
               Approve
             </Button>
           </form>
         </div>
         <br />
         {alertMessage && <div>{alertMessage}</div>}
-      </Box>
+      </Paper>
+      </Container>
     </React.Fragment>
   );
 };

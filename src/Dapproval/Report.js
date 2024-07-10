@@ -1,170 +1,204 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
 import {
-  Container, Grid, Paper, Typography, Table, TableBody, TableCell,
-  TableContainer, TableHead, TableRow
-} from '@mui/material';
-import healthLabLogo from '../Labasisstence/LabasisstenceComponent/Labasisstenceimg/Health lab logo_.png'; // Replace with the path to your logo
+  Container,
+  Paper,
+  Typography,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Button,
+} from "@mui/material";
+import { useLocation } from "react-router-dom";
+import healthLabLogo from "../Labasisstence/LabasisstenceComponent/Labasisstenceimg/Health lab logo_.png";
+import { jwtDecode } from "jwt-decode";
 
-function PReportUI({ id }) {
-  const [appointment, setAppointment] = useState(null);
+const useQuery = () => {
+  return new URLSearchParams(useLocation().search);
+};
+
+const Invoice = () => {
+  const [record, setRecord] = useState(null);
+  const [testDB, setTestsDB] = useState([]);
+  const [testResults, setTestResults] = useState([]);
+  const [total, setTotal] = useState("0");
+
+  const query = useQuery();
+  const reportId = query.get("reportId");
 
   useEffect(() => {
-    axios.get(`http://localhost:3100/api/appoinments/${2}`)
-      .then(response => {
-        console.log(response.data);
-        setAppointment(response.data);
-      })
-      .catch(error => console.error('Error fetching the appointment data:', error));
-  }, [id]);
+    async function getTestData() {
+      try {
+        const response = await fetch(`http://localhost:3100/tests`);
+        if (!response.ok) {
+          throw new Error(`An error occurred: ${response.statusText}`);
+        }
+        const testData = await response.json();
+        setTestsDB(testData.response);
+      } catch (error) {
+        window.alert(error.message);
+      }
+    }
+    getTestData();
+  }, []);
 
-  if (!appointment) return <div>Loading...</div>;
+  useEffect(() => {
+    async function getRecords() {
+      try {
+        const response = await fetch(`http://localhost:3100/api/appoinments/${reportId}`);
+        if (!response.ok) {
+          throw new Error(`An error occurred: ${response.statusText}`);
+        }
+        const records = await response.json();
+        setRecord(records.response);
+      } catch (error) {
+        window.alert(error.message);
+      }
+    }
+    getRecords();
+  }, [reportId]);
 
-  const regDate = appointment.regdate
-    ? new Date(appointment.regdate.$date).toLocaleString()
-    : 'N/A';
-    
+  useEffect(() => {
+    async function getResults() {
+      try {
+        const response = await fetch(`http://localhost:3100/api/getResults`);
+        if (!response.ok) {
+          throw new Error(`An error occurred: ${response.statusText}`);
+        }
+        const results = await response.json();
+        setTestResults(results.response); // Assuming the API response has a 'response' field
+      } catch (error) {
+        window.alert(error.message);
+      }
+    }
+    getResults();
+  }, [reportId]);
 
-  const collectedDate = appointment.collectedDate
-    ? new Date(appointment.collectedDate).toLocaleString()
-    : 'N/A';
+  if (!record || !testDB.length) {
+    return <Typography>Loading...</Typography>;
+  }
 
-  const reportedDate = appointment.reportedDate
-    ? new Date(appointment.reportedDate).toLocaleString()
-    : 'N/A';
+  const inVoiceData = record.selectTests.map((test) => {
+    const dbTest = testDB.find((dbTest) => dbTest.id === test.testId) || {};
+    const result = testResults.find(
+      (res) => res.testtype === test.testName && res.pid === record.pid
+    ) || {};
+
+    return {
+      testID: test.testId,
+      testName: test.testName,
+      min: dbTest.min || "0",
+      max: dbTest.max || "infinity",
+      unit: dbTest.unit || "no data",
+      result: result.testresults || "no data",
+    };
+  });
+
+  const invoiceDetails = {
+    appointmentId: record.id || "INV-001",
+    date: record.regdate.split("T")[0],
+    dueDate: record.dueDate || "2024-07-24",
+    companyAddress: record.companyAddress || "1234 Main St, City, State, ZIP lab address",
+    customerName: record.pname || "John Doe",
+    customerAddress: record.customerAddress || "5678 Second St, City, State, ZIP customer address",
+    items: inVoiceData || [
+      { id: 1, description: "Item 1", quantity: 2, price: 50 },
+      { id: 2, description: "Item 2", quantity: 1, price: 100 },
+      { id: 3, description: "Item 3", quantity: 3, price: 30 },
+    ],
+  };
+
+  const columns = [
+    { field: "Test", headerName: "Test", width: 70 },
+    { field: "Default Range", headerName: "Default Range", width: 150 },
+    { field: "Result", headerName: "Result", width: 150 },
+    { field: "Unit", headerName: "Unit", width: 100 },
+  ];
 
   return (
-    <Container
-      sx={{
-        marginTop: "20px",
-        display: "grid",
-        gridTemplateColumns: "auto auto auto",
-        gridTemplateRows: "auto",
-        gridTemplateAreas: `
-          "logo . Contact"
-          "BD1 BD2 BD3"
-          "Table Table Table"
-          "end end end"
-          "E n d"
-          "printButton printButton printButton"
-        `,
-        columnGap: "30px",
-        rowGap: "75px",
-      }}
-    >
-      {/* First row */}
-      <Grid item xs={3} sx={{ gridArea: "logo" }}>
-        <Paper sx={{ width: "30%" }}>
-          <img
-            src={healthLabLogo}
-            alt="logo"
-            style={{ width: "100%", height: "auto" }}
-          />
-        </Paper>
-      </Grid>
-      <Grid
-        item
-        xs={3}
-        sx={{
-          gridArea: "Contact",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start",
-        }}
-      >
-        <Typography variant="body1">HealthLab</Typography>
-        <Typography variant="body1">123 Medical St, Health City</Typography>
-        <Typography variant="body1">Phone: (123) 456-7890</Typography>
-      </Grid>
-
-      {/* Second row */}
-      <Grid item xs={3} sx={{ gridArea: "BD1" }}>
-        <Typography variant="h6">{appointment.pname}</Typography>
-        <Typography variant="body1" sx={{ fontSize: "14px" }}>
-          Age: 26
-          <br />
-          Sex: Male
-          <br />
-          PID: {appointment.pid}
+    <Container>
+      <Paper elevation={3} sx={{ padding: 3, marginTop: 3, backgroundColor: "#F0F0F0" }}>
+        <Typography variant="h4" align="center" gutterBottom>
+          LAB REPORT
         </Typography>
-      </Grid>
-      <Grid item xs={3} sx={{ gridArea: "BD3" }}>
-        <Typography variant="h6">{appointment.pname}</Typography>
-        <Typography variant="body1" sx={{ fontSize: "14px" }}>
-          Registered on: {regDate}
-          <br />
-          Collected on: {collectedDate}
-          <br />
-          Reported on: {reportedDate}
-        </Typography>
-      </Grid>
-
-      {/* Third row */}
-      <Grid
-        item
-        xs={6}
-        sx={{ display: "grid", gridArea: "Table", width: "100%" }}
-      >
-        <TableContainer component={Paper}>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Paper sx={{ width: "30%" }}>
+              <img
+                src={healthLabLogo}
+                alt="logo"
+                style={{ width: "100%", height: "auto" }}
+              />
+            </Paper>
+            <Typography>{invoiceDetails.companyAddress}</Typography>
+          </Grid>
+          <Grid item xs={6} align="right">
+            <Typography variant="h6">{invoiceDetails.customerName}</Typography>
+            <Typography>{invoiceDetails.customerAddress}</Typography>
+          </Grid>
+        </Grid>
+        <Grid container spacing={2} marginTop={2}>
+          <Grid item xs={6}>
+            <Typography>
+              <strong>Appointment ID:</strong> {invoiceDetails.appointmentId}
+            </Typography>
+            <Typography>
+              <strong>Date:</strong> {invoiceDetails.date}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} align="right">
+            <Typography>
+              <strong>Due Date:</strong> {invoiceDetails.dueDate}
+            </Typography>
+          </Grid>
+        </Grid>
+        <TableContainer component={Paper} sx={{ marginTop: 3 }}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Test</TableCell>
-                <TableCell>Result</TableCell>
-                <TableCell>Reference Value</TableCell>
-                <TableCell>Unit</TableCell>
+                {columns.map((column) => (
+                  <TableCell key={column.field}>
+                    <strong>{column.headerName}</strong>
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
-              {appointment.selectTests && Array.isArray(appointment.selectTests) ? (
-                appointment.selectTests.map((test) => (
-                  console.log("here is "+test),
-                  <TableRow key={test.testId}>
-                    <TableCell>{test.testName}</TableCell>
-                    <TableCell>{test.result || 'N/A'}</TableCell>
-                    <TableCell>{test.min ? `${test.min} - ${test.max}` : 'N/A'}</TableCell>
-                    <TableCell>{test.unit || 'N/A'}</TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={4}>No test data available</TableCell>
+              {inVoiceData.map((item) => (
+                <TableRow key={item.testID}>
+                  <TableCell>{item.testName}</TableCell>
+                  <TableCell>{`${item.min}` + " - " + `${item.max}`}</TableCell>
+                  <TableCell>{item.result || ((item.max + item.min) / 2) - (item.max - item.min) / 4}</TableCell>
+                  <TableCell>{item.unit}</TableCell>
                 </TableRow>
-              )}
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
-      </Grid>
-
-      {/* End */}
-      <Grid item sx={{ display: "grid", gridArea: "end", placeSelf: "center" }}>
-        <Typography variant="body1">
-          ----------------------------- **End of report** -----------------------------
-        </Typography>
-      </Grid>
-
-      <Grid item sx={{ display: "grid", gridArea: "E" }}>
-        <Typography variant="body1">
-          ----------------------
-          <br />
-          Medical Lab Technician
-        </Typography>
-      </Grid>
-      <Grid item sx={{ display: "grid", gridArea: "d" }}>
-        <Typography variant="body1">
-          ----------------------
-          <br />
-          Dr. Rajitha Bandara
-        </Typography>
-      </Grid>
-
-      {/*<Grid item sx={{ display: "grid", gridArea: "printButton", placeSelf: "center" }}>
-        <Button variant="contained" color="primary" onClick={() => window.print()}>
-          Print
-        </Button>
-      </Grid>*/}
+        <Grid container spacing={2} marginTop={3}>
+          <Grid
+            item
+            sx={{
+              display: "grid",
+              gridArea: "printButton",
+              placeSelf: "center",
+            }}
+          >
+            {/* <Button
+              variant="contained"
+              color="primary"
+              onClick={() => window.print()}
+            >
+              Print
+            </Button> */}
+          </Grid>
+        </Grid>
+      </Paper>
     </Container>
   );
-}
+};
 
-export default PReportUI;
+export default Invoice;
