@@ -43,7 +43,7 @@ const Invoice = ( ) => {
       setUserData(user.user);
     }
     getUserDataByID();
-  }, [id]);
+  }, [id, apointmentDara.pid]);
 
   useEffect(() => {
     async function getTestData() {
