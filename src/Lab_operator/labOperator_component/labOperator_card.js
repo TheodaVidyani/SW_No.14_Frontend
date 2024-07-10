@@ -86,7 +86,9 @@ const CardSlider = ({ cards }) => {
       } else if (selectedCard.title === 'Add Test Results') {
         navigate(`/lab-operator/test-result`);
       } 
-
+      else if (selectedCard.title === 'View Reports') {  // Corrected the typo here
+        navigate(`/Viewreport`);
+      } 
     }
     handleCloseModal();
   };

@@ -43,11 +43,8 @@ export default function StickyHeadTable() {
               : 'No tests', // Handle the case where selectTests is not an array
           }));
           setRows(filteredData); // Update parent component's rows state
-          console.log("id 01"+jwtDecode(localStorage.getItem("myToken")).id);
-
         } else {
           console.error('Data received is not an array:', responseData);
-          console.log("id 02"+jwtDecode(localStorage.getItem("myToken")).id);
         }
       })
       .catch(error => {
