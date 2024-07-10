@@ -54,7 +54,7 @@ const FixedContainer = () => {
         date: selectedDate,
         id: rid,
         recommendation: msg,
-        docname: jwtDecode(localStorage.getItem("myToken")).username,
+        docname: jwtDecode(localStorage.getItem("myToken")).name,
         patientId: pid,
       });
 
@@ -89,7 +89,7 @@ const FixedContainer = () => {
     try {
       const response = await axios.post('http://localhost:3100/api/approve', {
         reportId: rid,
-        doctorName: jwtDecode(localStorage.getItem("myToken")).username,
+        doctorName: jwtDecode(localStorage.getItem("myToken")).name,
         recommendation: msg,
         patientId: pid,
       });
@@ -106,7 +106,7 @@ const FixedContainer = () => {
         setAlertMessage(`Error: ${error.message}`);
       }
     }
-    console.log("id"+jwtDecode(localStorage.getItem("myToken")).username)  ;
+    console.log("id"+jwtDecode(localStorage.getItem("myToken")).name)  ;
 
   };
   const handleRecheck = async () => {
@@ -161,7 +161,7 @@ const FixedContainer = () => {
             </Grid>
             <Grid item xs={2}>
               <TextField
-                value={jwtDecode(localStorage.getItem("myToken")).username}
+                value={jwtDecode(localStorage.getItem("myToken")).name}
               
                 style={{width:'200px'}}
                 id="outlined"
