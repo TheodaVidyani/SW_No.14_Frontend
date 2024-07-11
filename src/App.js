@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 // import React, { useState } from 'react';
 import Head from './Components/Head';
 import HomePage from './Components/HomePage';
-import Signin from "./Components/Signin";
+import Signup from "./Components/Signup";
 import Login from "./Components/Login";
 import Dhome from './Dhome';
 import Dapproval from './Dapproval';
@@ -86,7 +86,7 @@ function App() {
       <Route path='/Login' element={<Login/>}/>
       <Route path="/forgetpassword" element={<ForgotPassword />} />
       <Route path="/changePassword" element={<ChangePassword/>} />
-      <Route path='/Signin' element={<Signin/>}/>
+      <Route path='/Signup' element={<Signup/>}/>
       <Route path='/HomePage/*' element={<HomePage/>}/>
       <Route path='/Patient/:id' element={<Patient/>}/> 
       {/* Dynamic routing - '/Patient/:id'*/}
