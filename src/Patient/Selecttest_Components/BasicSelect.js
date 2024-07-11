@@ -27,6 +27,7 @@ export default function BasicSelect() {
   const [state, setState] = useState(null);
   const [regdate, setRegdate] = useState(null);
   const [billValue, setBillValue] = useState(0); // Initialize billValue to 0
+  const [patientView, setPatientView] = useState(null);
   // Snackbar
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -83,6 +84,7 @@ export default function BasicSelect() {
       setPatientId(decodedToken.id);
       setpatientName(decodedToken.name);
       setState('register_only');
+      setPatientView('not_ready');
       setRegdate(new Date());
 
       // Find the selected test object from the tests array
@@ -119,7 +121,7 @@ export default function BasicSelect() {
 
     const selectTestIds = selectedTestsForTable.map(test => test.id);
     const selectTestNames = selectedTestsForTable.map(test => test.name);
-
+    
     // Create a new appointment object
     const newAppointment = {
       selectTestIds: selectTestIds,
@@ -128,7 +130,8 @@ export default function BasicSelect() {
       patientName: patientName,
       state: state,
       regdate: regdate,
-      billValue: billValue
+      billValue: billValue,
+      patientView: patientView,
     };
 
     console.log("date is " + regdate);

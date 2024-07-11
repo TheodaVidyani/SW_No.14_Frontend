@@ -10,7 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 
 const columns = [
   { id: 'id', label: 'Report ID', minWidth: 170 },
@@ -43,11 +43,10 @@ export default function StickyHeadTable() {
               : 'No tests', // Handle the case where selectTests is not an array
           }));
           setRows(filteredData); // Update parent component's rows state
-          console.log("id 01"+jwtDecode(localStorage.getItem("myToken")).id);
+          console.log("id 01", jwtDecode(localStorage.getItem("myToken")).id);
 
         } else {
           console.error('Data received is not an array:', responseData);
-          console.log("id 02"+jwtDecode(localStorage.getItem("myToken")).id);
         }
       })
       .catch(error => {
@@ -77,6 +76,16 @@ export default function StickyHeadTable() {
     }
     return a[orderBy] > b[orderBy] ? -1 : 1;
   });
+
+  const doIt = (value) => {
+    axios.post('http://localhost:3100/api/updateappointment', { id: value, patientView: 'viewed' })
+        .then(response => {
+            console.log(`Appointment ${value} viewed by patient successfully!`);
+        })
+        .catch(error => {
+            console.error('Error updating appointment:', error);
+        });
+  };
 
   return (
     <Paper sx={{ width: '80%', overflow: 'hidden', margin: 'auto', textAlign: 'center' }}>
@@ -109,20 +118,21 @@ export default function StickyHeadTable() {
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                     {columns.map((column) => {
                       const value = row[column.id];
-                      return (
+                        return (
                         <TableCell key={column.id} align={column.align}>
                           {column.id === 'id' ? (
-                            <a href={`/Reportpreview/${value}`} style={{ textDecoration: 'underline', color: '#101754' }}>
-                              {value}
-                            </a>
+                          <a href={`/Reportpreview/${value}`} style={{ textDecoration: 'underline', color: '#101754' }} onClick={(event) => {event.preventDefault(); doIt(value);}}>
+                            {value}  
+                          </a>
                           ) : (
-                            column.format && typeof value === 'string'
-                              ? column.format(value)
-                              : value
+                          column.format && typeof value === 'string'
+                            ? column.format(value)
+                            : value
                           )}
                         </TableCell>
-                      );
+                        );
                     })}
+                    
                   </TableRow>
                 );
               })}

@@ -9,6 +9,7 @@ import WysiwygTwoToneIcon from '@mui/icons-material/WysiwygTwoTone';
 import AddToPhotosTwoToneIcon from '@mui/icons-material/AddToPhotosTwoTone';
 import PlagiarismTwoToneIcon from '@mui/icons-material/PlagiarismTwoTone';
 import FactCheckTwoToneIcon from '@mui/icons-material/FactCheckTwoTone';
+import NotificationIcon from '@mui/icons-material/NotificationImportant';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -117,8 +118,9 @@ const CardSlider = ({ cards }) => {
                 onClick={() => handleCardClick(index)}
               >
                 <CardContent>
-                  <Typography variant="h5" component="h2">
+                  <Typography variant="h5" component="h2" style={{ display: 'flex', alignItems: 'center' }}>
                     {card.title}
+                    {card.title === 'HISTORY' && <NotificationIcon style={{ marginLeft: '50%' }} />}
                   </Typography>
                   <Typography color="textSecondary">
                     {card.content}

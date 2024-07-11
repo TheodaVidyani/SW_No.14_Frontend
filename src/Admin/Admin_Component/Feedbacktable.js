@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, Grid, Button } from '@mui/material';
 import '../../maincss/Class.css';
 
 const FeedbacksUI = () => {
-    const feedbacks = [
-        { name: 'John Doe', email: 'johndoe@example.com', phoneNumber: '123-456-7890', date: '2022-01-01', feedback: 'Great service!' },
-        { name: 'Jane Smith', email: 'janesmith@example.com', phoneNumber: '987-654-3210', date: '2022-01-02', feedback: 'Very satisfied with the support.' },
-        { name: 'Alice Johnson', email: 'alicej@example.com', phoneNumber: '555-666-7777', date: '2022-01-03', feedback: 'Will recommend to others.' },
-        { name: 'Bob Brown', email: 'bobb@example.com', phoneNumber: '444-555-6666', date: '2022-01-04', feedback: 'Could be better.' },
-    ];
+    const [feedbacks, setFeedbacks] = useState([]);
+    const [expanded, setExpanded] = useState([]);
 
-    const [expanded, setExpanded] = useState(Array(feedbacks.length).fill(false));
+    useEffect(() => {
+        fetch('http://localhost:3100/getcontacts')
+            .then(response => response.json())
+            .then(data => {
+                setFeedbacks(data.response);
+                setExpanded(Array(data.response.length).fill(false));
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }, []);
 
     const handleExpandClick = (index) => {
         const newExpanded = [...expanded];
@@ -20,10 +24,10 @@ const FeedbacksUI = () => {
 
     return (
         <div className='Class'>
-            <Grid container spacing={3} direction="column" sx={{ paddingTop: '5%' , marginTop: '1%' }}>
+            <Grid container spacing={3} direction="column" sx={{ paddingTop: '5%', marginTop: '1%' }}>
                 {feedbacks.map((feedback, index) => (
-                    <Grid item xs={12} key={index} sx={{ marginTop: '0%', marginBottom: '0%', marginLeft: '17%', marginRight: '17%' }}>
-                        <Card className="feedback-card" sx={{ minHeight: 80, backgroundColor: '#E9E9E9', boxShadow: '5px 5px 5px rgba(0, 0, 0, 0.5)', }}>
+                    <Grid item xs={12} key={feedback._id} sx={{ marginTop: '0%', marginBottom: '0%', marginLeft: '17%', marginRight: '17%' }}>
+                        <Card className="feedback-card" sx={{ minHeight: 80, backgroundColor: '#E9E9E9', boxShadow: '5px 5px 5px rgba(0, 0, 0, 0.5)' }}>
                             <CardContent>
                                 <Grid container justifyContent="space-between" alignItems="center">
                                     <Grid item xs={10}>
@@ -36,10 +40,10 @@ const FeedbacksUI = () => {
                                                     Email: {feedback.email}
                                                 </Typography>
                                                 <Typography variant="body2" color="text.secondary">
-                                                    Phone Number: {feedback.phoneNumber}
+                                                    Phone Number: {feedback.phone_number}
                                                 </Typography>
                                                 <Typography variant="body2" color="text.secondary">
-                                                    Date: {feedback.date}
+                                                    Date: {new Date(feedback.date).toLocaleDateString()}
                                                 </Typography>
                                                 <Typography variant="body2" color="text.primary" sx={{ marginTop: 2 }}>
                                                     Feedback: {feedback.feedback}
