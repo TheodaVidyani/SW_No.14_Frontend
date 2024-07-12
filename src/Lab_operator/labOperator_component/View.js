@@ -10,41 +10,39 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { jwtDecode } from 'jwt-decode'; // Changed import statement
+import { jwtDecode } from 'jwt-decode';
 
 const columns = [
-  { id: 'id', label: 'Appointment ID', minWidth: 170 },
+  { id: 'id', label: 'Report ID', minWidth: 170 },
   { id: 'regdate', label: 'Registered Date', minWidth: 100 },
   { id: 'selectTests', label: 'Test Types', minWidth: 100 },
-  { id: 'billvalue', label: 'Bill Value', minWidth: 170, align: 'right' },
+  { id: 'state', label: 'Current State', minWidth: 170 },
+  { id: 'billvalue', label: 'Bill Value', minWidth: 100, align: 'right' }
 ];
 
-export default function StickyHeadTable({ setRows }) {
+export default function StickyHeadTable() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [rows, setLocalRows] = useState([]);
-  const [orderBy, setOrderBy] = useState('id');
+  const [rows, setRows] = useState([]);
   const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('');
 
   useEffect(() => {
     axios.get('http://localhost:3100/api/appointments')
       .then(response => {
+        console.log('Response data:', response.data);
         const responseData = response.data && response.data.response; // Accessing the 'response' key
         if (Array.isArray(responseData)) {
-          console.log('Data received:', responseData);
-          const modifiedData = responseData
-            .filter(item => item.state === 'register_only' && item.pid === jwtDecode(localStorage.getItem("myToken")).id)
-            .map(item => ({
-              ...item,
-              regdate: item.regdate.slice(0, 10), // Slice the first 10 characters of regdate
-              selectTests: Array.isArray(item.selectTests)
-          ? item.selectTests.map(test => test.testName.slice(0, 15)).join(', ') // Join test names with a comma
-          : 'No tests', // Handle the case where selectTests is not an array
-            }));
-          console.log('Modified data:', modifiedData);
-          console.log('id is ', jwtDecode(localStorage.getItem("myToken")).id);
-          setLocalRows(modifiedData);
-          setRows(modifiedData); // Update parent component's rows state
+          const filteredData = responseData.filter(item => (
+            item.state === 'result_add' && item.pid === jwtDecode(localStorage.getItem("myToken")).id)
+          ).map(item => ({
+            ...item,
+            regdate: item.regdate.slice(0, 10), // Slice the first 10 characters of regdate
+            selectTests: Array.isArray(item.selectTests)
+              ? item.selectTests.map(test => test.testName.slice(0, 17)).join(', ') // Join test names with a comma
+              : 'No tests', // Handle the case where selectTests is not an array
+          }));
+          setRows(filteredData); // Update parent component's rows state
         } else {
           console.error('Data received is not an array:', responseData);
         }
@@ -52,7 +50,13 @@ export default function StickyHeadTable({ setRows }) {
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-  }, [setRows]);
+  }, []);
+
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -63,18 +67,12 @@ export default function StickyHeadTable({ setRows }) {
     setPage(0);
   };
 
-  const handleSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
-
-  const sortedRows = [...rows].sort((a, b) => {
-    if (orderBy === 'billvalue') {
-      return order === 'asc' ? a.billvalue - b.billvalue : b.billvalue - a.billvalue;
-    } else {
-      return order === 'asc' ? a.id - b.id : b.id - a.id;
+  const sortedRows = rows.sort((a, b) => {
+    if (orderBy === '') return 0;
+    if (order === 'asc') {
+      return a[orderBy] < b[orderBy] ? -1 : 1;
     }
+    return a[orderBy] > b[orderBy] ? -1 : 1;
   });
 
   return (
@@ -88,12 +86,11 @@ export default function StickyHeadTable({ setRows }) {
                   key={column.id}
                   align={column.align}
                   style={{ minWidth: column.minWidth, fontWeight: 'bold', backgroundColor: '#D9D9D9' }}
-                  sortDirection={orderBy === column.id ? order : false}
                 >
                   <TableSortLabel
                     active={orderBy === column.id}
                     direction={orderBy === column.id ? order : 'asc'}
-                    onClick={() => handleSort(column.id)}
+                    onClick={() => handleRequestSort(column.id)}
                   >
                     {column.label}
                   </TableSortLabel>
@@ -104,26 +101,28 @@ export default function StickyHeadTable({ setRows }) {
           <TableBody>
             {sortedRows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                  {columns.map((column) => {
-                    const value = row[column.id];
-                    return (
-                      <TableCell key={column.id} align={column.align}>
-                        {column.id === 'id' ? (
-                          <a href={`/Invoicepreview/${value}`} style={{ textDecoration: 'underline', color: '#101754' }}>
-                            {value}
-                          </a>
-                        ) : (
-                          column.format && typeof value === 'string'
-                            ? column.format(value)
-                            : value
-                        )}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))}
+              .map((row) => {
+                return (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                    {columns.map((column) => {
+                      const value = row[column.id];
+                      return (
+                        <TableCell key={column.id} align={column.align}>
+                          {column.id === 'id' ? (
+                            <a href={`/Reportpreview/${value}`} style={{ textDecoration: 'underline', color: '#101754' }}>
+                              {value}
+                            </a>
+                          ) : (
+                            column.format && typeof value === 'string'
+                              ? column.format(value)
+                              : value
+                          )}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>

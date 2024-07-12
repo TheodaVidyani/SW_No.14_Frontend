@@ -1,14 +1,14 @@
 // Invoicepreview.js
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import Invoice from '../../Labasisstence/Invoice/Component/invoice';
+import Pinvoice from './Pinvoice';
 
 function Invoicepreview() {
   const { id } = useParams();
 
   return (
     <div>
-      <Invoice id ={id}/>
+      <Pinvoice id ={id}/>
     </div>
   );
 }

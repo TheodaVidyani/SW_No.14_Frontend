@@ -31,6 +31,7 @@ import AViewTest from './Admin/AViewTest';
 import PViewAppointment from './Patient/Patient_Component/PViewAppointment';
 import Reportview from './Labasisstence/LabasisstencePages/Reportview';
 import ReportUI from './Labasisstence/LabasisstenceComponent/ReportUI';
+import Viewreport from './Lab_operator/labOperator_component/Viewreport';
 
 import TestResult from './Lab_operator/TestResult';
 
@@ -52,6 +53,7 @@ import ReportView from './Dapproval/ReportView';
 import Report from './Dapproval/Report';
 import Paymentpreview from './Patient/Patient_Component/Paymentpreview';
 import Invoice  from './Labasisstence/Invoice/Component/invoice';
+import Pinvoice from './Patient/Patient_Component/Pinvoice';
 
 // const App = () => {
 //   const [userId, setUserId] = useState(''); // Initialize with actual user data
@@ -75,7 +77,8 @@ function App() {
       <Route path='/PViewAppointment/:id' element={<PViewAppointment/>}/>
       <Route path='/ViewPatient/:id' element={<ViewPatient/>}/>
       <Route path='/PPendViewAppointment/:id' element={<PPendViewAppointment/>}/>
-      
+      <Route path='/Viewreport' element={<Viewreport/>}/>
+
       
       <Route path='/PViewTest/:id' element={<PViewTest/>}/>
       <Route path='/Selecttest' element={<Selecttest/>}/>
@@ -129,6 +132,7 @@ function App() {
   <Route path="/Report/:id" element={<Report/>}/>
   <Route path="/Paymentpreview/:id" element={<Paymentpreview/>}/>
   <Route path="/Invoice" element={<Invoice/>}/>
+  <Route path="/Pinvoice" element={<Pinvoice/>}/>
     </Routes>
   </BrowserRouter>
     </div>

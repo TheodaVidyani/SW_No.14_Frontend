@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 const Record = (props) => {
   const navigate = useNavigate();
   const navigateInvoice=useNavigate();
+
   
   const HandleGenerate = (record) => {
     navigate('/ReportUI', { state: { record } });
@@ -15,20 +16,31 @@ const Record = (props) => {
     navigateInvoice('/Invoice', { state: { record } });
   };
 
+
+  const [ResultStatus, setResultStatus] = useState("Pending");
+
+  useEffect(() => {
+    if (props.record.state === "result_add") {
+      setResultStatus("Result Updated");}
+      else{
+        setResultStatus("Pending");
+      }},[props.record.state]);
+
   return (
     <TableRow>
       <TableCell>{props.record.id}</TableCell>
       <TableCell>{props.record.pname}</TableCell>
       <TableCell>{props.record.pid}</TableCell>
+      <TableCell style={{ color: ResultStatus === "Result Updated" ? "green" : "red" }}>{ResultStatus}</TableCell>
       <TableCell>
-        <Button variant="outlined" color="primary" onClick={() => HandleGenerate(props.record)}>
-          Report
-        </Button>
-        </TableCell>
-        <TableCell>
-        <Button variant="outlined" color="primary" onClick={() => HandleInvoice(props.record)}>
-          invoice
-        </Button>
+      <Button variant="outlined" color="primary" onClick={() => HandleGenerate(props.record)}>
+        Report
+      </Button>
+      </TableCell>
+      <TableCell>
+      <Button variant="outlined" color="primary" onClick={() => HandleInvoice(props.record)}>
+        Invoice
+      </Button>
       </TableCell>
     </TableRow>
   );
@@ -47,10 +59,11 @@ export default function RecordeList() {
         return;
       }
       const records = await response.json();
-      setRecords(records.response);
+      const filteredRecords = records.response;
+      setRecords(filteredRecords);
     }
     getRecords();
-  }, [records.length]);
+  }, []);
 
   const RenderRecordList = () => {
     const filteredRecords = records.filter(record =>
@@ -88,6 +101,7 @@ export default function RecordeList() {
                     <TableCell>ReportID</TableCell>
                     <TableCell>Name</TableCell>
                     <TableCell>Patient ID</TableCell>
+                    <TableCell>State</TableCell>
                     <TableCell>Report</TableCell>
                     <TableCell>Invoice</TableCell>
                   </TableRow>

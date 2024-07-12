@@ -1,32 +1,49 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Paper } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Paper,TablePagination,Box,Typography} from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 
+const columns = [
+    { id: 'patient_id', label: 'Patient ID', minWidth: 100 },
+    { id: 'name', label: 'Name', minWidth: 100 },
+    { id: 'appointment_id', label: 'Appointment Id', minWidth: 100 },
+    { id: 'test', label: 'Test', minWidth: 100 },
+    { id: 'test_result', label: 'Test Result', minWidth: 100 },
+    { id: 'action', label: 'Action', minWidth: 100, align: 'center' },
+  ];
 const TestresulltTable = ({ rows, selectedResult, deleteResults }) => {
  
-
-     const handleEditUser = (id) => {
-        console.log(`Editing appointment with ID ${id}`);
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  
+    const handleChangePage = (event, newPage) => {
+      setPage(newPage);
+    };
+  
+    const handleChangeRowsPerPage = (event) => {
+      setRowsPerPage(+event.target.value);
+      setPage(0);
     };
 
-    const handleDeleteUser = (pid) => {
-        // Implement delete user functionality here
-        console.log(`Deleting user with ID ${pid}`);
-    }; 
-
     return (
-        <TableContainer component={Paper}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Patient ID</TableCell>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Appointment Id</TableCell>
-                        <TableCell>Test</TableCell>
-                        <TableCell>Test Result</TableCell>
-                        <TableCell>Action</TableCell>
-                    </TableRow>
-                </TableHead>
+        <Paper sx={{ width: '98%', overflow: 'hidden', margin: 'auto', textAlign: 'center', marginTop: 2 }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 2, padding: 4, marginTop: 4 }}>
+        <Typography variant="h5">Test Results</Typography>
+      </Box>
+      <TableContainer sx={{ maxHeight: 420, minHeight: 390 }}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  align={column.align}
+                  style={{ minWidth: column.minWidth, fontWeight: 'bold', backgroundColor: '#D9D9D9' }}
+                >
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
                 <TableBody>
                     {
                         rows.length > 0 ? rows.map(row => (
@@ -82,7 +99,10 @@ const TestresulltTable = ({ rows, selectedResult, deleteResults }) => {
 
             </Table>
         </TableContainer>
+       
+    
+      </Paper>
     );
-}
 
+    }
 export default TestresulltTable;
