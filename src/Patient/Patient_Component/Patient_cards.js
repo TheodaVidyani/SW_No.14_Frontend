@@ -99,6 +99,12 @@ const CardSlider = ({ cards }) => {
     handleCloseModal();
   };
 
+  const calculateValue = () => {
+  // Add your logic here to calculate the value dynamically
+
+    return 5;
+  };
+  
   // Inside the CardSlider component
   const IconComponent = selectedCard && selectedCard.icon;
 
@@ -118,9 +124,14 @@ const CardSlider = ({ cards }) => {
                 onClick={() => handleCardClick(index)}
               >
                 <CardContent>
-                  <Typography variant="h5" component="h2" style={{ display: 'flex', alignItems: 'center' }}>
+                  <Typography variant="h5" component="h2" style={{ display: 'flex' }}>
                     {card.title}
-                    {card.title === 'HISTORY' && <NotificationIcon style={{ marginLeft: '50%' }} />}
+                    {card.title === 'HISTORY' && <NotificationIcon style={{ marginLeft: '50%',fontSize: '2rem',color: 'darkred'}} />}
+                    {card.title === 'HISTORY' && 
+                      <span style={{ marginLeft: '0.1px', fontWeight:'bold' , verticalAlign: 'super', fontSize: '0.6em' ,color: 'darkred'}}>
+                        ({calculateValue()})
+                      </span>
+                    }
                   </Typography>
                   <Typography color="textSecondary">
                     {card.content}
