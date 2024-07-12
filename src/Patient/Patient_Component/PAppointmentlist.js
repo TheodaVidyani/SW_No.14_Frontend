@@ -34,7 +34,7 @@ export default function StickyHeadTable() {
         const responseData = response.data && response.data.response; // Accessing the 'response' key
         if (Array.isArray(responseData)) {
           const filteredData = responseData.filter(item => (
-            item.state === 'result_add' && item.pid === jwtDecode(localStorage.getItem("myToken")).id)
+            (item.state === 'result_add' || item.state === 'Doctor_approved') && item.pid === jwtDecode(localStorage.getItem("myToken")).id)
           ).map(item => ({
             ...item,
             regdate: item.regdate.slice(0, 10), // Slice the first 10 characters of regdate
@@ -77,14 +77,22 @@ export default function StickyHeadTable() {
     return a[orderBy] > b[orderBy] ? -1 : 1;
   });
 
-  const doIt = (value) => {
-    axios.post('http://localhost:3100/api/updateappointment', { id: value, patientView: 'viewed' })
+  const handleLinkClick = (event, value, state) => {
+    event.preventDefault(); // Prevent default link behavior
+    console.log(`Appointment state: ${state}`);
+    if (state === 'Doctor_approved') {
+      axios.post('http://localhost:3100/api/updateappointment', { id: value, patientView: 'viewed' })
         .then(response => {
-            console.log(`Appointment ${value} viewed by patient successfully!`);
+          console.log(`Appointment ${value} viewed by patient successfully!`);
+          window.location.href = `/Reportpreview/${value}`; // Navigate to the report preview page
         })
         .catch(error => {
-            console.error('Error updating appointment:', error);
+          console.error('Error updating appointment:', error);
         });
+    } else {
+      // Handle cases where the appointment state is not 'Doctor_approved'
+      window.location.href = `/Reportpreview/${value}`; // Navigate to the report preview page
+    }
   };
 
   return (
@@ -118,21 +126,20 @@ export default function StickyHeadTable() {
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                     {columns.map((column) => {
                       const value = row[column.id];
-                        return (
+                      return (
                         <TableCell key={column.id} align={column.align}>
                           {column.id === 'id' ? (
-                          <a href={`/Reportpreview/${value}`} style={{ textDecoration: 'underline', color: '#101754' }} onClick={(event) => {event.preventDefault(); doIt(value);}}>
-                            {value}  
-                          </a>
+                            <a href={`/Reportpreview/${value}`} style={{ textDecoration: 'underline', color: '#101754' }} onClick={(event) => handleLinkClick(event, value, row.state)}>
+                              {value}
+                            </a>
                           ) : (
-                          column.format && typeof value === 'string'
-                            ? column.format(value)
-                            : value
+                            column.format && typeof value === 'string'
+                              ? column.format(value)
+                              : value
                           )}
                         </TableCell>
-                        );
+                      );
                     })}
-                    
                   </TableRow>
                 );
               })}
