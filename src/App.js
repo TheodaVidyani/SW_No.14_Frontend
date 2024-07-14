@@ -54,10 +54,8 @@ import Report from './Dapproval/Report';
 import Paymentpreview from './Patient/Patient_Component/Paymentpreview';
 import Invoice  from './Labasisstence/Invoice/Component/invoice';
 import Pinvoice from './Patient/Patient_Component/Pinvoice';
-
-// const App = () => {
-//   const [userId, setUserId] = useState(''); // Initialize with actual user data
-//   const [username, setUsername] = useState(''); // Initialize with actual user data
+import FeedbacksUI from './Admin/Admin_Component/FeedbacksUI';
+import Feedbacktable from './Admin/Admin_Component/Feedbacktable';
 
 function App() {
   return (
@@ -133,6 +131,9 @@ function App() {
   <Route path="/Paymentpreview/:id" element={<Paymentpreview/>}/>
   <Route path="/Invoice" element={<Invoice/>}/>
   <Route path="/Pinvoice" element={<Pinvoice/>}/>
+  <Route path="/FeedbacksUI" element={<FeedbacksUI/>}/>
+  <Route path='/Feedbacktable' element={<Feedbacktable/>}/>
+
     </Routes>
   </BrowserRouter>
     </div>
