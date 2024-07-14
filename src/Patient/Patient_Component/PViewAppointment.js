@@ -11,9 +11,9 @@ function ViewTest() {
     <div className = "Class" sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Patienthead />
       <Grid sx={{flex: 1, paddingTop:'12%', paddingBottom:'3%'}}>
-        
+      <BackToTop />
         <PAppointmentlist/>
-        <BackToTop />
+        
       </Grid>
       <Footer />
     </div>
