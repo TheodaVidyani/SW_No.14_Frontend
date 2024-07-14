@@ -29,9 +29,12 @@ const Signup = () => {
     password: ''
   });
 
+
+
   const [confirmPassword, setConfirmPassword] = useState('');
   const [age, setAge] = useState(null);
   const [error, setError] = useState({ field: '', message: '' });
+  const [isEmailRequired, setIsEmailRequired] = useState(true);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -48,6 +51,7 @@ const Signup = () => {
     } else {
       setAge(age);
     }
+    setIsEmailRequired(age >= 16);
     handleChange(e);
   };
 
@@ -93,6 +97,11 @@ const Signup = () => {
       return;
     }
 
+    if (age >= 16 && !validateNationalID(data.nationalID)) {
+      setError({ field: 'nationalID', message: 'Invalid national ID format' });
+      return;
+    }
+
     if (data.password !== confirmPassword) {
       setError({ field: 'confirmPassword', message: 'Confirm Password does not match' });
       return;
@@ -108,13 +117,8 @@ const Signup = () => {
       return;
     }
 
-    if (!validateNationalID(data.nationalID)) {
-      setError({ field: 'nationalID', message: 'Invalid national ID format' });
-      return;
-    }
-
-    if (age >= 16 && !validateNationalID(data.nationalID)) {
-      setError({ field: 'nationalID', message: 'Invalid national ID format' });
+    if (!validatePassword(data.password)) {
+      setError({ field: 'password', message: 'Password must be at least 8 characters long and contain at least one special character, uppercase letter, and digit' });
       return;
     }
 
@@ -285,10 +289,10 @@ const Signup = () => {
               name="nationalID"
               value={data.nationalID}
               onChange={handleChange}
+              required={age >= 16}
               style={{ marginBottom: "5px" }}
               error={error.field === 'nationalID'}
               helperText={error.field === 'nationalID' ? error.message : ''}
-              required={age >= 16}
             />
             <Typography variant="body2" color="textSecondary" style={{ marginBottom: "20px" }}>
               Required only for users above the age of 16
