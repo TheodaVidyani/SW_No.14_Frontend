@@ -294,6 +294,7 @@ const Signup = () => {
               error={error.field === 'nationalID'}
               helperText={error.field === 'nationalID' ? error.message : ''}
             />
+            {/* //Comment */}
             <Typography variant="body2" color="textSecondary" style={{ marginBottom: "20px" }}>
               Required only for users above the age of 16
             </Typography>
