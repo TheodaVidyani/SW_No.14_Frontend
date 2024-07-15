@@ -36,6 +36,15 @@ export default function Appointmentsearch({ rows }) {
     }
   };
 
+  const formatTests = (tests) => {
+    if (Array.isArray(tests)) {
+      return tests.map(test => <ul key={test.testName}>{test.testName}</ul>);
+    } else if (typeof tests === 'string') {
+      return tests.split(',').map(test => <ul key={test}>{test.trim()}</ul>);
+    }
+    return 'No tests available';
+  };
+
   return (
     <div style={{ position: 'relative', maxWidth: '50%', margin: '0 auto', paddingBottom: '20px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -88,7 +97,7 @@ export default function Appointmentsearch({ rows }) {
           <div
             style={{
               position: 'absolute',
-              top: '160%',
+              top: '190%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
               width: '90%',
@@ -120,11 +129,7 @@ export default function Appointmentsearch({ rows }) {
                       <li><strong>Appointment ID:</strong> {selectedAppointment?.id}</li>
                       <li><strong>Patient Name:</strong> {selectedAppointment?.pname}</li>
                       <li><strong>Patient ID:</strong> <br />{selectedAppointment?.pid}</li>
-                      <li><strong>Blood Tests:</strong> <br />
-                        {Array.isArray(selectedAppointment.selectTests) ? 
-                          selectedAppointment.selectTests.map(test => <ul key={test.testName}>{test.testName}</ul>)
-                          : 'No tests'}
-                      </li>
+                      <li><strong>Blood Tests:</strong> <br />{formatTests(selectedAppointment.selectTests)}</li>
                       <li><strong>Registered Date:</strong> <br />{selectedAppointment?.regdate.slice(0, 10)}</li>
                       <li><strong>Appointment Current State:</strong> {selectedAppointment?.state}</li>
                       <li><strong>Appointment Billvalue:</strong>{" LKR " + selectedAppointment?.billvalue}</li>

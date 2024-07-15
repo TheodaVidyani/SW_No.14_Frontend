@@ -32,9 +32,9 @@ export default function Dhome02() {
   };
 
   return (
-    <Box sx={{ width: '70%', margin: 'auto', backgroundColor: '#D9D9D9', padding: '20px', borderRadius: '8px' }}>
+    <Box sx={{ width: '79%', margin: 'auto', backgroundColor: '#D9D9D9', padding: '20px', borderRadius: '8px' }}>
       <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} sx={{ alignItems:'center'}}>
           <Grid item xs={7} sx={{ marginTop: '10px' }}>
             <FormControl fullWidth error={!!errors.reportId}>
               <InputLabel id="appointment-id-label">Report ID</InputLabel>
@@ -60,7 +60,7 @@ export default function Dhome02() {
               )}
             </FormControl>
           </Grid>
-          <Grid item xs={1} sx={{ marginTop: '10px', marginLeft: '300px' }}>
+          <Grid item xs={1} sx={{ marginTop: '10px', marginLeft: '200px' }}>
             <Button onClick={handleClick} sx={{ variant: 'contained', color: '#FFFFFF', background: '#101754', width: '250px', height: '50px' }}>
               View Report
             </Button>
