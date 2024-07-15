@@ -41,8 +41,8 @@ function Login() {
       } else {
         if(localStorage.getItem('myToken') !== null){
           localStorage.removeItem('myToken');
-          localStorage.setItem('myToken', userData.data);
         }
+        localStorage.setItem('myToken', userData.data);
         setData({ username: '', password: '' }); // Clear input fields
 
         // Decode the JWT token to get the user information
