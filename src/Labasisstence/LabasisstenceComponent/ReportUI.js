@@ -278,11 +278,7 @@ const ReportUI = () => {
           Reported On: {reportDetails.ReportedOn}
         </Typography>
       </Grid>
-      <Grid item xs={6} sx={{ gridArea: "BD2", margin: "auto", width: "100%" }}>
-        <Typography variant="p" sx={{ fontSize: "20px" }}>
-          Biochemistry Report
-        </Typography>
-      </Grid>
+    
       <Grid item xs={12} sx={{ gridArea: "Table", width: "100%" }}>
         <TableContainer component={Paper}>
           <Table>
