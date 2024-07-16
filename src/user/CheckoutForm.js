@@ -136,13 +136,13 @@ const CheckoutForm = ({ valueid }) => {
                 </Box>
               </Grid>
               <Grid item xs={12}>
-                <Button
+                <Button 
                   type="submit"
                   fullWidth
                   variant="contained"
                   color="primary"
                   disabled={!stripe || loading}
-                  sx={{ py: 1.5, mt: 2, mb: 2, fontWeight: 'bold' }}
+                  sx={{ py: 1.5, mt: 2, mb: 2, fontWeight: 'bold' , width: '100%'}}
                 >
                   {loading ? <CircularProgress size={24} color="inherit" /> : 'Pay Now'}
                 </Button>

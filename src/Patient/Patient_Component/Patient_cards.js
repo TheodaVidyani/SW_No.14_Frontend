@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardContent, Button, Typography, Grid, Modal } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,9 @@ import WysiwygTwoToneIcon from '@mui/icons-material/WysiwygTwoTone';
 import AddToPhotosTwoToneIcon from '@mui/icons-material/AddToPhotosTwoTone';
 import PlagiarismTwoToneIcon from '@mui/icons-material/PlagiarismTwoTone';
 import FactCheckTwoToneIcon from '@mui/icons-material/FactCheckTwoTone';
+import NotificationIcon from '@mui/icons-material/NotificationImportant';
+import axios from 'axios';
+import {jwtDecode} from 'jwt-decode';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -60,7 +63,35 @@ const CardSlider = ({ cards }) => {
   const [position, setPosition] = useState(0);
   const [selectedCard, setSelectedCard] = useState(null);
   const [cardClicked, setCardClicked] = useState(false);
+  const [appointmentCount, setAppointmentCount] = useState(0); // New state for appointment count
   const navigate = useNavigate();
+
+  try {
+    useEffect(() => {
+      const fetchAppointmentCount = async () => {
+        try {
+          const response = await axios.get('http://localhost:3100/api/appointments');
+          const appointments = response.data && response.data.response;
+
+          const userId = jwtDecode(localStorage.getItem('myToken')).id;
+          const count = appointments.filter(appointment =>
+            appointment.state === 'Doctor_approved' &&
+            appointment.patientView !== 'viewed' &&
+            appointment.pid === userId
+          ).length;
+          console.log('Appointment count:', count);
+          setAppointmentCount(count);
+        } catch (error) {
+          console.log('Appointment count catch block');
+          console.error('Error fetching appointments:', error);
+        }
+      };
+
+      fetchAppointmentCount();
+    }, []);
+  } catch (error) {
+    console.error('Error in try block:', error);
+  }
 
   const handleNext = () => {
     setPosition((prevPosition) => Math.min(prevPosition + 1, cards.length - 2));
@@ -81,7 +112,6 @@ const CardSlider = ({ cards }) => {
   };
 
   const handleAction = () => {
-    
     if (selectedCard) {
       if (selectedCard.title === 'PENDING') {
         navigate(`/PPendViewAppointment/:id`);
@@ -98,14 +128,13 @@ const CardSlider = ({ cards }) => {
     handleCloseModal();
   };
 
-  // Inside the CardSlider component
   const IconComponent = selectedCard && selectedCard.icon;
 
   return (
     <div className={classes.root}>
-      <Grid container justify="center">
+      <Grid container justify="center" style={{alignItems: 'center' ,marginLeft:'1%'}}>
         <Grid item xs={1}>
-          <Button onClick={handlePrev} disabled={position === 0}><ArrowBackIosIcon/></Button>
+        <Button onClick={handlePrev} disabled={position === 0} style={{color:'#ffffff',backgroundColor:'#1087A5', borderRadius: '50%', visibility: position === 0 ? 'hidden' : 'visible'}}><ArrowBackIosIcon/></Button>
         </Grid>
         <Grid item xs={10}>
           <div className={classes.cardContainer}>
@@ -117,8 +146,14 @@ const CardSlider = ({ cards }) => {
                 onClick={() => handleCardClick(index)}
               >
                 <CardContent>
-                  <Typography variant="h5" component="h2">
+                  <Typography variant="h5" component="h2" style={{ display: 'flex' }}>
                     {card.title}
+                    {card.title === 'HISTORY' && <NotificationIcon style={{ marginLeft: '50%',fontSize: '2rem',color: appointmentCount !== 0 ? 'darkred' : 'inherit'}} />}
+                    {card.title === 'HISTORY' && 
+                      <span style={{ marginLeft: '0.1px', fontWeight:'bold' , verticalAlign: 'super', fontSize: '0.6em' ,color: appointmentCount !== 0 ? 'darkred' : 'inherit'}}>
+                        ({appointmentCount}) {/* Use the dynamic count */}
+                      </span>
+                    }
                   </Typography>
                   <Typography color="textSecondary">
                     {card.content}
@@ -132,7 +167,7 @@ const CardSlider = ({ cards }) => {
           </div>
         </Grid>
         <Grid item xs={1}>
-          <Button onClick={handleNext} disabled={position === cards.length - 2}><ArrowForwardIosIcon/></Button>
+        <Button onClick={handleNext} disabled={position === cards.length - 2} style={{color:'#ffffff',backgroundColor:'#1087A5', borderRadius: '50%', visibility: position === cards.length - 2 ? 'hidden' : 'visible'}}><ArrowForwardIosIcon/></Button>
         </Grid>
       </Grid>
       <Modal

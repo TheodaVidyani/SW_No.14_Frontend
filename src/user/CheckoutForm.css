@@ -39,7 +39,7 @@ input, .StripeElement {
 
 /* Button styles for the payment action */
 button {
-    width: 100%; /* Full width button */
+    /*width: 100%;*/ /* Full width button */
     background-color: #00C853; /* Green color for a go-action feel */
     color: white; /* White text for contrast */
     padding: 12px; /* Padding for a larger click area */
