@@ -147,6 +147,7 @@ const ReportUI = () => {
   const handleEditClick = (test) => {
     setSelectedTest(test);
     setEditedResult(test.result);
+
     setOpen(true);
   };
 
@@ -164,8 +165,8 @@ const ReportUI = () => {
       }
       
       // Validate the range of the edited result
-      const min = 300;
-      const max = 20000;
+      const min = selectedTest.min;
+      const max = selectedTest.max;
       if (min !== 'no data' && max !== 'no data') {
         const result = parseFloat(editedResult);
         if (result < parseFloat(min) || result > parseFloat(max)) {
