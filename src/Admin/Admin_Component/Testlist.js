@@ -11,10 +11,11 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import axios from 'axios';
 
 const columns = [
-  { id: 'id', label: 'Test Id', minWidth: 100 },
+  { id: 'id', label: 'Test Id', minWidth: 70 },
   { id: 'name', label: 'Test Type', minWidth: 100 },
-  { id: 'description', label: 'Description', minWidth: 100 },
-  { id: 'price', label: 'Price', minWidth: 100, align: 'right' },
+  { id: 'range', label: 'Default Range', minWidth: 70 },
+  { id: 'description', label: 'Description', minWidth: 120 },
+  { id: 'price', label: 'Price', minWidth: 35, align: 'right' },
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -56,8 +57,12 @@ export default function Testlist({ setRows }) {
         console.log('Response data:', response.data);
         const responseData = response.data && response.data.response;
         if (Array.isArray(responseData)) {
-          setLocalRows(responseData);
-          setRows(responseData);
+          const formattedData = responseData.map(item => ({
+            ...item,
+            range: `[${item.min} - ${item.max || 'no max'}] ${item.unit}`,
+          }));
+          setLocalRows(formattedData);
+          setRows(formattedData);
         } else {
           console.error('Data received is not an array:', responseData);
         }
