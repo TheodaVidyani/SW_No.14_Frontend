@@ -1,3 +1,4 @@
+// export default ReportUI;
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -17,6 +18,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Snackbar,
   Alert,
 } from "@mui/material";
 import healthLabLogo from "./Labasisstenceimg/Health lab logo_.png";
@@ -24,14 +26,15 @@ import { useLocation } from "react-router-dom";
 
 const ReportUI = () => {
   const location = useLocation();
-  const [testsDB, setTestsDB] = useState([]);//Store test data
-  const [userData, setUserData] = useState([]);//Store user data
-  const [results, setResults] = useState([]);//Store test results data
-  const [open, setOpen] = useState(false); 
-  const [selectedTest, setSelectedTest] = useState(null); 
+  const [testsDB, setTestsDB] = useState([]); //Store test data
+  const [userData, setUserData] = useState([]); //Store user data
+  const [results, setResults] = useState([]); //Store test results data
+  const [open, setOpen] = useState(false);
+  const [selectedTest, setSelectedTest] = useState(null);
   const [editedResult, setEditedResult] = useState("");
-  const [updateStatus, setUpdateStatus] = useState("");
-  const [showAlert, setShowAlert] = useState(false); // store alert status
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("success");
+  const [showAlert, setShowAlert] = useState(false);
 
   const record = location.state.record;
   const tests = record.selectTests; // store all test type on appointment
@@ -41,7 +44,9 @@ const ReportUI = () => {
     async function getTestData() {
       const response = await fetch(`http://localhost:3100/tests`);
       if (!response.ok) {
-        window.alert(`An error occurred: ${response.statusText}`);
+        setAlertMessage(`An error occurred: ${response.statusText}`);
+        setAlertType("error");
+        setShowAlert(true);
         return;
       }
       const testData = await response.json();
@@ -55,7 +60,9 @@ const ReportUI = () => {
     async function getUserDataByID() {
       const response = await fetch(`http://localhost:3100/api/getuser/${record.pid}`);
       if (!response.ok) {
-        window.alert(`An error occurred in user data section : ${response.statusText}`);
+        setAlertMessage(`An error occurred in user data section: ${response.statusText}`);
+        setAlertType("error");
+        setShowAlert(true);
         return;
       }
       const user = await response.json();
@@ -69,14 +76,16 @@ const ReportUI = () => {
     async function getResult() {
       const response = await fetch(`http://localhost:3100/api/testresult`);
       if (!response.ok) {
-        window.alert(`An error occurred: ${response.statusText}`);
+        setAlertMessage(`An error occurred: ${response.statusText}`);
+        setAlertType("error");
+        setShowAlert(true);
         return;
       }
       const resultsData = await response.json();
       setResults(resultsData.result);
     }
     getResult();
-  }, [record.pid, updateStatus]);
+  }, [record.pid]);
 
   // Calculate the age of the patient based on the national ID
   const calculateAge = () => {
@@ -105,7 +114,8 @@ const ReportUI = () => {
       unit: matchedTestDB ? matchedTestDB.unit : "no data",
     };
   });
-// store all report details in a object
+
+  // Store all report details in an object
   const reportDetails = {
     patientName: record.pname,
     patientEmail: userData.email,
@@ -135,19 +145,19 @@ const ReportUI = () => {
       if (!response.ok) {
         throw new Error('Failed to send email');
       }
-      setShowAlert(true); // Show alert when email is sent successfully
-      setTimeout(() => {
-        setShowAlert(false); // Close alert after 3 seconds
-      }, 3000);
+      setAlertMessage('Email sent successfully');
+      setAlertType('success');
+      setShowAlert(true);
     } catch (error) {
-      alert(error.message);
+      setAlertMessage(error.message);
+      setAlertType('error');
+      setShowAlert(true);
     }
   };
 
   const handleEditClick = (test) => {
     setSelectedTest(test);
     setEditedResult(test.result);
-
     setOpen(true);
   };
 
@@ -160,17 +170,21 @@ const ReportUI = () => {
     try {
       // Validate the edited result
       if (!/^\d+(\.\d+)?$/.test(editedResult)) {
-        alert('Please enter a valid number');
+        setAlertMessage('Please enter a valid number');
+        setAlertType('error');
+        setShowAlert(true);
         return;
       }
-      
+
       // Validate the range of the edited result
       const min = selectedTest.min;
       const max = selectedTest.max;
       if (min !== 'no data' && max !== 'no data') {
         const result = parseFloat(editedResult);
         if (result < parseFloat(min) || result > parseFloat(max)) {
-          alert('Please enter the valid range results ');
+          setAlertMessage('Please enter the valid range results');
+          setAlertType('warning');
+          setShowAlert(true);
           return;
         }
       }
@@ -178,21 +192,20 @@ const ReportUI = () => {
       const response = await axios.put('http://localhost:3100/api/updatdata', {
         updatedData: selectedTest,
       });
-      alert('Data updated successfully');
-      setUpdateStatus(response.data);
+      setAlertMessage('Data updated successfully');
+      setAlertType('success');
+      setShowAlert(true);
       setOpen(false);
     } catch (error) {
-      alert(error.message);
+      setAlertMessage(error.message);
+      setAlertType('error');
+      setShowAlert(true);
     }
   };
 
   useEffect(() => {
-    setSelectedTest(prevState => ({ ...prevState, result: editedResult }));
+    setSelectedTest((prevState) => ({ ...prevState, result: editedResult }));
   }, [editedResult]);
-
-  useEffect(() => {
-    console.log(selectedTest);
-  }, [selectedTest]);
 
   return (
     <Container
@@ -258,17 +271,19 @@ const ReportUI = () => {
       </Grid>
       <Grid item xs={6} sx={{ gridArea: "BD3" }}>
         <Typography variant="p" sx={{ fontSize: "16px" }}>
-          {record.username}
-        </Typography>
-        <Typography variant="body1" sx={{ fontSize: "14px" }}>
-          Registered on: {record.regdate.split("T")[0]}
+          Registered On: {reportDetails.RegisteredOn}
           <br />
-          Collected on: 02.31pm 02 December
+          Collected On: {reportDetails.CollectedOn}
           <br />
-          Reported on: 02.31 December 2022
+          Reported On: {reportDetails.ReportedOn}
         </Typography>
       </Grid>
-      <Grid item xs={6} sx={{ display: "grid", gridArea: "Table", width: "100%" }}>
+      <Grid item xs={6} sx={{ gridArea: "BD2", margin: "auto", width: "100%" }}>
+        <Typography variant="p" sx={{ fontSize: "20px" }}>
+          Biochemistry Report
+        </Typography>
+      </Grid>
+      <Grid item xs={12} sx={{ gridArea: "Table", width: "100%" }}>
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -317,19 +332,16 @@ const ReportUI = () => {
           Dr. Rajitha Bandara
         </Typography>
       </Grid>
-
       <Grid item xs={12} sx={{ display: "grid", gridArea: "I", placeSelf: "left", margin: "20px", width: "100%" }} className="no-print">
-        <Button variant="outlined" width=" 50%" color="primary" onClick={() => window.print()}>
+        <Button variant="outlined" width="50%" color="primary" onClick={() => window.print()}>
           Print
         </Button>
       </Grid>
-
       <Grid item xs={12} sx={{ display: "grid", gridArea: "R", placeSelf: "right", margin: "20px", width: "100%" }} className="no-print">
-        <Button variant="outlined" color="secondary" width=" 50%" onClick={sendEmail}>
+        <Button variant="outlined" color="secondary" width="50%" onClick={sendEmail}>
           Send Email
         </Button>
       </Grid>
-
       {/* Edit Dialog */}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit Test Result</DialogTitle>
@@ -354,29 +366,21 @@ const ReportUI = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      
       {/* Success Alert */}
-      {showAlert && (
+      <Snackbar
+        open={showAlert}
+        autoHideDuration={3000}
+        onClose={() => setShowAlert(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
         <Alert
-          sx={{
-            position: "absolute",
-            margin: "30px",
-            marginTop: "150px",
-            width: "300px",
-            height: "50px",
-            top: 0,
-            left: "10%",
-            transform: "translateX(-50%)",
-            zIndex: 9999,
-            backgroundColor: "#91DDCF",
-            opacity: 0.8
-          }}
-          severity="success"
           onClose={() => setShowAlert(false)}
+          severity={alertType}
+          sx={{ width: "100%" }}
         >
-          Email sent successfully
+          {alertMessage}
         </Alert>
-      )}
+      </Snackbar>
     </Container>
   );
 };
