@@ -29,12 +29,9 @@ const Signup = () => {
     password: ''
   });
 
-
-
   const [confirmPassword, setConfirmPassword] = useState('');
   const [age, setAge] = useState(null);
   const [error, setError] = useState({ field: '', message: '' });
-  const [isEmailRequired, setIsEmailRequired] = useState(true);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -51,7 +48,6 @@ const Signup = () => {
     } else {
       setAge(age);
     }
-    setIsEmailRequired(age >= 16);
     handleChange(e);
   };
 
@@ -83,49 +79,64 @@ const Signup = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-
-    for (let key in data) {
-      if (key !== 'nationalID' && data[key] === '') {
+  
+    const userData = { ...data };
+  
+    // Set nationalID to null if the user is under 16 and the field is empty
+    if (age < 16 && userData.nationalID === '') {
+      userData.nationalID = '';
+    }
+  
+    // Check for required fields except for nationalID
+    for (let key in userData) {
+      if (key !== 'nationalID' && userData[key] === '') {
         setError({ field: key, message: 'This field is required' });
         return;
       }
     }
-
-    if (age >= 16 && data.nationalID === '') {
+  
+    // Validate nationalID for users 16 or older
+    if (age >= 16 && userData.nationalID === '') {
       setError({ field: 'nationalID', message: 'National ID is required for users above the age of 16' });
       return;
     }
-
-    if (age >= 16 && !validateNationalID(data.nationalID)) {
+  
+    if (age >= 16 && !validateNationalID(userData.nationalID)) {
       setError({ field: 'nationalID', message: 'Invalid national ID format' });
       return;
     }
-
-    if (data.password !== confirmPassword) {
+  
+    // Validate confirm password
+    if (userData.password !== confirmPassword) {
       setError({ field: 'confirmPassword', message: 'Confirm Password does not match' });
       return;
     }
-
-    if (!validateEmail(data.email)) {
+  
+    // Validate email format
+    if (!validateEmail(userData.email)) {
       setError({ field: 'email', message: 'Invalid email format' });
       return;
     }
-
-    if (!validatePhoneNumber(data.phonenumber)) {
+  
+    // Validate phone number format
+    if (!validatePhoneNumber(userData.phonenumber)) {
       setError({ field: 'phonenumber', message: 'Phone number must contain exactly 10 digits' });
       return;
     }
-
-    if (!validatePassword(data.password)) {
+  
+    // Validate password format
+    if (!validatePassword(userData.password)) {
       setError({ field: 'password', message: 'Password must be at least 8 characters long and contain at least one special character, uppercase letter, and digit' });
       return;
     }
-
+  
+    // Prepare the final data object for the request
+    const requestData = { ...userData };
+  
     try {
-      const response = await axios.post('http://localhost:3100/api/router_login/createuser', data);
+      const response = await axios.post('http://localhost:3100/api/router_login/createuser', requestData);
       console.log('Server response:', response);
-
+  
       if (!response.data.success) {
         setError({ field: response.data.field, message: response.data.message });
       } else {
@@ -143,13 +154,13 @@ const Signup = () => {
           username: '',
           password: ''
         });
-
-        const successMessage = data.role === 'PATIENT' ? 'User Registered Successfully' : 'Registration Pending';
+  
+        const successMessage = userData.role === 'PATIENT' ? 'User Registered Successfully' : 'Registration Pending';
         console.log('Displaying toast message:', successMessage);
         toast.success(successMessage, {
           duration: 4000, // Toast duration set to 4 seconds
         });
-
+  
         setTimeout(() => {
           navigate('/HomePage');
         }, 4000); // Navigate to HomePage after 4 seconds
@@ -163,6 +174,7 @@ const Signup = () => {
       }
     }
   };
+  
 
   return (
     <Grid container justifyContent="center">

@@ -41,8 +41,8 @@ function Login() {
       } else {
         if(localStorage.getItem('myToken') !== null){
           localStorage.removeItem('myToken');
-          localStorage.setItem('myToken', userData.data);
         }
+        localStorage.setItem('myToken', userData.data);
         setData({ username: '', password: '' }); // Clear input fields
 
         // Decode the JWT token to get the user information
@@ -144,7 +144,7 @@ function Login() {
                   color: "#9C1C1C",
                 }}
               >
-                <Link to="/Signin" style={{ color: '#9C1C1C' }}>Doesn't have an account yet?</Link>
+                <Link to="/Signup" style={{ color: '#9C1C1C' }}>Doesn't have an account yet?</Link>
               </Typography>
 
               <TextField
