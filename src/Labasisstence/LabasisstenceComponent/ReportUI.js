@@ -79,9 +79,18 @@ const ReportUI = () => {
   }, [record.pid, updateStatus]);
 
   // Calculate the age of the patient based on the national ID
-  const birthYear = userData && userData.nationalID ? parseInt(userData.nationalID.substring(0, 4)) : null;
-  const currentYear = new Date().getFullYear();
-  const age = birthYear ? currentYear - birthYear : "no data";
+  const calculateAge = () => {
+    const dob = new Date(userData.dob);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const age = calculateAge();
 
   // Combine test data with test results
   const tableData = tests.map((test) => {
@@ -101,7 +110,7 @@ const ReportUI = () => {
     patientName: record.pname,
     patientEmail: userData.email,
     PatientAge: age,
-    PatientSex: userData.sex || "Male",
+    PatientSex: userData.gender,
     PatientID: record._id,
     RegisteredOn: record.regdate.split("T")[0],
     CollectedOn: "02.31pm 02 December",
@@ -148,6 +157,23 @@ const ReportUI = () => {
 
   const handleSave = async () => {
     try {
+      // Validate the edited result
+      if (!/^\d+(\.\d+)?$/.test(editedResult)) {
+        alert('Please enter a valid number');
+        return;
+      }
+      
+      // Validate the range of the edited result
+      const min = 300;
+      const max = 20000;
+      if (min !== 'no data' && max !== 'no data') {
+        const result = parseFloat(editedResult);
+        if (result < parseFloat(min) || result > parseFloat(max)) {
+          alert('Please enter the valid range results ');
+          return;
+        }
+      }
+
       const response = await axios.put('http://localhost:3100/api/updatdata', {
         updatedData: selectedTest,
       });
@@ -224,7 +250,7 @@ const ReportUI = () => {
         <Typography variant="body1" sx={{ fontSize: "14px" }}>
           Age: {reportDetails.PatientAge}
           <br />
-          Sex: Male
+          Sex: {reportDetails.PatientSex}
           <br />
           PID: {record._id}
         </Typography>
