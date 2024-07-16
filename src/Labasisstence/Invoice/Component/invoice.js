@@ -102,14 +102,17 @@ const Invoice = ( ) => {
     appointmentId: record.id || "INV-001",
     patientEmail: userData.email,
     date: new Date().toISOString().split("T")[0],
-    dueDate: record.dueDate || "2024-07-24",
+    dueDate: 
+    new Date(new Date(record.regdate).setMonth(new Date(record.regdate).getMonth() + 6)).toISOString().split("T")[0],
+    companyPhone:"+94789512738",
     companyAddress:
-      record.companyAddress || "1234 Main St, City, State, ZIP lab address",
-    customerName: record.pname || "John Doe",
+    record.companyAddress || "Goodwill Plaza, Keyzer st,Colombo 10",
+    companyEmail: "helthlab00gmail.com",  
+    customerName: record.pname || "Not Found",
     total: invoiceTotalAmount,
     customerAddress:
     userData.address ||
-      "5678 Second St, City, State, ZIP customer address",
+      "Not Found",
     items: inVoiceData || [
       { id: 1, description: "Item 1", quantity: 2, price: 50 },
       { id: 2, description: "Item 2", quantity: 1, price: 100 },
@@ -175,12 +178,19 @@ const Invoice = ( ) => {
               />
             </Paper>
             <Typography sx={{ marginTop: 2 }}>
-              <strong>Company Address:</strong> {invoiceDetails.companyAddress}
+              <strong>Address:</strong> {invoiceDetails.companyAddress}
+            </Typography>
+            <Typography sx={{ marginTop: 2 }}>
+              <strong>Phone :</strong> {invoiceDetails.companyPhone}
+            </Typography>
+            <Typography sx={{ marginTop: 2 }}>
+              <strong>Email:</strong> {invoiceDetails.companyEmail}
             </Typography>
           </Grid>
           <Grid item xs={6} align="right">
             <Typography variant="h6">{invoiceDetails.customerName}</Typography>
             <Typography>{invoiceDetails.customerAddress}</Typography>
+            
           </Grid>
         </Grid>
         <Grid container spacing={2} marginTop={2}>
