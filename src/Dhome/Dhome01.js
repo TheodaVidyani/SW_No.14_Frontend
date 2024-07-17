@@ -5,7 +5,7 @@ function Dhome01() {
 
     return (
       
-            <div style={{  maxWidth: '800px', alignItems:'right', marginLeft:'1000px',color:'#101754' }}>
+            <div style={{  maxWidth: '890px', alignItems:'right', marginLeft:'1000px',color:'#101754' }}>
                 <h1 style={{ fontSize: '3rem', fontWeight: 'bold', fontStyle: 'italic', letterSpacing: '2px' }}>
                     "The Laboratory System Doctor"
                 </h1>

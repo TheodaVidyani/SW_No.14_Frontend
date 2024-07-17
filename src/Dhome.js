@@ -9,15 +9,15 @@ function Dhome() {
       
       <div style={{
         backgroundImage: `url(${Dimage})`,
-       backgroundPosition:'center',
+       /* backgroundPosition:'center', */
         backgroundRepeat:'no-repeat',
         backgroundSize:'cover'
       }}>
-        <Patienthead/><br/><br/><br/><br/><br/><br/><br/><br/>
+        <Patienthead/><br/><br/><br/><br/><br/><br/>
        
         
-        <Dhome01/><br/><br/><br/><br/><br/>
-        <Dhome02/><br/><br/><br/><br/><br/><br/><br/>
+        <Dhome01/><br/><br/><br/><br/>
+        <Dhome02/><br/><br/><br/>
         <Footer/>
       </div>
       
