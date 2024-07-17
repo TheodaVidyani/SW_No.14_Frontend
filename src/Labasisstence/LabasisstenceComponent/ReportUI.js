@@ -28,7 +28,8 @@ const ReportUI = () => {
   const location = useLocation();
   const [testsDB, setTestsDB] = useState([]); //Store test data
   const [userData, setUserData] = useState([]); //Store user data
-  const [results, setResults] = useState([]); //Store test results data
+  const [results, setResults] = useState([]); //Store test results 
+  const [recomandation, setRecomandation] = useState([]); //Store appointment recomandation
   const [open, setOpen] = useState(false);
   const [selectedTest, setSelectedTest] = useState(null);
   const [editedResult, setEditedResult] = useState("");
@@ -87,6 +88,25 @@ const ReportUI = () => {
     getResult();
   }, [record.pid]);
 
+
+  // fetch recommandatio data from the DB
+
+  useEffect(() => {
+    async function getResult() {
+      const response = await fetch(`http://localhost:3100/api/getrecomandationbyid/${record.id}`);
+      if (!response.ok) {
+        setAlertMessage(`An error occurred: ${response.statusText}`);
+        setAlertType("error");
+        setShowAlert(true);
+        return;
+      }
+      const resultsData = await response.json();
+      setRecomandation(resultsData.result);
+    }
+    getResult();
+  }, [record.pid]);
+
+
   // Calculate the age of the patient based on the national ID
   const calculateAge = () => {
     const dob = new Date(userData.dob);
@@ -123,10 +143,8 @@ const ReportUI = () => {
     PatientSex: userData.gender,
     PatientID: record._id,
     RegisteredOn: record.regdate.split("T")[0],
-    CollectedOn: "02.31pm 02 December",
-    ReportedOn: "02.31 December 2022",
-    LabTechnician: "Medical Lab Technician",
-    Doctor: "Dr. Rajitha Bandara",
+    ReportedOn: recomandation?.date?.split("T")[0] || "",
+    Doctor: recomandation.docname,
     tableData: tableData,
   };
 
@@ -273,9 +291,7 @@ const ReportUI = () => {
         <Typography variant="p" sx={{ fontSize: "16px" }}>
           Registered On: {reportDetails.RegisteredOn}
           <br />
-          Collected On: {reportDetails.CollectedOn}
-          <br />
-          Reported On: {reportDetails.ReportedOn}
+          Reported On: {reportDetails.ReportedOn }
         </Typography>
       </Grid>
     
@@ -316,18 +332,11 @@ const ReportUI = () => {
       </Grid>
       <Grid item xs={6} sx={{ display: "grid", gridArea: "E" }}>
         <Typography variant="p">
-          ----------------------
-          <br />
-          Medical Lab Technician
+         
+Approved By: <strong>Dr.{reportDetails.Doctor}</strong> 
         </Typography>
       </Grid>
-      <Grid item xs={6} sx={{ display: "grid", gridArea: "d" }}>
-        <Typography variant="p">
-          ----------------------
-          <br />
-          Dr. Rajitha Bandara
-        </Typography>
-      </Grid>
+      
       <Grid item xs={12} sx={{ display: "grid", gridArea: "I", placeSelf: "left", margin: "20px", width: "100%" }} className="no-print">
         <Button variant="outlined" width="50%" color="primary" onClick={() => window.print()}>
           Print
