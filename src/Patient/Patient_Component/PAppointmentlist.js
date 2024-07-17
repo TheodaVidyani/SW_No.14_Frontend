@@ -8,16 +8,19 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
+import NotificationIcon from '@mui/icons-material/NotificationImportant';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import {jwtDecode} from 'jwt-decode';
 
 const columns = [
-  { id: 'id', label: 'Report ID', minWidth: 170 },
-  { id: 'regdate', label: 'Registered Date', minWidth: 100 },
+  { id: 'id', label: 'Report ID', minWidth: 70},
+  { id: 'notification', label: ' ', minWidth: 10, align:'left' }, // New column for notification button
+  { id: 'regdate', label: 'Registered Date', minWidth: 70 },
   { id: 'selectTests', label: 'Test Types', minWidth: 100 },
-  { id: 'state', label: 'Current State', minWidth: 170 },
-  { id: 'billvalue', label: 'Bill Value', minWidth: 100, align: 'right' }
+  { id: 'state', label: 'Current State', minWidth: 80 },
+  { id: 'billvalue', label: 'Bill Value', minWidth: 80, align: 'right' }
+  
 ];
 
 export default function StickyHeadTable() {
@@ -80,7 +83,7 @@ export default function StickyHeadTable() {
   const handleLinkClick = (event, value, state) => {
     event.preventDefault(); // Prevent default link behavior
     console.log(`Appointment state: ${state}`);
-    if (state === 'Doctor_approved') {
+    if (state === 'Doctor_approved' && jwtDecode(localStorage.getItem("myToken")).role === 'PATIENT') {
       axios.post('http://localhost:3100/api/updateappointment', { id: value, patientView: 'viewed' })
         .then(response => {
           console.log(`Appointment ${value} viewed by patient successfully!`);
@@ -93,6 +96,10 @@ export default function StickyHeadTable() {
       // Handle cases where the appointment state is not 'Doctor_approved'
       window.location.href = `/Reportpreview/${value}`; // Navigate to the report preview page
     }
+  };
+
+  const handleNotifyClick = (id) => {
+    console.log(`Notify clicked for appointment ${id}`);
   };
 
   return (
@@ -132,6 +139,8 @@ export default function StickyHeadTable() {
                             <a href={`/Reportpreview/${value}`} style={{ textDecoration: 'underline', color: '#101754' }} onClick={(event) => handleLinkClick(event, value, row.state)}>
                               {value}
                             </a>
+                          ) : column.id === 'notification' && row.state === 'Doctor_approved' && row.patientView === 'not_ready' ? (
+                            <NotificationIcon onClick={() => handleNotifyClick(row.id)} />  // Add notification icon
                           ) : (
                             column.format && typeof value === 'string'
                               ? column.format(value)

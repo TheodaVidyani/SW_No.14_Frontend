@@ -127,7 +127,7 @@ const Invoice = ({ id }) => {
     appointmentId: record.id || "INV-001",
     date: record.regdate.split("T")[0],
     dueDate: new Date(new Date(record.regdate).setMonth(new Date(record.regdate).getMonth() + 3)).toISOString().split("T")[0],
-    companyAddress: record.companyAddress || "1234 Main St, City, State, ZIP lab address",
+    companyAddress: record.companyAddress || "Goodwill Plaza, Keyzer St, Colombo 10",
     customerName: record.pname || "John Doe",
     customerAddress: userDetails?.address || "5678 Second St, City, State, ZIP costumer address",
     email: userDetails?.email || "No email",
@@ -142,7 +142,7 @@ const Invoice = ({ id }) => {
   ];
 
   return (
-    <Container>
+    <Container sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop:'5%'}}>
       <Paper elevation={3} sx={{ padding: 3, marginTop: 3, backgroundColor: "#F0F0F0" }}>
         <Typography variant="h4" align="center" gutterBottom>
           LAB REPORT
