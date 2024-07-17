@@ -4,14 +4,16 @@ import CssBaseline from '@mui/material/CssBaseline';
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
 import dayjs from 'dayjs';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import {
   Container,
   Paper,
   Grid,
   Box,
   Button,
-} from "@mui/material";
+  TextareaAutosize,
+} from '@mui/material';
+
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
@@ -20,7 +22,7 @@ const FixedContainer = () => {
   const query = useQuery();
   const [msg, setMsg] = useState('');
   const [rid, setRid] = useState(query.get('reportId') || '');
-  const [nm, setNm] = useState([jwtDecode(localStorage.getItem("myToken")).username]);
+  const [nm, setNm] = useState(jwtDecode(localStorage.getItem("myToken")).username);
   const [pid, setPid] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
   const [selectedDate, setSelectedDate] = useState(query.get('date') ? dayjs(query.get('date')) : null);
@@ -28,6 +30,7 @@ const FixedContainer = () => {
   useEffect(() => {
     if (rid) {
       fetchPatientId(rid);
+      
     }
   }, [rid]);
 
@@ -41,7 +44,7 @@ const FixedContainer = () => {
     }
   };
 
-  
+ 
 
   const submit = async (e) => {
     e.preventDefault();
@@ -75,16 +78,16 @@ const FixedContainer = () => {
       }
     }
   };
-  const handleAfterSubmit = () => {
-    // Perform additional action after handleSubmit
-    axios.post('http://localhost:3100/api/updateappointment', { id: rid, state: 'Doctor_approved' })
-        .then(response => {
-            console.log('Appointment '+ `${rid}` +' updated with result entering successfully');
-        })
-        .catch(error => {
-            console.error('Error updating appointment:', error);
-        });
-};
+
+  const handleAfterSubmit = async () => {
+    try {
+      await axios.post('http://localhost:3100/api/updateappointment', { id: rid, state: 'Doctor_approved' });
+      console.log(`Appointment ${rid} updated with result entering successfully`);
+    } catch (error) {
+      console.error('Error updating appointment:', error);
+    }
+  };
+
   const handleApprove = async () => {
     try {
       const response = await axios.post('http://localhost:3100/api/approve', {
@@ -93,8 +96,8 @@ const FixedContainer = () => {
         recommendation: msg,
         patientId: pid,
       });
-  
-      console.log('Approval Response:', response.data); // Log the response data for debugging
+
+      console.log('Approval Response:', response.data);
       setAlertMessage('Approval request sent successfully!');
     } catch (error) {
       console.error('Error approving report:', error);
@@ -106,9 +109,8 @@ const FixedContainer = () => {
         setAlertMessage(`Error: ${error.message}`);
       }
     }
-    console.log("id"+jwtDecode(localStorage.getItem("myToken")).name)  ;
-
   };
+
   const handleRecheck = async () => {
     try {
       const response = await axios.post('http://localhost:3100/api/recheck', {
@@ -118,13 +120,12 @@ const FixedContainer = () => {
         patientId: pid,
       });
 
-      
-      
+      console.log('Recheck Response:', response.data);
       setAlertMessage('Recheck request sent successfully!');
     } catch (error) {
-      
+      console.error('Error sending recheck request:', error);
       if (error.response) {
-        setAlertMessage(`Error: ${error.response.data.message || 'Failed to send  request'}`);
+        setAlertMessage(`Error: ${error.response.data.message || 'Failed to send recheck request'}`);
       } else if (error.request) {
         setAlertMessage('Error: No response from the server');
       } else {
@@ -132,91 +133,91 @@ const FixedContainer = () => {
       }
     }
   };
+
   return (
     <React.Fragment>
       <CssBaseline />
       <Container>
-      <Paper elevation={3} sx={{ padding: 3, marginTop: 3, backgroundColor: "#F0F0F0" }}>   
-             <Box sx={{ flexGrow: 1 }}>
-          <Grid container spacing={2}>
-            
-            <Grid item xs={2}>
-              <TextField
-                value={rid}
-                onChange={(e) => setRid(e.target.value)}
-                id="outlined-required"
-                label="Report Id"
-                required
-              />
+        <Paper elevation={3} sx={{ padding: 3, marginTop: 3, backgroundColor: "#F0F0F0" }}>
+          <Box sx={{ flexGrow: 1 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={2}>
+                <TextField
+                  value={rid}
+                  onChange={(e) => setRid(e.target.value)}
+                  id="outlined-required"
+                  label="Report Id"
+                  required
+                />
+              </Grid>
+              <Grid item xs={2}>
+                <TextField
+                  value={pid}
+                  onChange={(e) => setPid(e.target.value)}
+                  id="outlined-required"
+                  label="Patient Id"
+                  required
+                />
+              </Grid>
+              <Grid item xs={2}>
+                <TextField
+                  value={jwtDecode(localStorage.getItem("myToken")).name}
+                  style={{ width: '100%' }}
+                  id="outlined"
+                  label="Doctor name"
+                  required
+                  disabled
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  style={{ width: '50%', height: '50px',marginLeft:'50%'}}
+                  onClick={handleRecheck}
+                >
+                  Recommend to recheck
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={2}>
-              <TextField
-                value={pid}
-                onChange={(e) => setPid(e.target.value)}
-                id="outlined-required"
-                label="Patient Id"
-                required
-                 
-              />
-            </Grid>
-            <Grid item xs={2}>
-              <TextField
-                value={jwtDecode(localStorage.getItem("myToken")).name}
-              
-                style={{width:'200px'}}
-                id="outlined"
-                label="Doctor name"
-                required
-                 disabled
-              />
-            </Grid>
-            <Grid item xs={4} >
-              <Button
-                variant="contained"
-                style={{ color: 'primary', width: '200px', height: '50px',  marginLeft:'300px' }}
-                type="button"
-                onClick={handleRecheck} 
-              
-              >
-                Recommend to recheck
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
-      </Paper>
+          </Box>
+        </Paper>
       </Container>
       <br />
       <Container>
-      <Paper elevation={3} sx={{ padding: 3, marginTop: 3, backgroundColor: "#F0F0F0" }}>   
-        <h1>Recommendations</h1>
-        <hr />
-        <br />
-        <div className="cont">
-          <form onSubmit={submit}>
-            <textarea
-              name="text"
-              value={msg}
-              onChange={(e) => setMsg(e.target.value)}
-              placeholder="Need to..."
-              cols="120"
-              rows="10"
-            ></textarea>
-            <br />
-            <Button
-              type="submit"
-              variant="contained"
-              style={{ color: 'primary', width: '100px', height: '50px' }}
-              onClick={() => {
-                handleApprove();
-                handleAfterSubmit();
-                }}            >
-              Approve
-            </Button>
-          </form>
-        </div>
-        <br />
-        {alertMessage && <div>{alertMessage}</div>}
-      </Paper>
+        <Paper elevation={3} sx={{ padding: 3, marginTop: 3, backgroundColor: "#F0F0F0" }}>
+          <h1>Recommendations</h1>
+          <hr />
+          <br />
+          <div className="cont">
+            <form onSubmit={submit}>
+              <TextareaAutosize
+                name="text"
+                value={msg}
+                onChange={(e) => setMsg(e.target.value)}
+                placeholder="Need to..."
+                minRows={5}
+                maxRows={5}
+                style={{ width: '100%', maxWidth: '100%', minHeight: '50px', resize: 'vertical', padding: '10px' }}
+              />
+              <br />
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                style={{ width: '100px', height: '50px' }}
+                onClick={() => {
+                  handleApprove();
+                  handleAfterSubmit();
+                }}
+              >
+                Approve
+              </Button>
+            </form>
+          </div>
+          <br />
+          {alertMessage && <div>{alertMessage}</div>}
+        </Paper>
       </Container>
     </React.Fragment>
   );

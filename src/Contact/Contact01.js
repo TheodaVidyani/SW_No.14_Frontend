@@ -23,6 +23,8 @@ export default function Contact01() {
 
       console.log('Response:', response);
       setAlertMessage('Submitted successfully!');
+      setAlertMessage('Email sent successfully!');
+
       reset();
     } catch (error) {
       console.error('Error submitting form:', error);
