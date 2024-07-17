@@ -1,5 +1,4 @@
 // AddTest.js
-
 import React, { useState } from 'react';
 import Patienthead from '../Components/Patienthead'; 
 import Footer from '../Components/Footer'; 
@@ -13,7 +12,8 @@ function AddTest() {
   const [formData, setFormData] = useState({
     id: '',
     name: '',
-    description: ''
+    description: '',
+    adddate: new Date().toISOString().split('T')[0],
   });
 
   // State to manage Snackbar
@@ -44,11 +44,11 @@ function AddTest() {
       return;
     }
 
-    if ((formData.min>formData.max)) {
-      console.log('min grater');
-      console.log(formData.min + formData.max);
+    if (parseInt(formData.min, 10) > parseInt(formData.max, 10)) {
+      console.log('min greater');
+      console.log(formData.min, ' ', formData.max);
       // Show error Snackbar
-      setSnackbarMessage('MINIMUM value grater than MAXIMUM');
+      setSnackbarMessage('MINIMUM value greater than MAXIMUM');
       setSnackbarOpen(true);
       return;
     }
@@ -68,7 +68,12 @@ function AddTest() {
         setFormData({
           id: '',
           name: '',
-          description: ''
+          description: '',
+          min: '',
+          max: '',
+          unit: '',
+          price: '',
+          adddate: new Date().toISOString().split('T')[0],
         });
       
       // Show success Snackbar

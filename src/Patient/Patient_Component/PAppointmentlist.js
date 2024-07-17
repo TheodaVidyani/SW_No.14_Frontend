@@ -83,7 +83,7 @@ export default function StickyHeadTable() {
   const handleLinkClick = (event, value, state) => {
     event.preventDefault(); // Prevent default link behavior
     console.log(`Appointment state: ${state}`);
-    if (state === 'Doctor_approved') {
+    if (state === 'Doctor_approved' && jwtDecode(localStorage.getItem("myToken")).role === 'PATIENT') {
       axios.post('http://localhost:3100/api/updateappointment', { id: value, patientView: 'viewed' })
         .then(response => {
           console.log(`Appointment ${value} viewed by patient successfully!`);
