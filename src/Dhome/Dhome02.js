@@ -60,8 +60,8 @@ export default function Dhome02() {
               )}
             </FormControl>
           </Grid>
-          <Grid item xs={1} sx={{ marginTop: '10px', marginLeft: '200px' }}>
-            <Button onClick={handleClick} sx={{ variant: 'contained', color: '#FFFFFF', background: '#101754', width: '250px', height: '50px' }}>
+          <Grid item xs={2} >
+            <Button onClick={handleClick} sx={{ variant: 'contained', color: '#FFFFFF', background: '#101754', width: '250px', height: '52px' }}>
               View Report
             </Button>
           </Grid>
