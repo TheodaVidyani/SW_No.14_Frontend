@@ -152,7 +152,7 @@ const CardSlider = ({ cards }) => {
         navigate(`/PViewAppointment/:id`);
       } 
       else if (selectedCard.title === 'TYPES') {
-        navigate(`/PViewTest/${idArray}`);
+        navigate(`/PViewTest/${idArray.join(',')}`);
       } 
     }
     handleCloseModal();

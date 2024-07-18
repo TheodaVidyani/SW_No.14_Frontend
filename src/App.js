@@ -77,7 +77,7 @@ function App() {
       <Route path='/Viewreport' element={<Viewreport/>}/>
 
       
-      <Route path='/PViewTest/:id' element={<PViewTest/>}/>
+      <Route path="/PViewTest/:idArray" element={<PViewTest/>}/>
       <Route path='/Selecttest' element={<Selecttest/>}/>
       <Route path='/Dhome' element={<Dhome/>}/>
       <Route path='/Dapproval' element={<Dapproval/>}/>

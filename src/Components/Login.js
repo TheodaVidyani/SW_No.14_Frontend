@@ -194,7 +194,7 @@ function Login() {
                 <Link to="/forgetpassword" style={{ color: '#9C1C1C' }}>Forgot Password?</Link>
               </Typography>
 
-              <Button type="submit" sx={{ variant: 'contained', color: '#FFFFFF', background: '#101754', width: '100%', height: '50px', marginBottom: '20px' }}>
+              <Button type="submit" sx={{ variant: 'contained', color: '#FFFFFF', background: '#101754', width: '100%', height: '50px', marginBottom: '20px', '&:hover': { background: 'rgba(16, 23, 84, 0.7)' } }}>
                 Login
               </Button>
 

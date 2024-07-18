@@ -44,12 +44,22 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Testlist({ setRows }) {
+export default function Testlist({ setRows ,idArray}) {
+  
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [rows, setLocalRows] = useState([]);
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('id');
+
+  // Assuming idArray is an object with the structure { idArray: '9,10,11' }
+  const idArrayString = idArray.idArray;
+  console.log('array in Testlist.js', idArrayString);
+
+  const idArrayElements = idArrayString.split(',');
+  const idArray2 = idArrayElements.map(element => parseInt(element.trim()));
+  console.log('Array2:', idArray2);
+
 
   useEffect(() => {
     axios.get('http://localhost:3100/api/tests')
@@ -118,11 +128,25 @@ export default function Testlist({ setRows }) {
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                     {columns.map((column) => {
                       const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
+                        return (
+                        <TableCell
+                          key={column.id}
+                          align={column.align}
+                          style={
+                          column.id === 'id' && idArray2.includes(value)
+                            ? {
+                              fontWeight: 'bold',
+                              borderRadius: '0%',
+                              width: '20px',
+                              height: '20px',
+                              border: '4px solid red',
+                            }
+                            : {}
+                          }
+                        >
                           {value}
                         </TableCell>
-                      );
+                        );
                     })}
                   </TableRow>
                 );

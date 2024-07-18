@@ -1,14 +1,20 @@
-import React, { useEffect } from 'react';
+
+// Invoicepreview.js
+import React from 'react';
+import { useParams } from 'react-router-dom';
 import ViewTest from '../../Admin/ViewTest';
 
-function PViewTest({ idArray }) {
-  useEffect(() => {
-    console.log(idArray);
-  }, [idArray]); // Add idArray to the dependency array to log whenever it changes
+function PViewTest() {
+  const { idArray } = useParams();
+  console.log("array in PViewTest.js " +idArray);
 
   return (
-    <ViewTest />
+    <div>
+      <ViewTest idArray ={idArray}/>
+    </div>
   );
 }
 
 export default PViewTest;
+
+
