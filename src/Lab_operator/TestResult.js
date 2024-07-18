@@ -5,7 +5,7 @@ import Axios from 'axios';
 import Patienthead from '../Components/Patienthead';
 import Footer from '../Components/Footer'; 
 import TestResultForm from './TestResultForm'; 
-import SearchUserForm from './SearchUserForm';  
+import SearchTestResult from './SearchTestResult';  
 import TestresulltTable from './TestresultTable';
 
 const TestResult = () => {
@@ -86,9 +86,8 @@ const TestResult = () => {
     };
 
     const handleSearch = (searchTerm) => {
-        const lowerCaseSearchTerm = searchTerm.toLowerCase();
         const filtered = testResult.filter(result =>
-            String(result.id).toLowerCase().includes(lowerCaseSearchTerm)
+            String(result.id) === searchTerm
         );
         setFilteredResult(filtered);
     };
@@ -112,7 +111,7 @@ const TestResult = () => {
                     </Grid>
                     <Grid item xs={12}>
                         <Paper elevation={3} sx={{ p: 2 }}>
-                            <SearchUserForm onSearch={handleSearch} />
+                            <SearchTestResult onSearch={handleSearch} />
                         </Paper>
                     </Grid>
                     <Grid item xs={12}>
