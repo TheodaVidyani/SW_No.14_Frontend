@@ -29,7 +29,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-social">
-          <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.facebook.com/profile.php?id=61563013676968&mibextid=ZbWKwL" target="_blank" rel="noopener noreferrer">
             <FaFacebook />
           </a>
           <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer">
