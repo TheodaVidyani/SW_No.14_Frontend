@@ -144,7 +144,7 @@ function Login() {
                   color: "#9C1C1C",
                 }}
               >
-                <Link to="/Signin" style={{ color: '#9C1C1C' }}>Doesn't have an account yet?</Link>
+                <Link to="/Signup" style={{ color: '#9C1C1C' }}>Doesn't have an account yet?</Link>
               </Typography>
 
               <TextField
