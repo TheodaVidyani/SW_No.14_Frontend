@@ -1,6 +1,6 @@
-//UserProfileUpdate.js
-import React, { useState, useEffect, useCallback } from 'react';
-import { Container, Grid, Avatar, Typography, TextField, Button, Paper, Modal, Slider } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Container, Grid, Avatar, Typography, TextField, Button, Paper, Modal, Slider, Snackbar } from '@mui/material';
 import { styled } from '@mui/system';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import Cropper from 'react-easy-crop';
@@ -60,21 +60,15 @@ const ButtonStyled = styled(Button)(({ theme }) => ({
   },
 }));
 
-//Notification Component
-const Notification = styled(Paper)(({ theme }) => ({
+const Notification = styled(Snackbar)(({ theme }) => ({
   position: 'fixed',
   bottom: theme.spacing(2),
   right: theme.spacing(2),
-  padding: theme.spacing(2),
-  backgroundColor: '#808080',
-  color: '#FFFFFF',
-  zIndex: 10000,
-  display: 'none', // Initially hide the notification
 }));
 
-const UserProfileUpdate = ({ userData, onClose }) => {
+const UserProfileUpdate = ({ userData, onUpdateProfilePic, onClose, onProfileUpdate  }) => {
   const [user, setUser] = useState({
-    id: '',
+    _id: '',
     firstname: '',
     lastname: '',
     email: '',
@@ -90,36 +84,32 @@ const UserProfileUpdate = ({ userData, onClose }) => {
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [croppingImage, setCroppingImage] = useState(false);
-  const [showNotification, setShowNotification] = useState(false); // State for showing the notification. State variable to manage the display of the notification.
+  const [showNotification, setShowNotification] = useState(false);
 
   useEffect(() => {
     if (userData) {
       setUser({ ...userData, profilePicUrl: userData.profilePic });
-      console.log('User data set:', userData);
     }
   }, [userData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUser(prevUser => ({
+    setUser((prevUser) => ({
       ...prevUser,
       [name]: value,
     }));
   };
 
-  //user.profilePic is set to the selected File object, and user.profilePicUrl to the URL for preview purposes.
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       const fileUrl = URL.createObjectURL(file);
-      console.log('Selected profile picture URL:', fileUrl);
       setUser({
         ...user,
         profilePic: file,
         profilePicUrl: fileUrl,
       });
       setCroppingImage(true);
-      console.log('Selected profile picture:', file);
     }
   };
 
@@ -127,84 +117,78 @@ const UserProfileUpdate = ({ userData, onClose }) => {
     document.getElementById('avatarInput').click();
   };
 
-  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+  const onCropComplete = (croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
-    console.log('Crop complete:', croppedArea, croppedAreaPixels);
-  }, []);
+  };
 
-  const handleSaveCroppedImage = useCallback(async () => {
+  const toBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleSaveCroppedImage = async () => {
     try {
-      console.log('Cropping image with URL:', user.profilePicUrl);
       const croppedImage = await getCroppedImg(user.profilePicUrl, croppedAreaPixels);
-      console.log('Cropped Image Blob:', croppedImage);
-
-      const file = new File([croppedImage], 'profile.jpg', { type: 'image/jpeg' });
-      console.log('Cropped Image File:', file);
-
-      const newProfilePicUrl = URL.createObjectURL(file);
-      console.log('New Profile Pic URL:', newProfilePicUrl, user);
+      const base64Image = await toBase64(croppedImage);
 
       setUser((prevUser) => ({
         ...prevUser,
-        profilePic: file,
-        profilePicUrl: newProfilePicUrl,
+        profilePic: base64Image,
       }));
       setCroppingImage(false);
-    } catch (e) {
-      console.error('Error cropping image:', e);
-    }
-  }, [croppedAreaPixels, user.profilePicUrl]);
 
-  useEffect(() => {
-    console.log('Profile Pic URL changed:', user.profilePicUrl);
-  }, [user.profilePicUrl]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log('Submitting user data:', user);
-
-    const formData = new FormData();
-
-    if (user.profilePic) {
-      formData.append('profilePic', user.profilePic);
-    }
-
-    Object.keys(user).forEach((key) => {
-      if (key !== 'profilePic' && key !== 'profilePicUrl') {
-        formData.append(key, user[key]);
-      }
-    });
-
-    console.log('FormData content:', Array.from(formData.entries()));
-
-    // Add your API endpoint and headers here
-    const apiUrl = 'http://localhost:3100/api/router_login/updateuser';
-
-    try {
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Failed to update profile:', errorText);
-        throw new Error('Failed to update profile');
-      }
-
-      const responseData = await response.json();
-      console.log('Profile updated successfully:', responseData);
-
-            // Show notification on successful update
-            setShowNotification(true);
-
-                  // Hide notification after 2 seconds
       setTimeout(() => {
         setShowNotification(false);
-      }, 2000); //Timer setting
+      }, 3000);
+    } catch (error) {
+      console.error('Error cropping image:', error);
+    }
+  };
 
-      onClose();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const userData = {
+      _id: user._id,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      email: user.email,
+      address: user.address,
+      nationalID: user.nationalID,
+      phonenumber: user.phonenumber,
+      username: user.username,
+      profilePic: user.profilePic,
+    };
+
+    try {
+      const response = await fetch('http://localhost:3100/api/router_login/updateuser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}` // Ensure to include the JWT token in the request header
+
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setUser((prevUser) => ({
+          ...prevUser,
+          ...data.updatedUser,
+          profilePicUrl: data.updatedUser.profilePicUrl,
+        }));
+        setShowNotification(true); // Show notification on successful update
+        onClose(); // Close the update UI
+        onProfileUpdate(); // Fetch updated profile data
+      } else {
+        console.error('Failed to update profile:', data);
+      }
     } catch (error) {
       console.error('Error updating profile:', error);
     }
@@ -241,8 +225,11 @@ const UserProfileUpdate = ({ userData, onClose }) => {
       </Grid>
 
       <Modal open={croppingImage} onClose={() => setCroppingImage(false)}>
-        <div style={{ position: 'absolute', top: '10%', left: '10%', width: '80%', height: '80%', backgroundColor: '#fff', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, backgroundColor: 'white', padding: 20, boxShadow: 24, outline: 'none' }}>
+          <Typography variant="h6" component="h2">
+            Crop Image
+          </Typography>
+          <div style={{ position: 'relative', width: '100%', height: 400 }}>
             <Cropper
               image={user.profilePicUrl}
               crop={crop}
@@ -253,26 +240,23 @@ const UserProfileUpdate = ({ userData, onClose }) => {
               onCropComplete={onCropComplete}
             />
           </div>
-          <div style={{ marginTop: '20px', width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Slider
-              value={zoom}
-              min={1}
-              max={3}
-              step={0.1}
-              aria-labelledby="Zoom"
-              onChange={(e, zoom) => setZoom(zoom)}
-              style={{ width: '80%' }}
-            />
-            <ButtonStyled onClick={handleSaveCroppedImage}>Save</ButtonStyled>
-          </div>
+          <Slider
+            value={zoom}
+            min={1}
+            max={3}
+            step={0.1}
+            onChange={(e, zoom) => setZoom(zoom)}
+          />
+          <ButtonStyled onClick={handleSaveCroppedImage}>Save</ButtonStyled>
         </div>
       </Modal>
 
-            {/* Notification for changes updated */}
-            <Notification style={{ display: showNotification ? 'block' : 'none' }}>
-        Changes Updated
-      </Notification>
-
+      <Notification
+        open={showNotification}
+        autoHideDuration={3000}
+        onClose={() => setShowNotification(false)}
+        message="Profile updated successfully!"
+      />
     </Container>
   );
 };
