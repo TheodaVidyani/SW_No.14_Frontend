@@ -87,7 +87,7 @@ const CardSlider = ({ cards }) => {
         navigate(`/lab-operator/test-result`);
       } 
       else if (selectedCard.title === 'View Reports') {  // Corrected the typo here
-        navigate(`/Viewreport`);
+        navigate(`/ViewAppointment/:id`);
       } 
     }
     handleCloseModal();
