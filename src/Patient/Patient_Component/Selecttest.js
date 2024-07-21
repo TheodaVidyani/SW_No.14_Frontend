@@ -3,7 +3,6 @@ import BasicSelect from '../Selecttest_Components/BasicSelect';
 import '../../maincss/Class.css';
 import BackToTop from '../Selecttest_Components/Scroll';
 import Footer from '../../Components/Footer';
-import Date from '../../Components/Date';
 import { Grid } from '@mui/material';
 
 function Selecttest() {
@@ -12,10 +11,10 @@ function Selecttest() {
     <div className="Class">
      
       <Patienthead/>
-      <Grid sx={{paddingTop:'12%'}}>
+      <Grid sx={{paddingTop:'12%', paddingBottom:'10%'}}>
         <BasicSelect  />
         <BackToTop />
-        <Date/><br/>
+        
       </Grid>
       <Footer/>
     </div>

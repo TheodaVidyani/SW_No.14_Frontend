@@ -4,7 +4,7 @@ import LocalHospitalTwoToneIcon from '@mui/icons-material/LocalHospitalTwoTone';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Route, Link, Routes } from 'react-router-dom';
 import Login from './Login';
-import Signin from './Signin';
+import Signup from './Signup';
 
 export default function Head() {
   const theme = useTheme();
@@ -21,7 +21,7 @@ export default function Head() {
         <ListItem button component={Link} to="/">
           <ListItemText primary="Home" />
         </ListItem>
-        <ListItem button component={Link} to="/services">
+        <ListItem button component={Link} to="./HomePage/ser">
           <ListItemText primary="Services" />
         </ListItem>
         <ListItem button component={Link} to="/about">
@@ -33,7 +33,7 @@ export default function Head() {
         <ListItem button component={Link} to="/login">
           <ListItemText primary="Login" />
         </ListItem>
-        <ListItem button component={Link} to="/signin">
+        <ListItem button component={Link} to="/signup">
           <ListItemText primary="Signup" />
         </ListItem>
       </List>
@@ -65,7 +65,7 @@ export default function Head() {
               <Tab label="Contact us" component={Link} to="/contact" />
             </Tabs>
             <Button sx={{ marginLeft: 'auto', background: '#101754' }} variant="contained" component={Link} to="/login">Login</Button>
-            <Button sx={{ marginLeft: '10px', marginRight: '10px', background: '#101754' }} variant="contained" component={Link} to="/signin">Signup</Button>
+            <Button sx={{ marginLeft: '10px', marginRight: '10px', background: '#101754' }} variant="contained" component={Link} to="/signup">Signup</Button>
           </>
         ) : null}
       </Toolbar>
@@ -79,7 +79,7 @@ export default function Head() {
       </Drawer>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/signin" element={<Signin />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
     </AppBar>
   );

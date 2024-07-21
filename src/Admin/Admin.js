@@ -1,5 +1,5 @@
 import UsersTable from "../Components/UsersTable";
-import Signin from "../Components/Signin";
+import Signup from "../Components/Signup";
 import { Box } from "@mui/material";
 import Axios from "axios";
 import { useState, useEffect } from "react";
@@ -85,7 +85,7 @@ const Admin = () => {
                 margin: 'auto',
                 marginTop: '100px'
             }}>
-            <Signin
+            <Signup
                 addUser={addUser}
                 updateUser={updateUser}
                 deleteUser={deleteUser}

@@ -193,7 +193,7 @@ export default function BasicSelect() {
       )}
 
       <Box sx={{ marginLeft: 'auto', marginTop: '10px' }}>
-        <Button sx={{ variant: 'contained', color: '#FFFFFF', background: '#101754', width: '100px', fontWeight: 'bold' }} onClick={handleConfirm}>
+        <Button sx={{ variant: 'contained', color: '#FFFFFF', background: '#101754', width: '100px', fontWeight: 'bold' ,'&:hover': { background: 'rgba(16, 23, 84, 0.7)' }}} onClick={handleConfirm}>
           SELECT
         </Button>
       </Box>
@@ -203,7 +203,7 @@ export default function BasicSelect() {
 
       <Box sx={{ marginLeft: 'auto', marginTop: '10px' }}>
         {selectedTestsForTable.length > 0 && (
-          <Button sx={{ variant: 'contained', color: '#FFFFFF', background: '#101754', width: '100px', fontWeight: 'bold' }} onClick={handleFinal}>
+          <Button sx={{ variant: 'contained', color: '#FFFFFF', background: '#101754', width: '100px', fontWeight: 'bold' ,'&:hover': { background: 'rgba(16, 23, 84, 0.7)' }}} onClick={handleFinal}>
             CONFIRM
           </Button>
         )}

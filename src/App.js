@@ -1,8 +1,9 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+// import React, { useState } from 'react';
 import Head from './Components/Head';
 import HomePage from './Components/HomePage';
-import Signin from "./Components/Signin";
+import Signup from "./Components/Signup";
 import Login from "./Components/Login";
 import Dhome from './Dhome';
 import Dapproval from './Dapproval';
@@ -77,7 +78,7 @@ function App() {
       <Route path='/Viewreport' element={<Viewreport/>}/>
 
       
-      <Route path='/PViewTest/:id' element={<PViewTest/>}/>
+      <Route path="/PViewTest/:idArray" element={<PViewTest/>}/>
       <Route path='/Selecttest' element={<Selecttest/>}/>
       <Route path='/Dhome' element={<Dhome/>}/>
       <Route path='/Dapproval' element={<Dapproval/>}/>
@@ -85,8 +86,8 @@ function App() {
       <Route path='/Head' element={<Head/>}/>
       <Route path='/Login' element={<Login/>}/>
       <Route path="/forgetpassword" element={<ForgotPassword />} />
-      <Route path="/change-password" element={<ChangePassword />} />
-      <Route path='/Signin' element={<Signin/>}/>
+      <Route path="/changePassword" element={<ChangePassword/>} />
+      <Route path='/Signup' element={<Signup/>}/>
       <Route path='/HomePage/*' element={<HomePage/>}/>
       <Route path='/Patient/:id' element={<Patient/>}/> 
       {/* Dynamic routing - '/Patient/:id'*/}
@@ -141,6 +142,4 @@ function App() {
 
 }
 
-
 export default App;
-//

@@ -29,9 +29,9 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 350,
     display: 'inline-block',
     margin: theme.spacing(3),
-    transition: 'transform 0.5s ease, opacity 0.7s ease', 
-    cursor: 'pointer', 
-    boxShadow: '10px 15px 15px rgba(0, 0, 0, 1)', 
+    transition: 'transform 0.5s ease, opacity 0.7s ease',
+    cursor: 'pointer',
+    boxShadow: '10px 15px 15px rgba(0, 0, 0, 1)',
   },
   button: {
     textTransform: 'none',
@@ -40,17 +40,16 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
-    paddingRight:'4%',
-    minWidth: 230, 
-    paddingLeft:'2%',
+    paddingRight: '4%',
+    minWidth: 230,
+    paddingLeft: '2%',
     borderRadius: theme.spacing(1.5),
     transform: 'scale(1.5)', // Increase size by 1.5
     outline: 'none',
-    boxShadow: '5px 5px 5px rgba(0, 0, 0, 0.5)', 
+    boxShadow: '5px 5px 5px rgba(0, 0, 0, 0.5)',
   },
   clicked: { // Add new style for clicked card
     transform: 'translate(-50%, -50%) scale(0.8)',
@@ -64,34 +63,65 @@ const CardSlider = ({ cards }) => {
   const [selectedCard, setSelectedCard] = useState(null);
   const [cardClicked, setCardClicked] = useState(false);
   const [appointmentCount, setAppointmentCount] = useState(0); // New state for appointment count
+  const [testCount, setTestCount] = useState(0); // New state for test count
+  const [idArray, setIdArray] = useState([]); // New state for test count
   const navigate = useNavigate();
 
-  try {
-    useEffect(() => {
-      const fetchAppointmentCount = async () => {
-        try {
-          const response = await axios.get('http://localhost:3100/api/appointments');
-          const appointments = response.data && response.data.response;
+  useEffect(() => {
+    const fetchAppointmentCount = async () => {
+      try {
+        const response = await axios.get('http://localhost:3100/api/appointments');
+        const appointments = response.data && response.data.response;
 
-          const userId = jwtDecode(localStorage.getItem('myToken')).id;
-          const count = appointments.filter(appointment =>
-            appointment.state === 'Doctor_approved' &&
-            appointment.patientView !== 'viewed' &&
-            appointment.pid === userId
-          ).length;
-          console.log('Appointment count:', count);
-          setAppointmentCount(count);
-        } catch (error) {
-          console.log('Appointment count catch block');
-          console.error('Error fetching appointments:', error);
-        }
-      };
+        const userId = jwtDecode(localStorage.getItem('myToken')).id;
+        const count = appointments.filter(appointment =>
+          appointment.state === 'Doctor_approved' &&
+          appointment.patientView !== 'viewed' &&
+          appointment.pid === userId
+        ).length;
+        console.log('Appointment count:', count);
+        setAppointmentCount(count);
+      } catch (error) {
+        console.log('Appointment count catch block');
+        console.error('Error fetching appointments:', error);
+      }
+    };
 
-      fetchAppointmentCount();
-    }, []);
-  } catch (error) {
-    console.error('Error in try block:', error);
-  }
+    fetchAppointmentCount();
+  }, []);
+
+  useEffect(() => {
+    const fetchTestTypes = async () => {
+      try {
+        const response = await axios.get('http://localhost:3100/api/tests');
+        const tests = response.data && response.data.response;
+
+        const today = new Date();
+        today.setDate(today.getDate() - 14); // Subtract 14 days from today
+
+        const expensiveTests = tests.filter(test => {
+          const testDate = new Date(test.adddate);
+          return testDate >= today && testDate <= new Date();
+        });
+
+        const expensiveTestIds = expensiveTests.map(test => test.id);
+        console.log('Expensive test IDs:', expensiveTestIds);
+        setIdArray(expensiveTestIds);
+        console.log('Count of tests date check =', expensiveTests.length);
+        setTestCount(expensiveTests.length);
+      } catch (error) {
+        console.error('Error fetching test types:', error);
+      }
+    };
+
+    const interval = setInterval(() => {
+      fetchTestTypes();
+    }, 4000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   const handleNext = () => {
     setPosition((prevPosition) => Math.min(prevPosition + 1, cards.length - 2));
@@ -122,7 +152,7 @@ const CardSlider = ({ cards }) => {
         navigate(`/PViewAppointment/:id`);
       } 
       else if (selectedCard.title === 'TYPES') {
-        navigate(`/PViewTest/:id`);
+        navigate(`/PViewTest/${idArray.join(',')}`);
       } 
     }
     handleCloseModal();
@@ -134,7 +164,7 @@ const CardSlider = ({ cards }) => {
     <div className={classes.root}>
       <Grid container justify="center" style={{alignItems: 'center' ,marginLeft:'1%'}}>
         <Grid item xs={1}>
-        <Button onClick={handlePrev} disabled={position === 0} style={{color:'#ffffff',backgroundColor:'#1087A5', borderRadius: '50%', visibility: position === 0 ? 'hidden' : 'visible'}}><ArrowBackIosIcon/></Button>
+          <Button onClick={handlePrev} disabled={position === 0} style={{color:'#ffffff',backgroundColor:'#1087A5', borderRadius: '50%', visibility: position === 0 ? 'hidden' : 'visible'}}><ArrowBackIosIcon/></Button>
         </Grid>
         <Grid item xs={10}>
           <div className={classes.cardContainer}>
@@ -154,6 +184,12 @@ const CardSlider = ({ cards }) => {
                         ({appointmentCount}) {/* Use the dynamic count */}
                       </span>
                     }
+                    {card.title === 'TYPES' && <NotificationIcon style={{ marginLeft: '57%',fontSize: '2rem',color: testCount !== 0 ? 'darkred' : 'inherit'}} />}
+                    {card.title === 'TYPES' && 
+                      <span style={{ marginLeft: '0.1px', fontWeight:'bold' , verticalAlign: 'super', fontSize: '0.6em' ,color: testCount !== 0 ? 'darkred' : 'inherit'}}>
+                        ({testCount}) {/* Use the dynamic count */}
+                      </span>
+                    }
                   </Typography>
                   <Typography color="textSecondary">
                     {card.content}
@@ -167,7 +203,7 @@ const CardSlider = ({ cards }) => {
           </div>
         </Grid>
         <Grid item xs={1}>
-        <Button onClick={handleNext} disabled={position === cards.length - 2} style={{color:'#ffffff',backgroundColor:'#1087A5', borderRadius: '50%', visibility: position === cards.length - 2 ? 'hidden' : 'visible'}}><ArrowForwardIosIcon/></Button>
+          <Button onClick={handleNext} disabled={position === cards.length - 2} style={{color:'#ffffff',backgroundColor:'#1087A5', borderRadius: '50%', visibility: position === cards.length - 2 ? 'hidden' : 'visible'}}><ArrowForwardIosIcon/></Button>
         </Grid>
       </Grid>
       <Modal
@@ -193,7 +229,6 @@ const MyComponent = () => {
     { title: 'NEW APPOINTMENT', content: 'Add new blood tests appoinments' ,icon:AddToPhotosTwoToneIcon},
     { title: 'HISTORY', content: 'View old blood reports', icon:PlagiarismTwoToneIcon},
     { title: 'TYPES', content: 'View details available test types' , icon:FactCheckTwoToneIcon},
-
   ];
 
   return <CardSlider cards={cards} />;
