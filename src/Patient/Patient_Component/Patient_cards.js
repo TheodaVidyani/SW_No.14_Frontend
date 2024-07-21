@@ -116,7 +116,7 @@ const CardSlider = ({ cards }) => {
 
     const interval = setInterval(() => {
       fetchTestTypes();
-    }, 4000);
+    }, 2000);
 
     return () => {
       clearInterval(interval);

@@ -163,18 +163,18 @@ export default function Patienthead() {
                 <Tab label="Contact us" component={Link} to="/contact" style={{ fontSize: '17px', color: '#5A5959', margin: '0 12px' }} />
               </Tabs>
             )}
-          {profilePicUrl ? (
+          {/*{profilePicUrl ? (
               <Avatar
                 src={`data:image/png;base64,${profilePicUrl}`}
                 alt="Profile Picture"
                 style={{ width: '50px', height: '50px' }}
               />
-            ) : (
+            ) : (*/}
               <AccountCircleIcon 
                 style={{ color: '#101754', fontSize: 42, cursor: 'pointer' }} 
                 onClick={handleMenuOpen} 
               />
-            )}
+            {/* )} */}
           </Toolbar>
         )}
         <Drawer
