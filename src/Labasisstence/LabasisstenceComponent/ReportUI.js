@@ -1,5 +1,4 @@
-
-
+// export default ReportUI;
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -19,28 +18,36 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import healthLabLogo from "./Labasisstenceimg/Health lab logo_.png";
 import { useLocation } from "react-router-dom";
 
 const ReportUI = () => {
   const location = useLocation();
-  const [testsDB, setTestsDB] = useState([]);
-  const [userData, setUserData] = useState([]);
-  const [results, setResults] = useState([]);
+  const [testsDB, setTestsDB] = useState([]); //Store test data
+  const [userData, setUserData] = useState([]); //Store user data
+  const [results, setResults] = useState([]); //Store test results 
+  const [recomandation, setRecomandation] = useState([]); //Store appointment recomandation
   const [open, setOpen] = useState(false);
   const [selectedTest, setSelectedTest] = useState(null);
   const [editedResult, setEditedResult] = useState("");
-  const [updateStatus, setUpdateStatus] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("success");
+  const [showAlert, setShowAlert] = useState(false);
 
   const record = location.state.record;
-  const tests = record.selectTests;
+  const tests = record.selectTests; // store all test type on appointment
 
+  // Fetch test data from the server
   useEffect(() => {
     async function getTestData() {
       const response = await fetch(`http://localhost:3100/tests`);
       if (!response.ok) {
-        window.alert(`An error occurred: ${response.statusText}`);
+        setAlertMessage(`An error occurred: ${response.statusText}`);
+        setAlertType("error");
+        setShowAlert(true);
         return;
       }
       const testData = await response.json();
@@ -49,11 +56,14 @@ const ReportUI = () => {
     getTestData();
   }, []);
 
+  // Fetch user data from the DB based on the patient ID
   useEffect(() => {
     async function getUserDataByID() {
       const response = await fetch(`http://localhost:3100/api/getuser/${record.pid}`);
       if (!response.ok) {
-        window.alert(`An error occurred in user data section : ${response.statusText}`);
+        setAlertMessage(`An error occurred in user data section: ${response.statusText}`);
+        setAlertType("error");
+        setShowAlert(true);
         return;
       }
       const user = await response.json();
@@ -62,23 +72,56 @@ const ReportUI = () => {
     getUserDataByID();
   }, [record.pid]);
 
+  // Fetch test results from the DB
   useEffect(() => {
     async function getResult() {
       const response = await fetch(`http://localhost:3100/api/testresult`);
       if (!response.ok) {
-        window.alert(`An error occurred: ${response.statusText}`);
+        setAlertMessage(`An error occurred: ${response.statusText}`);
+        setAlertType("error");
+        setShowAlert(true);
         return;
       }
       const resultsData = await response.json();
       setResults(resultsData.result);
     }
     getResult();
-  }, [record.pid,updateStatus]);
+  }, [record.pid]);
 
-  const birthYear = userData && userData.nationalID ? parseInt(userData.nationalID.substring(0, 4)) : null;
-  const currentYear = new Date().getFullYear();
-  const age = birthYear ? currentYear - birthYear : "no data";
 
+  // fetch recommandatio data from the DB
+
+  useEffect(() => {
+    async function getResult() {
+      const response = await fetch(`http://localhost:3100/api/getrecomandationbyid/${record.id}`);
+      if (!response.ok) {
+        setAlertMessage(`An error occurred: ${response.statusText}`);
+        setAlertType("error");
+        setShowAlert(true);
+        return;
+      }
+      const resultsData = await response.json();
+      setRecomandation(resultsData.result);
+    }
+    getResult();
+  }, [record.pid]);
+
+
+  // Calculate the age of the patient based on the national ID
+  const calculateAge = () => {
+    const dob = new Date(userData.dob);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const age = calculateAge();
+
+  // Combine test data with test results
   const tableData = tests.map((test) => {
     const matchedResult = results.find((result) => result.testid === test._id);
     const matchedTestDB = testsDB.find((dbTest) => dbTest.id === test.testId);
@@ -92,18 +135,16 @@ const ReportUI = () => {
     };
   });
 
-
+  // Store all report details in an object
   const reportDetails = {
     patientName: record.pname,
     patientEmail: userData.email,
     PatientAge: age,
-    PatientSex: "Male",
+    PatientSex: userData.gender,
     PatientID: record._id,
     RegisteredOn: record.regdate.split("T")[0],
-    CollectedOn: "02.31pm 02 December",
-    ReportedOn: "02.31 December 2022",
-    LabTechnician: "Medical Lab Technician",
-    Doctor: "Dr. Rajitha Bandara",
+    ReportedOn: recomandation?.date?.split("T")[0] || "",
+    Doctor: recomandation.docname,
     tableData: tableData,
   };
 
@@ -122,9 +163,13 @@ const ReportUI = () => {
       if (!response.ok) {
         throw new Error('Failed to send email');
       }
-      alert('Email sent successfully');
+      setAlertMessage('Email sent successfully');
+      setAlertType('success');
+      setShowAlert(true);
     } catch (error) {
-      alert(error.message);
+      setAlertMessage(error.message);
+      setAlertType('error');
+      setShowAlert(true);
     }
   };
 
@@ -132,7 +177,6 @@ const ReportUI = () => {
     setSelectedTest(test);
     setEditedResult(test.result);
     setOpen(true);
-   
   };
 
   const handleClose = () => {
@@ -140,32 +184,47 @@ const ReportUI = () => {
     setSelectedTest(null);
   };
 
-
   const handleSave = async () => {
-    
-    try{
-     
-        const response = await axios.put('http://localhost:3100/api/updatdata', {
-          updatedData: selectedTest,
-        });
-        alert('Data updated successfully');
-        setUpdateStatus(response.data);
-        setOpen(false);
-    }
-    catch (error) {
-      alert(error.message);
-    }
+    try {
+      // Validate the edited result
+      if (!/^\d+(\.\d+)?$/.test(editedResult)) {
+        setAlertMessage('Please enter a valid number');
+        setAlertType('error');
+        setShowAlert(true);
+        return;
+      }
 
-  }
+      // Validate the range of the edited result
+      const min = selectedTest.min;
+      const max = selectedTest.max;
+      if (min !== 'no data' && max !== 'no data') {
+        const result = parseFloat(editedResult);
+        if (result < parseFloat(min) || result > parseFloat(max)) {
+          setAlertMessage('Please enter the valid range results');
+          setAlertType('warning');
+          setShowAlert(true);
+          return;
+        }
+      }
 
-  
+      const response = await axios.put('http://localhost:3100/api/updatdata', {
+        updatedData: selectedTest,
+      });
+      setAlertMessage('Data updated successfully');
+      setAlertType('success');
+      setShowAlert(true);
+      setOpen(false);
+    } catch (error) {
+      setAlertMessage(error.message);
+      setAlertType('error');
+      setShowAlert(true);
+    }
+  };
+
   useEffect(() => {
-    setSelectedTest(prevState=>({...prevState, result: editedResult}));
-  },[editedResult]);
-   
-  useEffect(() => {
-    console.log(selectedTest);
-  },[selectedTest]);
+    setSelectedTest((prevState) => ({ ...prevState, result: editedResult }));
+  }, [editedResult]);
+
   return (
     <Container
       sx={{
@@ -223,24 +282,20 @@ const ReportUI = () => {
         <Typography variant="body1" sx={{ fontSize: "14px" }}>
           Age: {reportDetails.PatientAge}
           <br />
-          Sex: Male
+          Sex: {reportDetails.PatientSex}
           <br />
           PID: {record._id}
         </Typography>
       </Grid>
       <Grid item xs={6} sx={{ gridArea: "BD3" }}>
         <Typography variant="p" sx={{ fontSize: "16px" }}>
-          {record.username}
-        </Typography>
-        <Typography variant="body1" sx={{ fontSize: "14px" }}>
-          Registered on: {record.regdate.split("T")[0]}
+          Registered On: {reportDetails.RegisteredOn}
           <br />
-          Collected on: 02.31pm 02 December
-          <br />
-          Reported on: 02.31 December 2022
+          Reported On: {reportDetails.ReportedOn }
         </Typography>
       </Grid>
-      <Grid item xs={6} sx={{ display: "grid", gridArea: "Table", width: "100%" }}>
+    
+      <Grid item xs={12} sx={{ gridArea: "Table", width: "100%" }}>
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -277,31 +332,21 @@ const ReportUI = () => {
       </Grid>
       <Grid item xs={6} sx={{ display: "grid", gridArea: "E" }}>
         <Typography variant="p">
-          ----------------------
-          <br />
-          Medical Lab Technician
+         
+Approved By: <strong>Dr.{reportDetails.Doctor}</strong> 
         </Typography>
       </Grid>
-      <Grid item xs={6} sx={{ display: "grid", gridArea: "d" }}>
-        <Typography variant="p">
-          ----------------------
-          <br />
-          Dr. Rajitha Bandara
-        </Typography>
-      </Grid>
-
+      
       <Grid item xs={12} sx={{ display: "grid", gridArea: "I", placeSelf: "left", margin: "20px", width: "100%" }} className="no-print">
-        <Button variant="outlined" width=" 50%" color="primary" onClick={() => window.print()}>
+        <Button variant="outlined" width="50%" color="primary" onClick={() => window.print()}>
           Print
         </Button>
       </Grid>
-
       <Grid item xs={12} sx={{ display: "grid", gridArea: "R", placeSelf: "right", margin: "20px", width: "100%" }} className="no-print">
-        <Button variant="outlined" color="secondary" width=" 50%" onClick={sendEmail}>
+        <Button variant="outlined" color="secondary" width="50%" onClick={sendEmail}>
           Send Email
         </Button>
       </Grid>
-
       {/* Edit Dialog */}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit Test Result</DialogTitle>
@@ -326,11 +371,23 @@ const ReportUI = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
+      {/* Success Alert */}
+      <Snackbar
+        open={showAlert}
+        autoHideDuration={3000}
+        onClose={() => setShowAlert(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setShowAlert(false)}
+          severity={alertType}
+          sx={{ width: "100%" }}
+        >
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
 
 export default ReportUI;
-
-
