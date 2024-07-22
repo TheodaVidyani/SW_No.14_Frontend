@@ -15,14 +15,17 @@ function StickyHeadTable({ setRows, selectedRole, handleChange }) {
   const [rows, setLocalRows] = useState([]);
 
   const columns = [
-    { id: 'nationalID', label: 'National ID', minWidth: 170 },
-    { id: 'name', label: `${selectedRole} Name`, minWidth: 20 },
+    { id: 'nationalID', label: 'National ID', minWidth: 80 },
+    { id: 'name', label: `${selectedRole} Name`, minWidth: 50 },
+    { id: 'phonenumber', label: 'phonenumber', minWidth: 50 },
     {
       id: 'email',
       label: 'Email',
-      minWidth: 170,
+      minWidth: 80,
       align: 'right',
-    }
+    },
+    
+
   ];
 
   useEffect(() => {
