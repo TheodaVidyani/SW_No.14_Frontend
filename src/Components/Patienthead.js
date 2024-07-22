@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Tab, Tabs, Typography, Toolbar, useMediaQuery, useTheme, IconButton, Drawer, List, ListItem, ListItemText, Menu, MenuItem, Box, Avatar } from '@mui/material/';
+import {
+  AppBar, Tab, Tabs, Typography, Toolbar, useMediaQuery, useTheme,
+  IconButton, Drawer, List, ListItem, ListItemText, Menu, MenuItem, Box, Avatar
+} from '@mui/material/';
 import LocalHospitalTwoToneIcon from '@mui/icons-material/LocalHospitalTwoTone';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -28,9 +31,8 @@ export default function Patienthead() {
     setAnchorEl(null);
   };
 
-  const handleProfileClick = () => {
-    handleMenuClose();
-    navigate(`/UserProfile/${userId}`);
+  const handleProfileClick = (event) => {
+    setAnchorEl(event.currentTarget); // Open the menu at the clicked position
   };
 
   const handleLogoutClick = async () => {
@@ -45,9 +47,8 @@ export default function Patienthead() {
 
     // Remove user data from localStorage
     localStorage.removeItem('user');
-    localStorage.removeItem('profilePicUrl'); // Remove profilePicUrl from localStorage
     // Clear cookies if any
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "myToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     // Navigate to login page
     navigate('/login');
   };
@@ -57,20 +58,20 @@ export default function Patienthead() {
       try {
         const response = await axios.get('http://localhost:3100/api/router_login/getCurrentUser', {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}` // Ensure to include the JWT token in the request header
+            Authorization: `Bearer ${localStorage.getItem('myToken')}` // Ensure to include the JWT token in the request header
           }
         });
         const { profilePic } = response.data;
+        console.log('Fetched profilePic:', profilePic); // Log the fetched profilePic
         setProfilePicUrl(profilePic);
-        console.log('Fetched profilePicUrl:', profilePic);
       } catch (error) {
-        console.error('Error fetching profile:', error);
+        console.error('Error fetching profile:', error.message);
+        console.error('Error details:', error);
       }
     };
 
     fetchProfile();
   }, [userId]);
-
 
   useEffect(() => {
     const handleScroll = () => {
@@ -106,11 +107,6 @@ export default function Patienthead() {
       </List>
     </div>
   );
-
-  // Log the current profilePicUrl whenever it changes
-  useEffect(() => {
-    console.log('Current profilePicUrl:', profilePicUrl);
-  }, [profilePicUrl]);
 
   return (
     <>
@@ -163,12 +159,17 @@ export default function Patienthead() {
                 <Tab label="Contact us" component={Link} to="/contact" style={{ fontSize: '17px', color: '#5A5959', margin: '0 12px' }} />
               </Tabs>
             )}
-          {profilePicUrl ? (
-              <Avatar
-                src={`data:image/png;base64,${profilePicUrl}`}
-                alt="Profile Picture"
-                style={{ width: '50px', height: '50px' }}
-              />
+            {profilePicUrl ? (
+              <Box
+                onClick={handleProfileClick}
+                style={{ cursor: 'pointer' }}
+              >
+                <Avatar
+                  src={profilePicUrl}
+                  alt="Profile Picture"
+                  style={{ width: '50px', height: '50px' }}
+                />
+              </Box>
             ) : (
               <AccountCircleIcon 
                 style={{ color: '#101754', fontSize: 42, cursor: 'pointer' }} 
@@ -190,11 +191,11 @@ export default function Patienthead() {
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
-          <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
+          <MenuItem onClick={() => navigate(`/UserProfile/${userId}`)}>Profile</MenuItem>
           <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
         </Menu>
       </AppBar>
-      <Toolbar /> {/* This is an empty Toolbar component to push down the content */}
+      <Toolbar />
     </>
   );
 }

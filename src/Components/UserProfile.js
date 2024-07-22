@@ -1,11 +1,10 @@
-// UserProfile.js
-
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Typography, Avatar, Grid, Paper, Dialog, DialogTitle, DialogContent, Divider, CircularProgress, Snackbar } from '@mui/material';
 import UserProfileUpdate from './UserProfileUpdate';
 import MuiAlert from '@mui/material/Alert';
 import axios from 'axios';
+
 const Alert = (props) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 };
@@ -29,16 +28,12 @@ const Profile = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await fetch('http://localhost:3100/api/router_login/getCurrentUser', {
-        credentials: 'include',
+      const response = await axios.get('http://localhost:3100/api/router_login/getCurrentUser', {
+        withCredentials: true,
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      const data = response.data;
 
-      const data = await response.json();
-      
       if (!data || !data.username) {
         throw new Error('Invalid user data received');
       }
@@ -46,6 +41,7 @@ const Profile = () => {
       setUserData(data);
     } catch (error) {
       setError('Failed to fetch user data.');
+      console.error('Error fetching user data:', error);
     } finally {
       setLoading(false);
     }
