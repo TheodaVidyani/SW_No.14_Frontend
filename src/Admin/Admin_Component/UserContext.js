@@ -38,7 +38,7 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     console.log('UserProvider: Fetching current user data');
-    axios.get('http://localhost:3100/api/router_login/getCurrentUser', { withCredentials: true })
+    axios.get('https://healthlabbackend.vercel.app/api/router_login/getCurrentUser', { withCredentials: true })
       .then(response => {
         console.log('User data fetched:', response.data);
         setUser(response.data || null); // Set user data or null if no user is found
@@ -53,7 +53,7 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   const logout = () => {
-    axios.post('http://localhost:3100/api/router_login/logout', {}, { withCredentials: true })
+    axios.post('https://healthlabbackend.vercel.app/api/router_login/logout', {}, { withCredentials: true })
       .then(() => {
         setUser(null);
       })

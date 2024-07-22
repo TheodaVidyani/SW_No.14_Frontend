@@ -11,7 +11,7 @@ function AdminInterface() {
   const handleNavigate = useNavigate(); //Making an instance of useNavigate
 axios.defaults.withCredentials = true;
   useEffect(() => {
-    axios.get('http://localhost:3100/api/AdminInterface')
+    axios.get('https://healthlabbackend.vercel.app/api/AdminInterface')
       .then(res => {
         if (res.data === "success") {
           console.log("Successed"); // Or any other function or state update

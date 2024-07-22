@@ -29,7 +29,7 @@ function StickyHeadTable({ setRows, selectedRole, handleChange }) {
   ];
 
   useEffect(() => {
-    axios.get('http://localhost:3100/api/router_login/users')
+    axios.get('https://healthlabbackend.vercel.app/api/router_login/users')
       .then(response => {
         const responseData = response.data && response.data.response;
         if (Array.isArray(responseData)) {

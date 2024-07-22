@@ -22,7 +22,7 @@ export default function Testlist({ setRows }) {
   const [rows, setLocalRows] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3100/api/tests')
+    axios.get('https://healthlabbackend.vercel.app/api/tests')
       .then(response => {
         console.log('Response data:', response.data);
         const responseData = response.data && response.data.response;

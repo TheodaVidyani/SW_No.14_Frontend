@@ -15,7 +15,7 @@ const Admin = () => {
     }, []);
 
     const getUser = () => {
-        Axios.get('http://localhost:3100/api/router_login/users')
+        Axios.get('https://healthlabbackend.vercel.app/api/router_login/users')
             .then(response => {
                 setUsers(response?.data?.response || []);
             })
@@ -34,7 +34,7 @@ const Admin = () => {
             username: data.username,
             password: data.password
         };
-        Axios.post('http://localhost:3100/api/router_login/createuser', payload)
+        Axios.post('https://healthlabbackend.vercel.app/api/router_login/createuser', payload)
             .then(() => {
                 getUser();
                 setSubmitted(false);
@@ -57,7 +57,7 @@ const Admin = () => {
             username: data.username,
             password: data.password
         };
-        Axios.post('http://localhost:3100/api/router_login/updateuser', payload)
+        Axios.post('https://healthlabbackend.vercel.app/api/router_login/updateuser', payload)
             .then(() => {
                 getUser();
                 setSubmitted(false);
@@ -69,7 +69,7 @@ const Admin = () => {
     }
 
     const deleteUser = (id) => {
-        Axios.post('http://localhost:3100/api/router_login/deleteuser', { id })
+        Axios.post('https://healthlabbackend.vercel.app/api/router_login/deleteuser', { id })
             .then(() => {
                 getUser();
             })
