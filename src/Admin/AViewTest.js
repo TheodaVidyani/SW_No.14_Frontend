@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Testlist from './Admin_Component/Testlist';
+import ATestlist from './ATestlist';
 import Patienthead from '../Components/Patienthead'; 
 import Footer from '../Components/Footer'; 
 import { Grid } from '@mui/material';
@@ -14,7 +14,7 @@ function AViewTest() {
       <Patienthead />
       <Grid sx={{ flex: 1, paddingTop: '12%', paddingBottom: '3%' }}>
         <Testsearch rows={rows}/>
-        <Testlist setRows={setRows} />
+        <ATestlist setRows={setRows} />
       </Grid>
       <Footer />
     </div>
