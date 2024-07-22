@@ -23,7 +23,6 @@ import {
 } from "@mui/material";
 import healthLabLogo from "./Labasisstenceimg/Health lab logo_.png";
 import { useLocation } from "react-router-dom";
-import { get } from "mongoose";
 
 const ReportUI = () => {
   const location = useLocation();
