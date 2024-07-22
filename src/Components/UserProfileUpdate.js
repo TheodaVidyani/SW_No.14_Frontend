@@ -66,7 +66,7 @@ const Notification = styled(Snackbar)(({ theme }) => ({
   right: theme.spacing(2),
 }));
 
-const UserProfileUpdate = ({ userData, onUpdateProfilePic, onClose, onProfileUpdate  }) => {
+const UserProfileUpdate = ({ userData, onUpdateProfilePic, onClose, onProfileUpdate }) => {
   const [user, setUser] = useState({
     _id: '',
     firstname: '',
@@ -165,30 +165,22 @@ const UserProfileUpdate = ({ userData, onUpdateProfilePic, onClose, onProfileUpd
     };
 
     try {
-      const response = await fetch('http://localhost:3100/api/router_login/updateuser', {
-        method: 'POST',
+      const response = await axios.post('http://localhost:3100/api/router_login/updateuser', userData, {
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}` // Ensure to include the JWT token in the request header
-
+          Authorization: `Bearer ${localStorage.getItem('myToken')}`, // Ensure to include the JWT token in the request header
         },
-        body: JSON.stringify(userData),
       });
 
-      const data = await response.json();
+      const data = response.data;
 
-      if (response.ok) {
-        setUser((prevUser) => ({
-          ...prevUser,
-          ...data.updatedUser,
-          profilePicUrl: data.updatedUser.profilePicUrl,
-        }));
-        setShowNotification(true); // Show notification on successful update
-        onClose(); // Close the update UI
-        onProfileUpdate(); // Fetch updated profile data
-      } else {
-        console.error('Failed to update profile:', data);
-      }
+      setUser((prevUser) => ({
+        ...prevUser,
+        ...data.updatedUser,
+        profilePicUrl: data.updatedUser.profilePic,
+      }));
+      setShowNotification(true); // Show notification on successful update
+      onClose(); // Close the update UI
+      onProfileUpdate(); // Fetch updated profile data
     } catch (error) {
       console.error('Error updating profile:', error);
     }
