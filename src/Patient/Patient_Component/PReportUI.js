@@ -28,7 +28,7 @@ const Invoice = ({ id }) => {
         return;
       }
       try {
-        const response = await fetch(`http://localhost:3100/api/getuser/${patient}`);
+        const response = await fetch(`https://healthlabbackend.vercel.app/api/getuser/${patient}`);
         if (!response.ok) {
           throw new Error(`An error occurred: ${response.statusText}`);
         }
@@ -45,7 +45,7 @@ const Invoice = ({ id }) => {
   useEffect(() => {
     async function getTestData() {
       try {
-        const response = await fetch(`http://localhost:3100/tests`);
+        const response = await fetch(`https://healthlabbackend.vercel.app/tests`);
         if (!response.ok) {
           throw new Error(`An error occurred: ${response.statusText}`);
         }
@@ -61,7 +61,7 @@ const Invoice = ({ id }) => {
   useEffect(() => {
     async function getRecords() {
       try {
-        const response = await fetch(`http://localhost:3100/api/appoinments/${id}`);
+        const response = await fetch(`https://healthlabbackend.vercel.app/api/appoinments/${id}`);
         if (!response.ok) {
           throw new Error(`An error occurred: ${response.statusText}`);
         }
@@ -77,7 +77,7 @@ const Invoice = ({ id }) => {
   useEffect(() => {
     async function getResults() {
       try {
-        const response = await fetch(`http://localhost:3100/api/getResults`);
+        const response = await fetch(`https://healthlabbackend.vercel.app/api/getResults`);
         if (!response.ok) {
           throw new Error(`An error occurred: ${response.statusText}`);
         }

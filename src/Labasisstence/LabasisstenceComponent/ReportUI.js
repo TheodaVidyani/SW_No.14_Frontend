@@ -43,7 +43,7 @@ const ReportUI = () => {
   // Fetch test data from the server
   useEffect(() => {
     async function getTestData() {
-      const response = await fetch(`http://localhost:3100/tests`);
+      const response = await fetch(`https://healthlabbackend.vercel.app/tests`);
       if (!response.ok) {
         setAlertMessage(`An error occurred: ${response.statusText}`);
         setAlertType("error");
@@ -59,7 +59,7 @@ const ReportUI = () => {
   // Fetch user data from the DB based on the patient ID
   useEffect(() => {
     async function getUserDataByID() {
-      const response = await fetch(`http://localhost:3100/api/getuser/${record.pid}`);
+      const response = await fetch(`https://healthlabbackend.vercel.app/api/getuser/${record.pid}`);
       if (!response.ok) {
         setAlertMessage(`An error occurred in user data section: ${response.statusText}`);
         setAlertType("error");
@@ -75,7 +75,7 @@ const ReportUI = () => {
   // Fetch test results from the DB
   useEffect(() => {
     async function getResult() {
-      const response = await fetch(`http://localhost:3100/api/testresult`);
+      const response = await fetch(`https://healthlabbackend.vercel.app/api/testresult`);
       if (!response.ok) {
         setAlertMessage(`An error occurred: ${response.statusText}`);
         setAlertType("error");
@@ -93,7 +93,7 @@ const ReportUI = () => {
 
   useEffect(() => {
     async function getResult() {
-      const response = await fetch(`http://localhost:3100/api/getrecomandationbyid/${record.id}`);
+      const response = await fetch(`https://healthlabbackend.vercel.app/api/getrecomandationbyid/${record.id}`);
       if (!response.ok) {
         setAlertMessage(`An error occurred: ${response.statusText}`);
         setAlertType("error");
@@ -150,7 +150,7 @@ const ReportUI = () => {
 
   const sendEmail = async () => {
     try {
-      const response = await fetch('http://localhost:3100/api/send', {
+      const response = await fetch('https://healthlabbackend.vercel.app/api/send', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -207,7 +207,7 @@ const ReportUI = () => {
         }
       }
 
-      const response = await axios.put('http://localhost:3100/api/updatdata', {
+      const response = await axios.put('https://healthlabbackend.vercel.app/api/updatdata', {
         updatedData: selectedTest,
       });
       setAlertMessage('Data updated successfully');
