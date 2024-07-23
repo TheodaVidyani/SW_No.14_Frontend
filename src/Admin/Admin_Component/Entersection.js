@@ -12,7 +12,7 @@ function BasicTextFields({ handleChange, formData }) {
   const [maxId, setMaxId] = useState(0);
 
   useEffect(() => {
-    axios.get('https://healthlabbackend.vercel.app/api/tests')
+    axios.get('https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/tests')
   .then(response => {
     const responseData = response.data && response.data.response; // Accessing the 'response' key
     if (Array.isArray(responseData) && responseData.length > 0) {

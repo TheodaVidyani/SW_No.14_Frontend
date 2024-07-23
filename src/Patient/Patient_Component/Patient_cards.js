@@ -70,7 +70,7 @@ const CardSlider = ({ cards }) => {
   useEffect(() => {
     const fetchAppointmentCount = async () => {
       try {
-        const response = await axios.get('https://healthlabbackend.vercel.app/api/appointments');
+        const response = await axios.get('https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/appointments');
         const appointments = response.data && response.data.response;
 
         const userId = jwtDecode(localStorage.getItem('myToken')).id;
@@ -93,7 +93,7 @@ const CardSlider = ({ cards }) => {
   useEffect(() => {
     const fetchTestTypes = async () => {
       try {
-        const response = await axios.get('https://healthlabbackend.vercel.app/api/tests');
+        const response = await axios.get('https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/tests');
         const tests = response.data && response.data.response;
 
         const today = new Date();

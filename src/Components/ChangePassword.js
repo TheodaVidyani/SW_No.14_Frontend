@@ -21,7 +21,7 @@ const ChangePassword = () => {
     }
 
     try {
-      const response = await fetch('https://healthlabbackend.vercel.app/api/router_login/changePassword', {
+      const response = await fetch('https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/router_login/changePassword', {
         method: 'POST',
         credentials: 'include',
         headers: {

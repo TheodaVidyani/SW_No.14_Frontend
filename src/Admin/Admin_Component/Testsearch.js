@@ -46,7 +46,7 @@ export default function Testsearch({ rows }) {
     setIsEditing(false);
     console.log("Updated rows: ", updatedRows);
     console.log("new price " + editedPrice);
-    axios.post('https://healthlabbackend.vercel.app/api/updatetest', { id: selectedTest.id, price: editedPrice })
+    axios.post('https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/updatetest', { id: selectedTest.id, price: editedPrice })
       .then(response => {
         // Handle the response if needed
         console.log(response.data);

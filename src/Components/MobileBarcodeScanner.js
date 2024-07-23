@@ -11,7 +11,7 @@ const MobileBarcodeScanner = () => {
     const handleScan = (err, result) => {
         if (result) {
             // Send the scanned ID to the server
-            Axios.post('https://healthlabbackend.vercel.app/api/updateTestTubeId', { testTubeId: result.text })
+            Axios.post('https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/updateTestTubeId', { testTubeId: result.text })
                 .then(response => {
                     console.log('Test Tube ID updated successfully');
                     setScanning(false);
