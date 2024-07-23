@@ -9,7 +9,7 @@ function Reportpreview() {
   const [results, setResults] = useState([]);
 
   useEffect(() => {
-    fetch('https://helthlabback.vercel.app/api/getResults')
+    fetch('http://localhost:3100/api/getResults')
       .then(response => response.json())
       .then(data => {
         // Filter the results based on the appointment ID

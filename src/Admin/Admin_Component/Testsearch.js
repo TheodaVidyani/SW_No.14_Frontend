@@ -46,7 +46,7 @@ export default function Testsearch({ rows }) {
     setIsEditing(false);
     console.log("Updated rows: ", updatedRows);
     console.log("new price " + editedPrice);
-    axios.post('https://helthlabback.vercel.app/api/updatetest', { id: selectedTest.id, price: editedPrice })
+    axios.post('http://localhost:3100/api/updatetest', { id: selectedTest.id, price: editedPrice })
       .then(response => {
         // Handle the response if needed
         console.log(response.data);

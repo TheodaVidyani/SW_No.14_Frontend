@@ -54,7 +54,7 @@ function AddTest() {
     }
   
 
-    fetch('https://helthlabback.vercel.app/api/addtest', {
+    fetch('http://localhost:3100/api/addtest', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

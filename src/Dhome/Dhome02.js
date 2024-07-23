@@ -13,7 +13,7 @@ export default function Dhome02() {
   }, []);
 
   const fetchAppointmentIds = () => {
-    axios.get('https://helthlabback.vercel.app/api/appointmentId')
+    axios.get('http://localhost:3100/api/appointmentId')
       .then(response => {
         setAppointmentId(response.data.appointmentId);
       })

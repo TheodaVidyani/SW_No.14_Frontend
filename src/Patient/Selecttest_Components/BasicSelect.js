@@ -45,7 +45,7 @@ export default function BasicSelect() {
   };
 
   const getTests = () => {
-    Axios.get('https://helthlabback.vercel.app/api/tests')
+    Axios.get('http://localhost:3100/api/tests')
       .then((response) => {
         setTests(response.data?.response || []);
       })
@@ -64,7 +64,7 @@ export default function BasicSelect() {
       const selectedTest = tests.find((test) => test.id === selectedTestId);
       if (selectedTest) {
         setSelectedTestDescription(selectedTest.description);
-        Axios.get(`https://helthlabback.vercel.app/api/tests/${selectedTestId}`)
+        Axios.get(`http://localhost:3100/api/tests/${selectedTestId}`)
           .then((response) => {
             setTestDetails(response.data?.details || '');
             console.log(selectedTestId);
@@ -139,7 +139,7 @@ export default function BasicSelect() {
     setSnackbarMessage('Appointment added successfully');
     setSnackbarOpen(true);
 
-    fetch('https://helthlabback.vercel.app/api/addappointment', {
+    fetch('http://localhost:3100/api/addappointment', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

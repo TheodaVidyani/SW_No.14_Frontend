@@ -47,7 +47,7 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
     }, []);
 
     const fetchAppointmentIds = () => {
-        axios.get('https://helthlabback.vercel.app/api/appointmentIds')
+        axios.get('http://localhost:3100/api/appointmentIds')
             .then(response => {
                 setAppointmentIds(response.data.appointmentIds);
             })
@@ -63,7 +63,7 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
     }, [id]);
 
     const fetchPatientDetails = (appointmentId) => {
-        axios.get(`https://helthlabback.vercel.app/api/appoinments/${appointmentId}`)
+        axios.get(`http://localhost:3100/api/appoinments/${appointmentId}`)
             .then(response => {
                 const { pid, pname, selectTests } = response.data.response;
 
@@ -147,7 +147,7 @@ const TestResultForm = ({ testresult, updateResults, submitted, data, isEdit }) 
 
     const handleAfterSubmit = () => {
         // Perform additional action after handleSubmit
-        axios.post('https://helthlabback.vercel.app/api/updateappointment', { id: id, state: 'result_add' })
+        axios.post('http://localhost:3100/api/updateappointment', { id: id, state: 'result_add' })
             .then(response => {
                 console.log('Appointment '+ `${id}` +' updated with result entering successfully');
             })

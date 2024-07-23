@@ -31,7 +31,7 @@ const BarcodeScanner = () => {
                             setScanning(false);
                             clearInterval(interval);
                             // Send the scanned ID to the server
-                            Axios.post('https://helthlabback.vercel.app/api/updateTestTubeId', { testTubeId: code.data })
+                            Axios.post('http://localhost:3100/api/updateTestTubeId', { testTubeId: code.data })
                                 .then(response => {
                                     console.log('Test Tube ID updated successfully');
                                 })

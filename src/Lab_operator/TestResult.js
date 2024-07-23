@@ -21,7 +21,7 @@ const TestResult = () => {
     }, []);
 
     const getTestResult = () => {
-        Axios.get('https://helthlabback.vercel.app/api/getResults')
+        Axios.get('http://localhost:3100/api/getResults')
             .then(response => {
                 setTestResult(response.data?.response || []);
                 setFilteredResult(response.data?.response || []);
@@ -43,7 +43,7 @@ const TestResult = () => {
     
         console.log('Payload:', payload); // Log payload data
     
-        Axios.post('https://helthlabback.vercel.app/api/testresult', payload)
+        Axios.post('http://localhost:3100/api/testresult', payload)
         .then(() => {
             getTestResult();
             setSubmitted(false);
@@ -65,7 +65,7 @@ const TestResult = () => {
             testresults: data.testresults,
         };
 
-        Axios.post('https://helthlabback.vercel.app/api/updateResults', payload)
+        Axios.post('http://localhost:3100/api/updateResults', payload)
         .then(() => {
             getTestResult();
             setSubmitted(false);
@@ -76,7 +76,7 @@ const TestResult = () => {
     };
 
     const deleteResults = (data) => {
-        Axios.delete('https://helthlabback.vercel.app/api/deleteResults', { data })
+        Axios.delete('http://localhost:3100/api/deleteResults', { data })
         .then(() => {
             getTestResult();
         })

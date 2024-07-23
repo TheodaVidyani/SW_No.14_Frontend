@@ -21,7 +21,7 @@ const ChangePassword = () => {
     }
 
     try {
-      const response = await fetch('https://helthlabback.vercel.app/api/router_login/changePassword', {
+      const response = await fetch('http://localhost:3100/api/router_login/changePassword', {
         method: 'POST',
         credentials: 'include',
         headers: {

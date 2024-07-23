@@ -36,7 +36,7 @@ const FixedContainer = () => {
 
   const fetchPatientId = async (reportId) => {
     try {
-      const response = await axios.get(`https://helthlabback.vercel.app/api/patientId/${reportId}`);
+      const response = await axios.get(`http://localhost:3100/api/patientId/${reportId}`);
       setPid(response.data.patientId);
     } catch (error) {
       console.error('Error fetching patient ID:', error);
@@ -53,7 +53,7 @@ const FixedContainer = () => {
         throw new Error('Report ID cannot be empty');
       }
 
-      const response = await axios.post('https://helthlabback.vercel.app/api/recommendations', {
+      const response = await axios.post('http://localhost:3100/api/recommendations', {
         date: selectedDate,
         id: rid,
         recommendation: msg,
@@ -81,7 +81,7 @@ const FixedContainer = () => {
 
   const handleAfterSubmit = async () => {
     try {
-      await axios.post('https://helthlabback.vercel.app/api/updateappointment', { id: rid, state: 'Doctor_approved' });
+      await axios.post('http://localhost:3100/api/updateappointment', { id: rid, state: 'Doctor_approved' });
       console.log(`Appointment ${rid} updated with result entering successfully`);
     } catch (error) {
       console.error('Error updating appointment:', error);
@@ -90,7 +90,7 @@ const FixedContainer = () => {
 
   const handleApprove = async () => {
     try {
-      const response = await axios.post('https://helthlabback.vercel.app/api/approve', {
+      const response = await axios.post('http://localhost:3100/api/approve', {
         reportId: rid,
         doctorName: jwtDecode(localStorage.getItem("myToken")).name,
         recommendation: msg,
@@ -113,7 +113,7 @@ const FixedContainer = () => {
 
   const handleRecheck = async () => {
     try {
-      const response = await axios.post('https://helthlabback.vercel.app/api/recheck', {
+      const response = await axios.post('http://localhost:3100/api/recheck', {
         reportId: rid,
         doctorName: jwtDecode(localStorage.getItem("myToken")).name,
         recommendation: msg,

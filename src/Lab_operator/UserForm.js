@@ -40,7 +40,7 @@ const UserForm = ({ addUser, updateUser, submitted, data, isEdit }) => {
 
   const fetchTestTubes = async () => {
     try {
-      const response = await axios.get('https://helthlabback.vercel.app/api/test_tubes');
+      const response = await axios.get('http://localhost:3100/api/test_tubes');
       setTestTubes(response.data.response || []);
     } catch (error) {
       console.error('Error fetching test tubes:', error);
@@ -50,7 +50,7 @@ const UserForm = ({ addUser, updateUser, submitted, data, isEdit }) => {
   const fetchAppointments = async (userId) => {
     try {
       console.log(`Fetching appointments for user ID: ${userId}`);
-      const response = await axios.get('https://helthlabback.vercel.app/api/appointments');
+      const response = await axios.get('http://localhost:3100/api/appointments');
       console.log('Appointments response:', response.data);
       const userAppointments = response.data.response.filter(appointment => appointment.pid === userId);
       setAppointments(userAppointments);
@@ -105,7 +105,7 @@ const UserForm = ({ addUser, updateUser, submitted, data, isEdit }) => {
   const fetchPatientNameAndAppointments = async (nic) => {
     try {
       console.log(`Fetching patient name for NIC: ${nic}`);
-      const response = await axios.get('https://helthlabback.vercel.app/users');
+      const response = await axios.get('http://localhost:3100/users');
       console.log('Response from server:', response.data);
 
       const users = response.data.response;

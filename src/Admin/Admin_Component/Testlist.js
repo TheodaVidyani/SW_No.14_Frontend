@@ -62,7 +62,7 @@ export default function Testlist({ setRows ,idArray}) {
 
 
   useEffect(() => {
-    axios.get('https://helthlabback.vercel.app/api/tests')
+    axios.get('http://localhost:3100/api/tests')
       .then(response => {
         console.log('Response data:', response.data);
         const responseData = response.data && response.data.response;

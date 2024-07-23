@@ -7,7 +7,7 @@ const FeedbacksUI = () => {
     const [expanded, setExpanded] = useState([]);
 
     useEffect(() => {
-        fetch('https://helthlabback.vercel.app/getcontacts')
+        fetch('http://localhost:3100/getcontacts')
             .then(response => response.json())
             .then(data => {
                 setFeedbacks(data.response);
