@@ -43,7 +43,7 @@ const ReportUI = () => {
   // Fetch test data from the server
   useEffect(() => {
     async function getTestData() {
-      const response = await axios.get(`https://healthlabbackend.vercel.app/tests`);
+      const response = await fetch(`https://healthlabbackend.vercel.app/tests`);
       if (!response.ok) {
         setAlertMessage(`An error occurred: ${response.statusText}`);
         setAlertType("error");
@@ -59,7 +59,7 @@ const ReportUI = () => {
   // Fetch user data from the DB based on the patient ID
   useEffect(() => {
     async function getUserDataByID() {
-      const response = await axios.get(`https://healthlabbackend.vercel.app/api/getuser/${record.pid}`);
+      const response = await fetch(`https://healthlabbackend.vercel.app/api/getuser/${record.pid}`);
       if (!response.ok) {
         setAlertMessage(`An error occurred in user data section: ${response.statusText}`);
         setAlertType("error");
@@ -75,7 +75,7 @@ const ReportUI = () => {
   // Fetch test results from the DB
   useEffect(() => {
     async function getResult() {
-      const response = await axios.get(`https://healthlabbackend.vercel.app/api/testresult`);
+      const response = await fetch(`https://healthlabbackend.vercel.app/api/testresult`);
       if (!response.ok) {
         setAlertMessage(`An error occurred: ${response.statusText}`);
         setAlertType("error");
@@ -93,7 +93,7 @@ const ReportUI = () => {
 
   useEffect(() => {
     async function getResult() {
-      const response = await axios.get(`https://healthlabbackend.vercel.app/api/getrecomandationbyid/${record.id}`);
+      const response = await fetch(`https://healthlabbackend.vercel.app/api/getrecomandationbyid/${record.id}`);
       if (!response.ok) {
         setAlertMessage(`An error occurred: ${response.statusText}`);
         setAlertType("error");
