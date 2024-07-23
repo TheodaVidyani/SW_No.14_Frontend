@@ -21,7 +21,7 @@ const TestResult = () => {
     }, []);
 
     const getTestResult = () => {
-        Axios.get('http://localhost:3100/api/getResults')
+        Axios.get('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/getResults')
             .then(response => {
                 setTestResult(response.data?.response || []);
                 setFilteredResult(response.data?.response || []);
@@ -43,7 +43,7 @@ const TestResult = () => {
     
         console.log('Payload:', payload); // Log payload data
     
-        Axios.post('http://localhost:3100/api/testresult', payload)
+        Axios.post('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/testresult', payload)
         .then(() => {
             getTestResult();
             setSubmitted(false);
@@ -65,7 +65,7 @@ const TestResult = () => {
             testresults: data.testresults,
         };
 
-        Axios.post('http://localhost:3100/api/updateResults', payload)
+        Axios.post('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/updateResults', payload)
         .then(() => {
             getTestResult();
             setSubmitted(false);
@@ -76,7 +76,7 @@ const TestResult = () => {
     };
 
     const deleteResults = (data) => {
-        Axios.delete('http://localhost:3100/api/deleteResults', { data })
+        Axios.delete('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/deleteResults', { data })
         .then(() => {
             getTestResult();
         })

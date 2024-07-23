@@ -17,7 +17,7 @@ const ForgotPassword = () => {
   const handleSendCode = async () => {
     console.log('Sending verification code to:', email);
     try {
-      const response = await axios.post('http://localhost:3100/api/router_login/send-verification-code', { email });
+      const response = await axios.post('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/router_login/send-verification-code', { email });
       console.log('Response from sending code:', response.data);
       toast.success(response.data.message);
       setStep(2);
@@ -36,7 +36,7 @@ const ForgotPassword = () => {
 
     console.log('Resetting password with:', { username, code, newPassword });
     try {
-      const response = await axios.post('http://localhost:3100/api/router_login/verify-code-and-reset-password', { username, code, newPassword });
+      const response = await axios.post('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/router_login/verify-code-and-reset-password', { username, code, newPassword });
       console.log('Response from resetting password:', response.data);
       toast.success(response.data.message);
       setStep(1);

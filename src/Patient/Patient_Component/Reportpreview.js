@@ -9,7 +9,7 @@ function Reportpreview() {
   const [results, setResults] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3100/api/getResults')
+    fetch('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/getResults')
       .then(response => response.json())
       .then(data => {
         // Filter the results based on the appointment ID

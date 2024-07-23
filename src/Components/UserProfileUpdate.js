@@ -165,7 +165,7 @@ const UserProfileUpdate = ({ userData, onUpdateProfilePic, onClose, onProfileUpd
     };
 
     try {
-      const response = await axios.post('http://localhost:3100/api/router_login/updateuser', userData, {
+      const response = await axios.post('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/router_login/updateuser', userData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('myToken')}`, // Ensure to include the JWT token in the request header
         },

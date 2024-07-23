@@ -13,7 +13,7 @@ export default function Contact01() {
   const onSubmit = async (data) => {
     console.log('Submitting data:', data);
     try {
-      const response = await axios.post('http://localhost:3100/api/contact', {
+      const response = await axios.post('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/contact', {
         name: data.name,
         email: data.email,
         phone_number: data.phone_number,

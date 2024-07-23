@@ -30,7 +30,7 @@ export default function StickyHeadTable({ setRows }) {
   const [sortDirection, setSortDirection] = useState('asc');
 
   useEffect(() => {
-    axios.get('http://localhost:3100/api/appointments')
+    axios.get('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/appointments')
       .then(response => {
         console.log('Response data:', response.data);
         const responseData = response.data && response.data.response; // Accessing the 'response' key

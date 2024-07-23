@@ -23,7 +23,7 @@ const Users = () => {
     }, []);
 
     const getUsers = () => {
-        Axios.get('http://localhost:3100/api/testing-users')
+        Axios.get('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/testing-users')
             .then(response => {
                 setUsers(response.data?.response || []);
                 setFilteredUsers(response.data?.response || []);
@@ -45,7 +45,7 @@ const Users = () => {
     
         console.log('Payload:', payload); // Log payload data
     
-        Axios.post('http://localhost:3100/api/create-testing-user', payload)
+        Axios.post('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/create-testing-user', payload)
         .then(() => {
             getUsers();
             setSubmitted(false);
@@ -68,7 +68,7 @@ const Users = () => {
             blood_type: data.blood_type,
         };
 
-        Axios.post('http://localhost:3100/api/update-testing-user', payload)
+        Axios.post('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/update-testing-user', payload)
         .then(() => {
             getUsers();
             setSubmitted(false);
@@ -79,7 +79,7 @@ const Users = () => {
     };
 
     const deleteUser = (data) => {
-        Axios.delete('http://localhost:3100/api/delete-testing-user', { data })
+        Axios.delete('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/delete-testing-user', { data })
         .then(() => {
             getUsers();
         })

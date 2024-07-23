@@ -45,7 +45,7 @@ export default function BasicSelect() {
   };
 
   const getTests = () => {
-    Axios.get('http://localhost:3100/api/tests')
+    Axios.get('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/tests')
       .then((response) => {
         setTests(response.data?.response || []);
       })
@@ -64,7 +64,7 @@ export default function BasicSelect() {
       const selectedTest = tests.find((test) => test.id === selectedTestId);
       if (selectedTest) {
         setSelectedTestDescription(selectedTest.description);
-        Axios.get(`http://localhost:3100/api/tests/${selectedTestId}`)
+        Axios.get(`https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/tests/${selectedTestId}`)
           .then((response) => {
             setTestDetails(response.data?.details || '');
             console.log(selectedTestId);
@@ -139,7 +139,7 @@ export default function BasicSelect() {
     setSnackbarMessage('Appointment added successfully');
     setSnackbarOpen(true);
 
-    fetch('http://localhost:3100/api/addappointment', {
+    fetch('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/addappointment', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

@@ -54,7 +54,7 @@ function AddTest() {
     }
   
 
-    fetch('http://localhost:3100/api/addtest', {
+    fetch('https://healthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/addtest', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
