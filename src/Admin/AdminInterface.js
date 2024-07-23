@@ -11,7 +11,7 @@ function AdminInterface() {
   const handleNavigate = useNavigate(); //Making an instance of useNavigate
 axios.defaults.withCredentials = true;
   useEffect(() => {
-    axios.get('https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/AdminInterface')
+    axios.get('https://helthlabback.vercel.app/api/AdminInterface')
       .then(res => {
         if (res.data === "success") {
           console.log("Successed"); // Or any other function or state update

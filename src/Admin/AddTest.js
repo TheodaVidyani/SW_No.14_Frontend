@@ -54,7 +54,7 @@ function AddTest() {
     }
   
 
-    fetch('https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/addtest', {
+    fetch('https://helthlabback.vercel.app/api/addtest', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

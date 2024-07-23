@@ -106,7 +106,7 @@ export default function RecordeList() {
 
   useEffect(() => {
     async function getRecords() {
-      const response = await fetch(`https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/appointments`);
+      const response = await fetch(`https://helthlabback.vercel.app/api/appointments`);
       if (!response.ok) {
         const message = `An error occurred: ${response.statusText}`;
         window.alert(message, "Data not fetching");

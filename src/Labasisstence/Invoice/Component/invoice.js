@@ -320,7 +320,7 @@ const Invoice = () => {
   useEffect(() => {
     async function getUserDataByID() {
       try {
-        const response = await fetch(`https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/getuser/${appointmentData.pid}`);
+        const response = await fetch(`https://helthlabback.vercel.app/api/getuser/${appointmentData.pid}`);
         if (!response.ok) {
           throw new Error(`An error occurred in user data section: ${response.statusText}`);
         }
@@ -336,7 +336,7 @@ const Invoice = () => {
   useEffect(() => {
     async function getTestData() {
       try {
-        const response = await fetch(`https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/tests`);
+        const response = await fetch(`https://helthlabback.vercel.app/tests`);
         if (!response.ok) {
           throw new Error(`An error occurred: ${response.statusText}`);
         }
@@ -352,7 +352,7 @@ const Invoice = () => {
   useEffect(() => {
     async function getRecords() {
       try {
-        const response = await fetch(`https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/appoinments/${id}`);
+        const response = await fetch(`https://helthlabback.vercel.app/api/appoinments/${id}`);
         if (!response.ok) {
           throw new Error(`An error occurred: ${response.statusText}`);
         }
@@ -404,7 +404,7 @@ const Invoice = () => {
 
   const sendEmail = async () => {
     try {
-      const response = await fetch("https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/send", {
+      const response = await fetch("https://helthlabback.vercel.app/api/send", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

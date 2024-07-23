@@ -26,7 +26,7 @@ const TestTube = () => {
     }, []);
 
     const getTestTubes = () => {
-        Axios.get('https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/test_tubes')
+        Axios.get('https://helthlabback.vercel.app/api/test_tubes')
             .then(response => {
                 setTestTubes(response.data?.response || []);
                 setFilteredTestTubes(response.data?.response || []);
@@ -37,7 +37,7 @@ const TestTube = () => {
     };
 
     const addTestTube = (data) => {
-        return Axios.post('https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/createtest_tubes', data)
+        return Axios.post('https://helthlabback.vercel.app/api/createtest_tubes', data)
             .then(response => {
                 getTestTubes();
                 setSubmitted(false);
@@ -51,7 +51,7 @@ const TestTube = () => {
 
     const updateTestTube = (data) => {
         setSubmitted(true);
-        Axios.post('https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/updatetest_tubes', data)
+        Axios.post('https://helthlabback.vercel.app/api/updatetest_tubes', data)
             .then(response => {
                 getTestTubes();
                 setSubmitted(false);
@@ -62,7 +62,7 @@ const TestTube = () => {
     };
 
     const deleteTestTube = (data) => {
-        Axios.delete('https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/deletetest_tubes', { data })
+        Axios.delete('https://helthlabback.vercel.app/api/deletetest_tubes', { data })
             .then(response => {
                 getTestTubes();
             })

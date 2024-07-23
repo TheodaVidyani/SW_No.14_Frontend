@@ -32,7 +32,7 @@ const Invoice = () => {
   useEffect(() => {
     async function getTestData() {
       try {
-        const response = await fetch(`https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/tests`);
+        const response = await fetch(`https://helthlabback.vercel.app/tests`);
         if (!response.ok) {
           throw new Error(`An error occurred: ${response.statusText}`);
         }
@@ -48,7 +48,7 @@ const Invoice = () => {
   useEffect(() => {
     async function getRecords() {
       try {
-        const response = await fetch(`https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/appoinments/${reportId}`);
+        const response = await fetch(`https://helthlabback.vercel.app/api/appoinments/${reportId}`);
         if (!response.ok) {
           throw new Error(`An error occurred: ${response.statusText}`);
         }
@@ -64,7 +64,7 @@ const Invoice = () => {
   useEffect(() => {
     async function getResults() {
       try {
-        const response = await fetch(`https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/getResults`);
+        const response = await fetch(`https://helthlabback.vercel.app/api/getResults`);
         if (!response.ok) {
           throw new Error(`An error occurred: ${response.statusText}`);
         }

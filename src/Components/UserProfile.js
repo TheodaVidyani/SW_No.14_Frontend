@@ -28,7 +28,7 @@ const Profile = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get('https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/router_login/getCurrentUser', {
+      const response = await axios.get('https://helthlabback.vercel.app/api/router_login/getCurrentUser', {
         withCredentials: true,
       });
 

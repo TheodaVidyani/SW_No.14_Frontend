@@ -39,7 +39,7 @@ export default function Patienthead() {
     handleMenuClose();
 
     try {
-      await axios.post('https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/router_login/logout'); // Call backend logout route
+      await axios.post('https://helthlabback.vercel.app/api/router_login/logout'); // Call backend logout route
       console.log('Logout successful');
     } catch (error) {
       console.error('Error logging out:', error);
@@ -56,7 +56,7 @@ export default function Patienthead() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get('https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/router_login/getCurrentUser', {
+        const response = await axios.get('https://helthlabback.vercel.app/api/router_login/getCurrentUser', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('myToken')}` // Ensure to include the JWT token in the request header
           }

@@ -134,7 +134,7 @@ const Signup = () => {
     const requestData = { ...userData };
   
     try {
-      const response = await axios.post('https://helthlabback-git-vercelback-bytebuzzers-projects.vercel.app/api/router_login/createuser', requestData);
+      const response = await axios.post('https://helthlabback.vercel.app/api/router_login/createuser', requestData);
       console.log('Server response:', response);
   
       if (!response.data.success) {
