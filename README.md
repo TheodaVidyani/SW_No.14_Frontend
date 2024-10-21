@@ -47,14 +47,14 @@ The **Laboratory Information System (LIS)** frontend is designed to provide an i
 Enables users to update their details, upload profile images, and manage lab appointments.
 
 - **My Role**: Designed the user interface for profile management, including uploading and cropping profile pictures using base64 encoding.
-- **Technologies used**: React.js, Axios, MUI (Material-UI), react-easy-crop
+- **Tech stack**: React.js
 - **Status**: Completed
 
 ### [User Registration System](#)
 Allows patients to register to the system.
 
 - **My Role**: Developed the user registering interface and integrated it with backend APIs for real-time updates.
-- **Tech Stack**: React.js, Axios, MUI (Material-UI)
+- **Tech Stack**: React.js
 - **Status**: Completed
 
 ---
@@ -63,7 +63,6 @@ Allows patients to register to the system.
 
 <p align="center">
   <img src="https://github-readme-stats.vercel.app/api?username=YourUsername&show_icons=true&theme=radical" alt="GitHub Stats" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=YourUsername&layout=compact&theme=radical" alt="Top Languages" />
 </p>
 
 ---
