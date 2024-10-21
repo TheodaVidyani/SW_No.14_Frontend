@@ -12,8 +12,8 @@ The **Laboratory Information System (LIS)** frontend is designed to provide an i
 
 ## 🚀 Key Features
 
-- **Responsive UI**: A clean, modern interface designed for ease of use on both desktop and mobile devices.
-- **Profile Management**: Allows users to update personal details, upload profile pictures, and manage their appointments.
+- **Responsive UI**: A clean, modern interface designed for ease of use on a desktop.
+- **Profile Management**: Allows users to update personal details and upload profile pictures.
 - **Appointment Scheduling**: Patients can book lab appointments, view results, and make payments online.
 - **Role-Based Access**: Different views and functionalities for admins and users based on their role.
 - **Real-Time Updates**: Live updates for profile changes and appointment status using efficient API requests.
