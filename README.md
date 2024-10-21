@@ -1,70 +1,79 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Laboratory Information System (LIS) Frontend
 
-## Available Scripts
+<!-- Dynamic Project Views Counter -->
+<p align="left"> <img src="https://komarev.com/ghpvc/?username=YourUsername&label=Project%20views&color=0e75b6&style=flat" alt="Project views" /> </p>
 
-In the project directory, you can run:
+<!-- Typing Animation -->
+[![Typing SVG](https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=Welcome+to+the+LIS+Frontend!;Streamlining+Laboratory+Operations;Modern+UI+for+Efficient+User+Experience)](https://git.io/typing-svg)
 
-### `npm start`
+<!-- Intro -->
+The **Laboratory Information System (LIS)** frontend is designed to provide an intuitive and user-friendly interface for both administrators and patients. Built using **React.js**, this frontend integrates seamlessly with the backend to handle **laboratory operations** such as blood test appointments, result tracking, and user profile management.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🚀 Key Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Responsive UI**: A clean, modern interface designed for ease of use on both desktop and mobile devices.
+- **Profile Management**: Allows users to update personal details, upload profile pictures, and manage their appointments.
+- **Appointment Scheduling**: Patients can book lab appointments, view results, and make payments online.
+- **Role-Based Access**: Different views and functionalities for admins and users based on their role.
+- **Real-Time Updates**: Live updates for profile changes and appointment status using efficient API requests.
 
-### `npm test`
+## 🛠️ Technologies & Tools
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Languages**:  
+  ![JavaScript](https://img.shields.io/badge/JavaScript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black)
+  
+- **Frontend Development**:  
+  ![React.js](https://img.shields.io/badge/React-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+  ![HTML5](https://img.shields.io/badge/HTML5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+  ![CSS3](https://img.shields.io/badge/CSS3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
 
-### `npm run build`
+- **State Management**:  
+  ![Redux](https://img.shields.io/badge/Redux-%23764ABC.svg?style=for-the-badge&logo=redux&logoColor=white)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **APIs and Integration**:  
+  ![Axios](https://img.shields.io/badge/Axios-%235A29E4.svg?style=for-the-badge&logo=axios&logoColor=white)
+  ![Nodemailer](https://img.shields.io/badge/Nodemailer-%2367C8FF.svg?style=for-the-badge&logo=nodemailer&logoColor=white)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **Testing & API Documentation**:  
+  ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
+  
+- **Version Control & Collaboration**:  
+  ![Git](https://img.shields.io/badge/Git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+### 💻 Project Modules
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### [Profile Management](#)
+Enables users to update their details, upload profile images, and manage lab appointments.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **My Role**: Designed the user interface for profile management, including uploading and cropping profile pictures using base64 encoding.
+- **Technologies used**: React.js, Axios, MUI (Material-UI), react-easy-crop
+- **Status**: Completed
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### [User Registration System](#)
+Allows patients to register to the system.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- **My Role**: Developed the user registering interface and integrated it with backend APIs for real-time updates.
+- **Tech Stack**: React.js, Axios, MUI (Material-UI)
+- **Status**: Completed
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 📈 Project Insights
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+<p align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=YourUsername&show_icons=true&theme=radical" alt="GitHub Stats" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=YourUsername&layout=compact&theme=radical" alt="Top Languages" />
+</p>
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 🌐 Connect with Me
 
-### Analyzing the Bundle Size
+Feel free to reach out for collaboration, discussion, or feedback!
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- 📧 *Email*: [theodahettiarachchi00@gmail.com](mailto:theodahettiarachchi00@gmail.com)
+- 💼 *LinkedIn*: [Theoda Hettiarachchi](https://www.linkedin.com/in/theoda-hettiarachchi-8536b2266/)
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
